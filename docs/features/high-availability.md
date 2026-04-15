@@ -38,18 +38,8 @@ ZooKeeper node layout:
 
 ## State Stores
 
-All cluster state is stored in embedded RocksDB — no external database is needed:
+Core cluster state (IAM, KMS, ConnectionStore) is stored in embedded RocksDB on every Master — no external database needed for the platform to start. Memory, prompt, and embedding stores additionally support NeorunBase as the shared CCL-stack database when Mium is deployed alongside it. See [Storage Backends](storage-backends.md) for the full matrix.
 
-- IAM users, groups, policies, and organizations
-- KMS encrypted keystore with versioned KEKs
-- Per-user connection credentials (encrypted)
-- Per-user chat sessions and messages
+## Snapshot Replication
 
-## State Synchronization OpCodes
-
-| OpCode | Purpose |
-|--------|---------|
-| IAM_SYNC | User, group, policy, organization data |
-| KMS_SYNC | Encryption key bundle |
-| CONNECTION_SYNC | Per-user tool credentials |
-| MEMORY_SYNC | Chat sessions and messages |
+The leader publishes a version-bumped snapshot to followers on every successful write. Followers pull the full snapshot when they see a version they haven't caught up to, and self-heal by periodically re-pulling. The write-only-on-leader invariant means mutating requests that land on a follower are transparently proxied to the leader via `LeaderRouter`.

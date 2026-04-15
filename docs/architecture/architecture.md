@@ -16,13 +16,16 @@ Mium consists of two main deployable components: **Master** and **Worker**.
 
 The Master is the central coordination node for the entire platform — handling user sessions, administrative operations, and cluster state management.
 
-- **Admin HTTP Server**: Netty-based HTTP server serving the React Admin UI and REST API endpoints. JWT authentication (HMAC-SHA256) on all routes except `/health` and `/admin/auth/login`. HA routing: write requests on followers are transparently proxied to the leader.
-- **IAM (AuthManager)**: RocksDB-backed singleton IAM store managing users, groups, policies, and organizations. AWS-style JSON policy evaluation with deny-by-default semantics.
-- **ConnectionStore**: Per-user encrypted credential vault for Ontul connections and LLM backend connections. Credentials are encrypted at rest via KMS envelope encryption (AES-256-GCM).
-- **MemoryStore**: Per-user persistent chat history. Leader-owned, synchronized to followers via the internal NIO protocol.
+- **Admin HTTP Server**: Netty-based HTTP server serving the React Admin UI and REST API endpoints under `/admin/api/*`. JWT authentication (HMAC-SHA256) on all routes except `/health` and `/admin/auth/login`. HA routing: write requests on followers are transparently proxied to the leader.
+- **IAM (AuthManager)**: RocksDB-backed singleton IAM store managing users, groups, policies, companies, and organizations. AWS-style JSON policy evaluation with deny-by-default semantics.
+- **ConnectionStore**: Per-user encrypted credential vault for tool and LLM connections. Credentials are encrypted at rest via KMS envelope encryption (AES-256-GCM).
+- **MemoryStore**: Per-user persistent chat history. Pluggable backend — RocksDB (leader-owned, replicated to followers via `MEMORY_SYNC`) or NeorunBase (shared CCL-stack database, no Mium-side replication needed).
+- **PromptStore**: Per-user saved-prompt library. Same pluggable-backend pattern as MemoryStore (RocksDB or NeorunBase).
+- **EmbeddingStore**: Vector store for embedding-based retrieval. Backends: in-memory cosine (default) and NeorunBase `VECTOR(N)`.
 - **KMS (MiumKmsProvider)**: Built-in envelope encryption service with versioned Key Encryption Keys (KEKs). PBKDF2-SHA256 master key derivation with 200K iterations.
-- **Cluster State Management**: The leader Master maintains all cluster state — IAM policies, KMS keys, connections, and chat memory — in RocksDB, and synchronizes to follower Masters via the internal NIO protocol.
-- **Admin Endpoints**: Auth (login/logout/token refresh/password change), IAM CRUD, connection management, KMS key management, chat session management, and monitoring (node topology, metrics aggregation, log tailing).
+- **AgentLoop**: Multi-action dispatch over a strict-JSON protocol. Actions: `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`.
+- **TempFileStore**: Pluggable storage SPI for encrypted server-side export ciphertext. Backends: local filesystem and generic S3 (AWS SDK v2 — ShannonStore, MinIO, AWS S3).
+- **Admin Endpoints**: Auth (login/refresh/password change/whoami), IAM CRUD, connection management, KMS key management, chat session management, server-side export, temp-file settings, monitoring (node topology, metrics aggregation, log tailing).
 
 ### Worker
 
@@ -36,16 +39,7 @@ The Worker is the execution node that handles LLM calls and tool execution.
 
 ### Communication Architecture
 
-Mium uses a custom NIO-based binary protocol for all internal communication between nodes:
-
-- **Wire Format**: `[4B length][4B correlationId][2B opCode][1B flags][payload]`
-- **OpCode Ranges**:
-    - `0x0001–0x000F`: Cluster control (health, heartbeat, readiness)
-    - `0x0010–0x001F`: State synchronization (IAM_SYNC, KMS_SYNC, CONNECTION_SYNC, MEMORY_SYNC)
-    - `0x0020–0x002F`: Agent and tool execution (EXECUTE_TOOL, EXECUTE_AGENT)
-    - `0x0030–0x003F`: Memory and prompt management
-    - `0x0040–0x004F`: Observability (metrics, log tailing)
-- **Implementation**: Pure `java.nio` Selector-based server and client — no Netty in this layer.
+Mium uses a custom NIO-based binary protocol for all internal communication between nodes. The wire format carries a length prefix, a correlation id, a 2-byte opcode, and a flags byte before the payload. Opcodes cover cluster control, state synchronization between the leader and followers, agent/tool execution dispatch, and observability. The control plane is pure `java.nio` (Selector-based) — no Netty in this layer.
 
 ### Cluster Coordination
 
@@ -61,8 +55,9 @@ Mium uses Apache ZooKeeper (via Curator) for:
 Mium decouples from any single LLM vendor through a pluggable `LlmBackend` interface:
 
 - **LlmBackendFactory**: Builds backends from stored connections, so each user can connect their own LLM provider.
-- **Strict JSON Protocol**: All LLM interactions use structured JSON replies — no vendor-specific tool APIs. This ensures portability across different LLM providers.
-- **Request/Reply Types**: `LlmRequest`, `LlmReply`, `LlmMessage` — a clean, provider-agnostic wire format.
+- **Strict JSON Protocol**: All LLM interactions use structured JSON replies — no vendor-specific tool APIs. This ensures portability across providers.
+- **Request/Reply Types**: `LlmRequest`, `LlmReply`, `LlmMessage` — a provider-agnostic wire format.
+- **Shipped backends**: `AnthropicLlmBackend` (Anthropic Claude) and `OllamaLlmBackend` (local / self-hosted Ollama). Embedding backends: `OllamaEmbeddingBackend`.
 
 ### Ontul Tool Integration
 
@@ -72,14 +67,19 @@ Mium's primary tool is **Ontul SQL** — enabling LLM-driven data analysis again
 - **Natural Language to SQL**: Users ask analytical questions in natural language. The agent translates these into optimized SQL queries against Ontul — aggregations, joins, filtering, grouping, trend analysis, and more.
 - **Per-User Credentials**: The Ontul tool uses credentials from the user's ConnectionStore entry. Mium does NOT federate IAM with Ontul — there is no principal pass-through complexity. Ontul's own access control decides what data the user can access.
 
-### Data Stores (All RocksDB)
+### Data Stores
 
-| Store | Config Key | Purpose |
-|-------|-----------|---------|
-| IAM Store | `mium.iam.rocksdb.path` | Users, groups, policies, organizations, temporary credentials |
-| KMS Store | `mium.kms.rocksdb.path` | Master key bundle with versioned data encryption keys |
-| Connection Store | `mium.connection.rocksdb.path` | Per-user Ontul and LLM credentials (KMS-encrypted at rest) |
-| Memory Store | `mium.memory.rocksdb.path` | Per-user chat sessions and messages |
+| Store | Default Backend | Config | Purpose |
+|-------|----------------|--------|---------|
+| IAM Store | RocksDB | `mium.iam.rocksdb.path` | Users, groups, policies, companies, organizations |
+| KMS Store | RocksDB | `mium.kms.rocksdb.path` | Master key bundle with versioned data encryption keys |
+| Connection Store | RocksDB | `mium.connection.rocksdb.path` | Per-user tool/LLM credentials (KMS-encrypted at rest) |
+| Memory Store | RocksDB | `mium.memory.backend` = `rocksdb` \| `neorunbase` | Per-user chat sessions and messages |
+| Prompt Store | RocksDB | `mium.prompt.backend` = `rocksdb` \| `neorunbase` | Per-user saved prompt library |
+| Embedding Store | In-memory | `mium.embedding.store` = `inmemory` \| `neorunbase` | Vector store for embedding-based retrieval |
+| Temp File Store | Local FS | `mium.tempfile.backend` = `local` \| `s3` | Encrypted ciphertext of server-rendered exports |
+
+IAM / KMS / Connection always live on RocksDB (they bootstrap the cluster itself). Memory / Prompt / Embedding can optionally be delegated to **NeorunBase**, the shared CCL-stack database, when Mium is deployed alongside the rest of the CCL stack. The Temp File Store can point at any S3-compatible object store (ShannonStore by default) so rendered exports don't pin the master node.
 
 ### Client Interfaces
 

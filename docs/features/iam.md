@@ -1,66 +1,62 @@
 # Identity and Access Management
 
-Mium includes a built-in IAM system that provides authentication, authorization, and access control for the platform.
+Mium includes a built-in IAM system that provides authentication, authorization, and access control for the platform. The model is intentionally close to AWS IAM so operators familiar with that vocabulary can land quickly.
 
 ## Authentication
 
-Mium uses JWT-based authentication (HMAC-SHA256):
+- **Username + password** — basic authentication on `/admin/auth/login`. Passwords are hashed; an admin-forced password change can be required on first login.
+- **JWT bearer tokens** — HMAC-SHA256 signed access tokens used on all API requests. TTL configurable via `mium.jwt.ttl.seconds`. Refresh available via `/admin/auth/refresh`.
+- **Access keys** — AWS-style `(accessKeyId, secretAccessKey)` pairs for programmatic / SDK access, with optional expiry.
+- **STS** — short-lived credentials issued via `assume-role`-style endpoints for delegated, time-bounded access.
 
-- **Username / Password**: Basic authentication with password hashing. All routes except `/health` and `/admin/auth/login` require authentication.
-- **JWT Tokens**: Bearer token authentication for all API requests. Configurable TTL via `mium.jwt.ttl.seconds`.
-- **Token Refresh**: Tokens can be refreshed without re-authentication.
+All routes except `/health` and `/admin/auth/login` require authentication.
 
-## Users and Groups
+## Identities and Hierarchy
 
-- Create and manage users with passwords and metadata
-- Organize users into groups
-- Support for organizations as a top-level grouping
-- Policies attached to a group apply to all members
+The IAM model carries:
+
+- **Users** — credentials, profile metadata, group memberships.
+- **Groups** — sets of users; policies attached to a group apply to every member.
+- **Policies** — JSON documents describing allow/deny rules.
+- **Companies / Organizations** — top-level grouping above users for multi-tenant deployments.
 
 ## Policy-Based Access Control
 
-Mium uses AWS-style JSON policy evaluation with deny-by-default semantics:
+Mium uses AWS-style JSON policies with deny-by-default semantics:
 
 ```json
 {
   "statements": [
     {
       "effect": "ALLOW",
-      "actions": ["CHAT", "CONNECTION:READ"],
+      "actions": ["MIUM:CHAT", "MIUM:USE_CONNECTION"],
       "resources": ["*"]
     },
     {
       "effect": "DENY",
-      "actions": ["IAM:*", "KMS:*"],
+      "actions": ["MIUM:MANAGE_IAM", "MIUM:MANAGE_KMS"],
       "resources": ["*"]
     }
   ]
 }
 ```
 
-- Policies define allowed or denied actions on specific resources
-- Policies can be attached to users or groups
-- Deny rules take precedence over allow rules
-- Deny-by-default: no matching policies means access is denied
+- Policies can be attached to users or groups (group policies cascade to members).
+- Explicit DENY overrides any ALLOW.
+- No matching ALLOW means the request is rejected.
 
-## IAM Actions
+## Action Vocabulary
 
-The IAM action vocabulary covers all platform operations:
+The shipped action constants cover all platform operations:
 
-| Action Category | Examples |
-|----------------|---------|
-| Auth | Login, logout, password change, token refresh |
-| IAM Admin | User/group/policy/organization CRUD |
-| Connection | Connection management |
-| KMS | Key management |
-| Chat | Chat session access |
-| Monitoring | Node topology, metrics, log tailing |
+| Category | Actions |
+|---|---|
+| Chat / Agent | `MIUM:CHAT`, `MIUM:USE_TOOL`, `MIUM:MANAGE_AGENT` |
+| Connections | `MIUM:USE_CONNECTION`, `MIUM:READ_CONNECTION`, `MIUM:WRITE_CONNECTION` |
+| Memory / Prompt | `MIUM:READ_MEMORY`, `MIUM:WRITE_MEMORY`, `MIUM:READ_PROMPT`, `MIUM:WRITE_PROMPT` |
+| LLM | `MIUM:MANAGE_LLM_BACKEND` |
+| Admin | `MIUM:MANAGE_IAM`, `MIUM:MANAGE_KMS`, `MIUM:MANAGE_COMPANY`, `MIUM:MANAGE_ORG` |
 
 ## Management
 
-Users, groups, and policies are managed through the Admin UI (Settings > Admin > IAM) or the REST API. The Admin UI provides a visual interface for:
-
-- Creating and managing users
-- Organizing users into groups
-- Attaching policies to users and groups
-- Viewing effective permissions
+Users, groups, policies, companies, and organizations are managed through the Admin UI (Settings → Administration → IAM) or the REST API under `/admin/api/iam/*`. The UI exposes user / group / policy CRUD, group memberships, policy attachment, and access-key issuance / download.
