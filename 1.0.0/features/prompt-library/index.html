@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/iam/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/prompt-library/">
       
       
-        <link rel="prev" href="../server-side-export/">
+        <link rel="prev" href="../chat-memory/">
       
       
-        <link rel="next" href="../encryption/">
+        <link rel="next" href="../storage-backends/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>IAM - Mium</title>
+        <title>Prompt Library - Mium</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#identity-and-access-management" class="md-skip">
+        <a href="#prompt-library" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              IAM
+              Prompt Library
             
           </span>
         </div>
@@ -600,10 +600,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../prompt-library/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompt Library
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -619,6 +646,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Surface
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -712,37 +803,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    IAM
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../iam/" class="md-nav__link">
         
   
   
@@ -758,81 +822,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Authentication
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#identities-and-hierarchy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Identities and Hierarchy
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#policy-based-access-control" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Policy-Based Access Control
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#action-vocabulary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Action Vocabulary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#management" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Management
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -946,80 +935,32 @@
 
 
 
-<h1 id="identity-and-access-management">Identity and Access Management</h1>
-<p>Mium includes a built-in IAM system that provides authentication, authorization, and access control for the platform. The model is intentionally close to AWS IAM so operators familiar with that vocabulary can land quickly.</p>
-<h2 id="authentication">Authentication</h2>
+<h1 id="prompt-library">Prompt Library</h1>
+<p>Mium provides a per-user prompt library — the <strong>PromptStore</strong> — so users can save, retrieve, and reuse prompts they care about. The store sits next to the MemoryStore, sharing the same pluggable-backend pattern.</p>
+<h2 id="model">Model</h2>
+<p>A saved prompt has:</p>
 <ul>
-<li><strong>Username + password</strong> — basic authentication on <code>/admin/auth/login</code>. Passwords are hashed; an admin-forced password change can be required on first login.</li>
-<li><strong>JWT bearer tokens</strong> — HMAC-SHA256 signed access tokens used on all API requests. TTL configurable via <code>mium.jwt.ttl.seconds</code>. Refresh available via <code>/admin/auth/refresh</code>.</li>
-<li><strong>Access keys</strong> — AWS-style <code>(accessKeyId, secretAccessKey)</code> pairs for programmatic / SDK access, with optional expiry.</li>
-<li><strong>STS</strong> — short-lived credentials issued via <code>assume-role</code>-style endpoints for delegated, time-bounded access.</li>
+<li>An owner user id</li>
+<li>A short name and a longer prompt body</li>
+<li>Optional tags</li>
+<li>Created / updated timestamps</li>
 </ul>
-<p>All routes except <code>/health</code> and <code>/admin/auth/login</code> require authentication.</p>
-<h2 id="identities-and-hierarchy">Identities and Hierarchy</h2>
-<p>The IAM model carries:</p>
+<p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>MIUM:READ_PROMPT</code> / <code>MIUM:WRITE_PROMPT</code> policy.</p>
+<h2 id="backends">Backends</h2>
+<p><code>PromptStore</code> is pluggable, chosen at startup by <code>mium.prompt.backend</code>:</p>
 <ul>
-<li><strong>Users</strong> — credentials, profile metadata, group memberships.</li>
-<li><strong>Groups</strong> — sets of users; policies attached to a group apply to every member.</li>
-<li><strong>Policies</strong> — JSON documents describing allow/deny rules.</li>
-<li><strong>Companies / Organizations</strong> — top-level grouping above users for multi-tenant deployments.</li>
+<li><strong><code>rocksdb</code></strong> (default) — leader-owned, envelope-encrypted snapshot persisted locally; replicated to followers via internal NIO sync.</li>
+<li><strong><code>neorunbase</code></strong> — prompts live in the shared CCL-stack NeorunBase database (<code>mium_prompt</code> table). Every Mium node reads and writes live; NeorunBase handles durability.</li>
 </ul>
-<h2 id="policy-based-access-control">Policy-Based Access Control</h2>
-<p>Mium uses AWS-style JSON policies with deny-by-default semantics:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;statements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="nt">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ALLOW&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;MIUM:CHAT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MIUM:USE_CONNECTION&quot;</span><span class="p">],</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">&quot;resources&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p">},</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DENY&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;MIUM:MANAGE_IAM&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MIUM:MANAGE_KMS&quot;</span><span class="p">],</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="nt">&quot;resources&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">}</span>
-</code></pre></div>
+<p>Both backends expose the same API; switch by editing <code>mium.prompt.backend</code>. See <a href="../storage-backends/">Storage Backends</a>.</p>
+<h2 id="limits">Limits</h2>
+<p>The store enforces:</p>
 <ul>
-<li>Policies can be attached to users or groups (group policies cascade to members).</li>
-<li>Explicit DENY overrides any ALLOW.</li>
-<li>No matching ALLOW means the request is rejected.</li>
+<li><strong>Per-user prompt cap</strong> — oldest prompts are evicted beyond a configured count (<code>mium.prompt.max.per.user</code>).</li>
+<li><strong>Body size cap</strong> — bodies above <code>mium.prompt.max.body.bytes</code> are rejected at write time.</li>
 </ul>
-<h2 id="action-vocabulary">Action Vocabulary</h2>
-<p>The shipped action constants cover all platform operations:</p>
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Chat / Agent</td>
-<td><code>MIUM:CHAT</code>, <code>MIUM:USE_TOOL</code>, <code>MIUM:MANAGE_AGENT</code></td>
-</tr>
-<tr>
-<td>Connections</td>
-<td><code>MIUM:USE_CONNECTION</code>, <code>MIUM:READ_CONNECTION</code>, <code>MIUM:WRITE_CONNECTION</code></td>
-</tr>
-<tr>
-<td>Memory / Prompt</td>
-<td><code>MIUM:READ_MEMORY</code>, <code>MIUM:WRITE_MEMORY</code>, <code>MIUM:READ_PROMPT</code>, <code>MIUM:WRITE_PROMPT</code></td>
-</tr>
-<tr>
-<td>LLM</td>
-<td><code>MIUM:MANAGE_LLM_BACKEND</code></td>
-</tr>
-<tr>
-<td>Admin</td>
-<td><code>MIUM:MANAGE_IAM</code>, <code>MIUM:MANAGE_KMS</code>, <code>MIUM:MANAGE_COMPANY</code>, <code>MIUM:MANAGE_ORG</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="management">Management</h2>
-<p>Users, groups, policies, companies, and organizations are managed through the Admin UI (Settings → Administration → IAM) or the REST API under <code>/admin/api/iam/*</code>. The UI exposes user / group / policy CRUD, group memberships, policy attachment, and access-key issuance / download.</p>
+<h2 id="future-surface">Future Surface</h2>
+<p>Today the PromptStore is reachable through the REST layer; an Admin UI page for browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") is on the roadmap. The agent loop will eventually expose a <code>save_prompt</code> action so the LLM itself can persist a prompt the user asks it to remember.</p>
 
 
 

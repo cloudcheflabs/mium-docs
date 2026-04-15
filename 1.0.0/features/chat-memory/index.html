@@ -14,7 +14,7 @@
         <link rel="prev" href="../connection-management/">
       
       
-        <link rel="next" href="../iam/">
+        <link rel="next" href="../prompt-library/">
       
       
         
@@ -232,26 +232,6 @@
   
   
   
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../intro/intro/" class="md-tabs__link">
-          
-  
-  
-  Getting Started
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
     
   
   
@@ -395,93 +375,6 @@
       
   
   
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Getting Started
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../intro/intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -503,10 +396,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -524,8 +417,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -606,6 +499,34 @@
     
   
     Tool Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../job-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Lifecycle
   
 
     
@@ -758,10 +679,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#export" class="md-nav__link">
+  <a href="#retention-and-compaction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Export
+        Retention and Compaction
       
     </span>
   </a>
@@ -772,6 +693,118 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prompt-library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompt Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-backends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Backends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../temp-file-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temp File Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-side-export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server-Side Export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -916,43 +949,43 @@
 <h1 id="chat-memory">Chat &amp; Memory</h1>
 <p>Mium provides a persistent chat system where users interact with LLMs through a conversational interface. Chat history is stored in the MemoryStore, enabling context-aware conversations across sessions.</p>
 <h2 id="chat-interface">Chat Interface</h2>
-<p>The Admin UI provides a full-featured chat interface at the root path (<code>/</code> and <code>/c/:sessionId</code>):</p>
+<p>The Admin UI provides a full-featured chat interface at the root path:</p>
 <ul>
 <li>Create new chat sessions</li>
 <li>Continue previous conversations with full context</li>
-<li>View and manage chat history</li>
-<li>Export conversations to PDF, PPTX, or XLSX</li>
+<li>Delete and rename sessions</li>
+<li>Client-side export of the result payload to CSV, Markdown, XLSX, PDF, or PPTX</li>
 </ul>
 <h2 id="chat-sessions">Chat Sessions</h2>
 <p>Each chat session maintains:</p>
 <ul>
-<li><strong>Message History</strong>: All user and assistant messages in the conversation</li>
-<li><strong>Tool Invocations</strong>: Records of tool calls and their results</li>
-<li><strong>Context</strong>: The accumulated context that the LLM uses to generate responses</li>
+<li><strong>Message history</strong> — user and assistant turns in order.</li>
+<li><strong>Tool invocations</strong> — records of tool calls and their results, surfaced as intermediate assistant messages so users can see the full reasoning chain, not just the final answer.</li>
+<li><strong>Rolling context</strong> — Mium trims the LLM context window with a configurable cap; long sessions can also be compacted by the <code>MemoryCompactor</code> which summarises older turns into a single synthetic message.</li>
 </ul>
 <p>Sessions are identified by unique IDs and can be resumed at any time.</p>
 <h2 id="memorystore">MemoryStore</h2>
-<p>The MemoryStore is a RocksDB-backed per-user persistent store for chat sessions and messages:</p>
+<p>The MemoryStore has a pluggable backend chosen at startup by <code>mium.memory.backend</code>:</p>
 <ul>
-<li><strong>Leader-owned</strong>: The leader Master owns the MemoryStore and handles all writes</li>
-<li><strong>Synchronized</strong>: Chat data is replicated to follower Masters via the NIO protocol (MEMORY_SYNC opcode)</li>
-<li><strong>Per-user isolation</strong>: Each user's chat history is stored separately</li>
+<li><strong><code>rocksdb</code></strong> (default) — leader-owned, envelope-encrypted snapshot persisted locally. Followers receive the snapshot via internal NIO replication.</li>
+<li><strong><code>neorunbase</code></strong> — chat sessions and messages live in the shared CCL-stack NeorunBase database (<code>mium_chat_session</code> and <code>mium_chat_message</code> tables). Every Mium node reads and writes live; there is no Mium-side replication because NeorunBase handles durability natively.</li>
 </ul>
+<p>Both backends expose the same API to the rest of Mium; switch by editing <code>mium.memory.backend</code>. See <a href="../storage-backends/">Storage Backends</a> for the full comparison.</p>
 <h2 id="chat-api">Chat API</h2>
-<p>The Chat endpoints on the Admin HTTP server provide:</p>
+<p>The Chat endpoints on the Admin HTTP server (mounted under <code>/admin/api/chat</code>) provide:</p>
 <ul>
-<li>Create a new session</li>
-<li>Send a message and receive a response (with optional tool invocations)</li>
+<li>Send a message and receive a reply (with optional tool invocations)</li>
 <li>List sessions for the current user</li>
-<li>Get session history</li>
-<li>Delete sessions</li>
+<li>Get a session's full message history</li>
+<li>Rename or delete sessions</li>
 </ul>
-<h2 id="export">Export</h2>
-<p>Conversations can be exported in multiple formats:</p>
+<p>Writes are leader-only; followers transparently proxy via <code>LeaderRouter</code>.</p>
+<h2 id="retention-and-compaction">Retention and Compaction</h2>
+<p>Long-running chats are kept manageable by two mechanisms:</p>
 <ul>
-<li><strong>PDF</strong>: Full conversation with formatting</li>
-<li><strong>PPTX</strong>: Presentation format for sharing insights</li>
-<li><strong>XLSX</strong>: Spreadsheet format for data-heavy conversations</li>
+<li><strong>TTL sweep</strong> — sessions older than a configured TTL are dropped.</li>
+<li><strong>Per-user session cap</strong> — each user's oldest sessions are evicted beyond a configured count.</li>
+<li><strong>LLM-driven compaction</strong> — <code>MemoryCompactor</code> replaces the oldest block of turns with a one-shot LLM summary once a session crosses a compaction threshold, preserving the most recent turns verbatim.</li>
 </ul>
 
 

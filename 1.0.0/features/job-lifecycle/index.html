@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/iam/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/job-lifecycle/">
       
       
-        <link rel="prev" href="../server-side-export/">
+        <link rel="prev" href="../tool-integration/">
       
       
-        <link rel="next" href="../encryption/">
+        <link rel="next" href="../connection-management/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>IAM - Mium</title>
+        <title>Job Lifecycle - Mium</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#identity-and-access-management" class="md-skip">
+        <a href="#job-lifecycle" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              IAM
+              Job Lifecycle
             
           </span>
         </div>
@@ -516,10 +516,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../job-lifecycle/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -535,6 +562,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#action-vocabulary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Action Vocabulary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conversational-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conversational Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-user-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-User Credentials
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -712,37 +803,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    IAM
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../iam/" class="md-nav__link">
         
   
   
@@ -758,81 +822,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Authentication
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#identities-and-hierarchy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Identities and Hierarchy
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#policy-based-access-control" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Policy-Based Access Control
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#action-vocabulary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Action Vocabulary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#management" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Management
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -946,80 +935,67 @@
 
 
 
-<h1 id="identity-and-access-management">Identity and Access Management</h1>
-<p>Mium includes a built-in IAM system that provides authentication, authorization, and access control for the platform. The model is intentionally close to AWS IAM so operators familiar with that vocabulary can land quickly.</p>
-<h2 id="authentication">Authentication</h2>
-<ul>
-<li><strong>Username + password</strong> — basic authentication on <code>/admin/auth/login</code>. Passwords are hashed; an admin-forced password change can be required on first login.</li>
-<li><strong>JWT bearer tokens</strong> — HMAC-SHA256 signed access tokens used on all API requests. TTL configurable via <code>mium.jwt.ttl.seconds</code>. Refresh available via <code>/admin/auth/refresh</code>.</li>
-<li><strong>Access keys</strong> — AWS-style <code>(accessKeyId, secretAccessKey)</code> pairs for programmatic / SDK access, with optional expiry.</li>
-<li><strong>STS</strong> — short-lived credentials issued via <code>assume-role</code>-style endpoints for delegated, time-bounded access.</li>
-</ul>
-<p>All routes except <code>/health</code> and <code>/admin/auth/login</code> require authentication.</p>
-<h2 id="identities-and-hierarchy">Identities and Hierarchy</h2>
-<p>The IAM model carries:</p>
-<ul>
-<li><strong>Users</strong> — credentials, profile metadata, group memberships.</li>
-<li><strong>Groups</strong> — sets of users; policies attached to a group apply to every member.</li>
-<li><strong>Policies</strong> — JSON documents describing allow/deny rules.</li>
-<li><strong>Companies / Organizations</strong> — top-level grouping above users for multi-tenant deployments.</li>
-</ul>
-<h2 id="policy-based-access-control">Policy-Based Access Control</h2>
-<p>Mium uses AWS-style JSON policies with deny-by-default semantics:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;statements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="nt">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ALLOW&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;MIUM:CHAT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MIUM:USE_CONNECTION&quot;</span><span class="p">],</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">&quot;resources&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p">},</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DENY&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;MIUM:MANAGE_IAM&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MIUM:MANAGE_KMS&quot;</span><span class="p">],</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="nt">&quot;resources&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">}</span>
-</code></pre></div>
-<ul>
-<li>Policies can be attached to users or groups (group policies cascade to members).</li>
-<li>Explicit DENY overrides any ALLOW.</li>
-<li>No matching ALLOW means the request is rejected.</li>
-</ul>
+<h1 id="job-lifecycle">Job Lifecycle</h1>
+<p>In addition to ad-hoc SQL, Mium's agent loop can drive the full lifecycle of long-running Ontul jobs from a chat conversation. The LLM emits one of the job-action verbs in its strict-JSON reply and Mium dispatches the matching call against the user's Ontul connection.</p>
 <h2 id="action-vocabulary">Action Vocabulary</h2>
-<p>The shipped action constants cover all platform operations:</p>
 <table>
 <thead>
 <tr>
-<th>Category</th>
-<th>Actions</th>
+<th>Action</th>
+<th>What It Does</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Chat / Agent</td>
-<td><code>MIUM:CHAT</code>, <code>MIUM:USE_TOOL</code>, <code>MIUM:MANAGE_AGENT</code></td>
+<td><code>submit_batch</code></td>
+<td>Submit a one-shot SQL job (CTAS, INSERT INTO, aggregations producing a target table). Returns <code>jobId</code> and initial <code>status</code>.</td>
 </tr>
 <tr>
-<td>Connections</td>
-<td><code>MIUM:USE_CONNECTION</code>, <code>MIUM:READ_CONNECTION</code>, <code>MIUM:WRITE_CONNECTION</code></td>
+<td><code>submit_streaming</code></td>
+<td>Submit a continuous job that consumes from a streaming source. Returns <code>jobId</code> and initial <code>status</code>.</td>
 </tr>
 <tr>
-<td>Memory / Prompt</td>
-<td><code>MIUM:READ_MEMORY</code>, <code>MIUM:WRITE_MEMORY</code>, <code>MIUM:READ_PROMPT</code>, <code>MIUM:WRITE_PROMPT</code></td>
+<td><code>job_status</code></td>
+<td>Look up the current state of a job by id. Returns <code>status</code> (<code>SUBMITTED</code>, <code>RUNNING</code>, <code>SUCCEEDED</code>, <code>FAILED</code>, <code>KILLED</code>), <code>durationMs</code>, <code>errorMessage</code> if applicable.</td>
 </tr>
 <tr>
-<td>LLM</td>
-<td><code>MIUM:MANAGE_LLM_BACKEND</code></td>
+<td><code>job_logs</code></td>
+<td>Stream log lines for a job, optionally from an offset.</td>
 </tr>
 <tr>
-<td>Admin</td>
-<td><code>MIUM:MANAGE_IAM</code>, <code>MIUM:MANAGE_KMS</code>, <code>MIUM:MANAGE_COMPANY</code>, <code>MIUM:MANAGE_ORG</code></td>
+<td><code>kill_job</code></td>
+<td>Terminate a running job by id.</td>
+</tr>
+<tr>
+<td><code>list_jobs</code></td>
+<td>Active jobs visible to the calling user.</td>
+</tr>
+<tr>
+<td><code>list_history</code></td>
+<td>Past jobs (terminal status).</td>
+</tr>
+<tr>
+<td><code>generate_code</code></td>
+<td>Produce Ontul SDK source for the user to copy or submit themselves. Supports <code>jobType</code> = <code>BATCH</code>, <code>STREAMING</code>, <code>CLASS</code>, <code>PYTHON</code>.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="management">Management</h2>
-<p>Users, groups, policies, companies, and organizations are managed through the Admin UI (Settings → Administration → IAM) or the REST API under <code>/admin/api/iam/*</code>. The UI exposes user / group / policy CRUD, group memberships, policy attachment, and access-key issuance / download.</p>
+<h2 id="conversational-pattern">Conversational Pattern</h2>
+<p>Jobs are tracked across turns by <code>jobId</code>. Within a single chat session the LLM picks the id from earlier replies, so:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>User:    &quot;tpch.tiny.orders 를 orderstatus 별로 count 집계하는 BATCH job 을 이름 seg_count 로 제출해줘.&quot;
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Agent:   submit_batch   → jobId: e5240f5d-…, status: SUBMITTED
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>User:    &quot;방금 제출한 job 상태 확인해줘.&quot;
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Agent:   job_status     → status: SUCCEEDED, durationMs: 301
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>User:    &quot;job history 보여줘.&quot;
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>Agent:   list_history   → [{jobId: e5240f5d-…, status: SUCCEEDED, …}]
+</code></pre></div>
+<p>Across new sessions the user typically retrieves the id via <code>list_history</code> first.</p>
+<h2 id="code-generation">Code Generation</h2>
+<p><code>generate_code</code> does NOT submit anything — it returns Ontul SDK source the user can copy, version, or hand to a different submit pipeline. It's the right action when the user asks "write me the Java" or "give me a Python script that …".</p>
+<h2 id="per-user-credentials">Per-User Credentials</h2>
+<p>All job actions go through the user's Ontul connection in the ConnectionStore (<code>tool=ontul</code>). The Ontul cluster decides what the calling principal is allowed to do — Mium does not federate IAM with Ontul, so authorization comes from Ontul's own access-control layer.</p>
 
 
 

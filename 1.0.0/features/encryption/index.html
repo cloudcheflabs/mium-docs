@@ -232,26 +232,6 @@
   
   
   
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../intro/intro/" class="md-tabs__link">
-          
-  
-  
-  Getting Started
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
     
   
   
@@ -395,93 +375,6 @@
       
   
   
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Getting Started
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../intro/intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -503,10 +396,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -524,8 +417,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -626,6 +519,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../job-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../connection-management/" class="md-nav__link">
         
   
@@ -662,6 +583,118 @@
     
   
     Chat & Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prompt-library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompt Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-backends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Backends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../temp-file-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temp File Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-side-export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server-Side Export
   
 
     
@@ -925,48 +958,73 @@
 
 
 <h1 id="encryption-kms">Encryption &amp; KMS</h1>
-<p>Mium provides built-in encryption with a Key Management Service (KMS) to protect sensitive data at rest across the cluster.</p>
+<p>Mium provides built-in encryption with a Key Management Service (KMS) to protect sensitive data at rest and in transit between cluster nodes.</p>
 <h2 id="envelope-encryption">Envelope Encryption</h2>
-<p>Mium uses envelope encryption — each piece of sensitive data is encrypted with its own Data Encryption Key (DEK), and DEKs are encrypted with the master key:</p>
+<p>Each piece of sensitive data is encrypted with its own Data Encryption Key (DEK). DEKs are wrapped under the master Key Encryption Key (KEK):</p>
 <ul>
-<li><strong>Algorithm</strong>: AES-256-GCM</li>
-<li><strong>Master Key Derivation</strong>: PBKDF2-SHA256 with 200,000 iterations</li>
-<li><strong>Master Key Source</strong>: Environment variable specified by <code>mium.kms.master.key.env</code> (minimum 32 characters)</li>
-<li><strong>Versioned KEKs</strong>: Key Encryption Keys are versioned, allowing key rotation without re-encrypting all data</li>
+<li><strong>Algorithm</strong> — AES-256-GCM.</li>
+<li><strong>Master key derivation</strong> — PBKDF2-SHA256 with 200,000 iterations.</li>
+<li><strong>Master key source</strong> — environment variable named by <code>mium.kms.master.key.env</code> (default <code>MIUM_MASTER_KEY</code>); the value must be at least 32 characters.</li>
+<li><strong>Versioned KEKs</strong> — Key Encryption Keys are versioned. Rotation produces a new active version while old versions stay available for decrypting historical data.</li>
 </ul>
 <h2 id="what-is-encrypted">What Is Encrypted</h2>
-<ul>
-<li><strong>Connection credentials</strong>: LLM API keys, tool credentials (database passwords, API tokens) stored in the ConnectionStore</li>
-<li><strong>IAM secrets</strong>: User passwords and authentication tokens</li>
-<li><strong>Cluster state metadata</strong>: Sensitive metadata in the RocksDB state stores</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ConnectionStore auth payloads</td>
+<td>Per-connection envelope (<code>mium-connection</code> key)</td>
+</tr>
+<tr>
+<td>IAM snapshots on disk</td>
+<td>Envelope (<code>mium-iam</code> key)</td>
+</tr>
+<tr>
+<td>MemoryStore RocksDB snapshot (when <code>backend=rocksdb</code>)</td>
+<td>Envelope (<code>mium-memory</code> key)</td>
+</tr>
+<tr>
+<td>PromptStore RocksDB snapshot (when <code>backend=rocksdb</code>)</td>
+<td>Envelope (<code>mium-prompt</code> key)</td>
+</tr>
+<tr>
+<td>Server-rendered export ciphertext (XLSX / PDF / PPTX)</td>
+<td>Envelope (<code>mium-tempfile</code> key)</td>
+</tr>
+<tr>
+<td>Internal NIO control-plane payloads</td>
+<td>Once a KMS key is available, internal messages between Master ↔ Master and Master ↔ Worker are envelope-wrapped before transmission</td>
+</tr>
+</tbody>
+</table>
+<p>Mium is explicit about TLS-handled boundaries — the browser ↔ master HTTP path is expected to terminate TLS at the deployment's reverse proxy / nginx, and is not double-wrapped.</p>
 <h2 id="built-in-kms">Built-in KMS</h2>
-<p>Mium includes a built-in KMS (MiumKmsProvider) that:</p>
+<p><code>MiumKmsProvider</code> is the in-process KMS:</p>
 <ul>
-<li>Generates and manages encryption keys in a RocksDB-backed keystore</li>
-<li>Supports versioned Key Encryption Keys for rotation</li>
-<li>Distributes keys from the leader Master to all cluster nodes automatically</li>
-<li>Replicates the encrypted keystore to follower Masters for high availability</li>
+<li>Stores the encrypted KEK bundle in a RocksDB-backed keystore (<code>mium.kms.rocksdb.path</code>).</li>
+<li>Supports versioned keys and on-demand rotation.</li>
+<li>Replicates the keystore from the leader to follower Masters via the internal NIO <code>KMS_SYNC</code> opcode. Workers receive only the keys they need to decrypt the connection payloads they are dispatched to use.</li>
 </ul>
-<p>No external KMS service is required.</p>
+<p>No external KMS service is required. Operators who want to integrate a corporate KMS can implement the same provider interface.</p>
 <h2 id="key-distribution">Key Distribution</h2>
 <ol>
-<li>The leader Master generates and stores DEKs in the local encrypted RocksDB keystore</li>
-<li>On leader election or key changes, the keystore is replicated to follower Masters via the internal NIO protocol (KMS_SYNC opcode)</li>
-<li>Workers receive relevant keys for decrypting connection credentials needed during tool execution</li>
+<li>The leader Master generates and stores DEKs in the local encrypted RocksDB keystore.</li>
+<li>On leader election or key changes, the keystore is replicated to followers via <code>KMS_SYNC</code>.</li>
+<li>Workers receive the relevant DEKs needed to decrypt connection credentials at tool-execution time.</li>
 </ol>
 <h2 id="configuration">Configuration</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Enable KMS (required in production)</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">mium.kms.enabled</span><span class="o">=</span><span class="s">true</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Environment variable containing the master key</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="na">mium.kms.master.key.env</span><span class="o">=</span><span class="s">MIUM_MASTER_KEY</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># RocksDB path for KMS keystore</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="na">mium.kms.rocksdb.path</span><span class="o">=</span><span class="s">/data/mium/kms</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="na">mium.kms.enabled</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">mium.kms.master.key.env</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">MIUM_MASTER_KEY</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="na">mium.kms.rocksdb.path</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">${mium.base.data.dir}/kms</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="na">mium.kms.pbkdf2.iterations</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">200000</span>
 </code></pre></div>
 <h2 id="management">Management</h2>
-<p>KMS keys are managed through the Admin UI (Settings &gt; Admin &gt; KMS) or the REST API.</p>
+<p>KMS keys are managed through the Admin UI (Settings → Administration → Security &amp; KMS) or the REST API under <code>/admin/api/kms/*</code> — list, rotate, and inspect key versions.</p>
 
 
 

@@ -12,7 +12,7 @@
       
       
       
-        <link rel="next" href="../../intro/intro/">
+        <link rel="next" href="../../features/multi-agent-platform/">
       
       
         
@@ -221,26 +221,6 @@
   
   
   Architecture
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../intro/intro/" class="md-tabs__link">
-          
-  
-  
-  Getting Started
 
         </a>
       </li>
@@ -504,10 +484,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-stores-all-rocksdb" class="md-nav__link">
+  <a href="#data-stores" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Stores (All RocksDB)
+        Data Stores
       
     </span>
   </a>
@@ -587,7 +567,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Features
   
 
     
@@ -600,93 +580,6 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Getting Started
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../intro/intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Features
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -787,6 +680,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../features/job-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../features/connection-management/" class="md-nav__link">
         
   
@@ -823,6 +744,118 @@
     
   
     Chat & Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/prompt-library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompt Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/storage-backends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Backends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/temp-file-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temp File Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/server-side-export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server-Side Export
   
 
     
@@ -985,13 +1018,16 @@
 <h3 id="master">Master</h3>
 <p>The Master is the central coordination node for the entire platform — handling user sessions, administrative operations, and cluster state management.</p>
 <ul>
-<li><strong>Admin HTTP Server</strong>: Netty-based HTTP server serving the React Admin UI and REST API endpoints. JWT authentication (HMAC-SHA256) on all routes except <code>/health</code> and <code>/admin/auth/login</code>. HA routing: write requests on followers are transparently proxied to the leader.</li>
-<li><strong>IAM (AuthManager)</strong>: RocksDB-backed singleton IAM store managing users, groups, policies, and organizations. AWS-style JSON policy evaluation with deny-by-default semantics.</li>
-<li><strong>ConnectionStore</strong>: Per-user encrypted credential vault for Ontul connections and LLM backend connections. Credentials are encrypted at rest via KMS envelope encryption (AES-256-GCM).</li>
-<li><strong>MemoryStore</strong>: Per-user persistent chat history. Leader-owned, synchronized to followers via the internal NIO protocol.</li>
+<li><strong>Admin HTTP Server</strong>: Netty-based HTTP server serving the React Admin UI and REST API endpoints under <code>/admin/api/*</code>. JWT authentication (HMAC-SHA256) on all routes except <code>/health</code> and <code>/admin/auth/login</code>. HA routing: write requests on followers are transparently proxied to the leader.</li>
+<li><strong>IAM (AuthManager)</strong>: RocksDB-backed singleton IAM store managing users, groups, policies, companies, and organizations. AWS-style JSON policy evaluation with deny-by-default semantics.</li>
+<li><strong>ConnectionStore</strong>: Per-user encrypted credential vault for tool and LLM connections. Credentials are encrypted at rest via KMS envelope encryption (AES-256-GCM).</li>
+<li><strong>MemoryStore</strong>: Per-user persistent chat history. Pluggable backend — RocksDB (leader-owned, replicated to followers via <code>MEMORY_SYNC</code>) or NeorunBase (shared CCL-stack database, no Mium-side replication needed).</li>
+<li><strong>PromptStore</strong>: Per-user saved-prompt library. Same pluggable-backend pattern as MemoryStore (RocksDB or NeorunBase).</li>
+<li><strong>EmbeddingStore</strong>: Vector store for embedding-based retrieval. Backends: in-memory cosine (default) and NeorunBase <code>VECTOR(N)</code>.</li>
 <li><strong>KMS (MiumKmsProvider)</strong>: Built-in envelope encryption service with versioned Key Encryption Keys (KEKs). PBKDF2-SHA256 master key derivation with 200K iterations.</li>
-<li><strong>Cluster State Management</strong>: The leader Master maintains all cluster state — IAM policies, KMS keys, connections, and chat memory — in RocksDB, and synchronizes to follower Masters via the internal NIO protocol.</li>
-<li><strong>Admin Endpoints</strong>: Auth (login/logout/token refresh/password change), IAM CRUD, connection management, KMS key management, chat session management, and monitoring (node topology, metrics aggregation, log tailing).</li>
+<li><strong>AgentLoop</strong>: Multi-action dispatch over a strict-JSON protocol. Actions: <code>query</code>, <code>submit_batch</code>, <code>submit_streaming</code>, <code>job_status</code>, <code>job_logs</code>, <code>kill_job</code>, <code>list_jobs</code>, <code>list_history</code>, <code>generate_code</code>.</li>
+<li><strong>TempFileStore</strong>: Pluggable storage SPI for encrypted server-side export ciphertext. Backends: local filesystem and generic S3 (AWS SDK v2 — ShannonStore, MinIO, AWS S3).</li>
+<li><strong>Admin Endpoints</strong>: Auth (login/refresh/password change/whoami), IAM CRUD, connection management, KMS key management, chat session management, server-side export, temp-file settings, monitoring (node topology, metrics aggregation, log tailing).</li>
 </ul>
 <h3 id="worker">Worker</h3>
 <p>The Worker is the execution node that handles LLM calls and tool execution.</p>
@@ -1003,19 +1039,7 @@
 <li><strong>Service Registration</strong>: Registers as an ephemeral ZooKeeper node — automatic detection of joins and failures.</li>
 </ul>
 <h3 id="communication-architecture">Communication Architecture</h3>
-<p>Mium uses a custom NIO-based binary protocol for all internal communication between nodes:</p>
-<ul>
-<li><strong>Wire Format</strong>: <code>[4B length][4B correlationId][2B opCode][1B flags][payload]</code></li>
-<li><strong>OpCode Ranges</strong>:<ul>
-<li><code>0x0001–0x000F</code>: Cluster control (health, heartbeat, readiness)</li>
-<li><code>0x0010–0x001F</code>: State synchronization (IAM_SYNC, KMS_SYNC, CONNECTION_SYNC, MEMORY_SYNC)</li>
-<li><code>0x0020–0x002F</code>: Agent and tool execution (EXECUTE_TOOL, EXECUTE_AGENT)</li>
-<li><code>0x0030–0x003F</code>: Memory and prompt management</li>
-<li><code>0x0040–0x004F</code>: Observability (metrics, log tailing)</li>
-</ul>
-</li>
-<li><strong>Implementation</strong>: Pure <code>java.nio</code> Selector-based server and client — no Netty in this layer.</li>
-</ul>
+<p>Mium uses a custom NIO-based binary protocol for all internal communication between nodes. The wire format carries a length prefix, a correlation id, a 2-byte opcode, and a flags byte before the payload. Opcodes cover cluster control, state synchronization between the leader and followers, agent/tool execution dispatch, and observability. The control plane is pure <code>java.nio</code> (Selector-based) — no Netty in this layer.</p>
 <h3 id="cluster-coordination">Cluster Coordination</h3>
 <p>Mium uses Apache ZooKeeper (via Curator) for:</p>
 <ul>
@@ -1028,8 +1052,9 @@
 <p>Mium decouples from any single LLM vendor through a pluggable <code>LlmBackend</code> interface:</p>
 <ul>
 <li><strong>LlmBackendFactory</strong>: Builds backends from stored connections, so each user can connect their own LLM provider.</li>
-<li><strong>Strict JSON Protocol</strong>: All LLM interactions use structured JSON replies — no vendor-specific tool APIs. This ensures portability across different LLM providers.</li>
-<li><strong>Request/Reply Types</strong>: <code>LlmRequest</code>, <code>LlmReply</code>, <code>LlmMessage</code> — a clean, provider-agnostic wire format.</li>
+<li><strong>Strict JSON Protocol</strong>: All LLM interactions use structured JSON replies — no vendor-specific tool APIs. This ensures portability across providers.</li>
+<li><strong>Request/Reply Types</strong>: <code>LlmRequest</code>, <code>LlmReply</code>, <code>LlmMessage</code> — a provider-agnostic wire format.</li>
+<li><strong>Shipped backends</strong>: <code>AnthropicLlmBackend</code> (Anthropic Claude) and <code>OllamaLlmBackend</code> (local / self-hosted Ollama). Embedding backends: <code>OllamaEmbeddingBackend</code>.</li>
 </ul>
 <h3 id="ontul-tool-integration">Ontul Tool Integration</h3>
 <p>Mium's primary tool is <strong>Ontul SQL</strong> — enabling LLM-driven data analysis against Ontul:</p>
@@ -1038,38 +1063,62 @@
 <li><strong>Natural Language to SQL</strong>: Users ask analytical questions in natural language. The agent translates these into optimized SQL queries against Ontul — aggregations, joins, filtering, grouping, trend analysis, and more.</li>
 <li><strong>Per-User Credentials</strong>: The Ontul tool uses credentials from the user's ConnectionStore entry. Mium does NOT federate IAM with Ontul — there is no principal pass-through complexity. Ontul's own access control decides what data the user can access.</li>
 </ul>
-<h3 id="data-stores-all-rocksdb">Data Stores (All RocksDB)</h3>
+<h3 id="data-stores">Data Stores</h3>
 <table>
 <thead>
 <tr>
 <th>Store</th>
-<th>Config Key</th>
+<th>Default Backend</th>
+<th>Config</th>
 <th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>IAM Store</td>
+<td>RocksDB</td>
 <td><code>mium.iam.rocksdb.path</code></td>
-<td>Users, groups, policies, organizations, temporary credentials</td>
+<td>Users, groups, policies, companies, organizations</td>
 </tr>
 <tr>
 <td>KMS Store</td>
+<td>RocksDB</td>
 <td><code>mium.kms.rocksdb.path</code></td>
 <td>Master key bundle with versioned data encryption keys</td>
 </tr>
 <tr>
 <td>Connection Store</td>
+<td>RocksDB</td>
 <td><code>mium.connection.rocksdb.path</code></td>
-<td>Per-user Ontul and LLM credentials (KMS-encrypted at rest)</td>
+<td>Per-user tool/LLM credentials (KMS-encrypted at rest)</td>
 </tr>
 <tr>
 <td>Memory Store</td>
-<td><code>mium.memory.rocksdb.path</code></td>
+<td>RocksDB</td>
+<td><code>mium.memory.backend</code> = <code>rocksdb</code> | <code>neorunbase</code></td>
 <td>Per-user chat sessions and messages</td>
+</tr>
+<tr>
+<td>Prompt Store</td>
+<td>RocksDB</td>
+<td><code>mium.prompt.backend</code> = <code>rocksdb</code> | <code>neorunbase</code></td>
+<td>Per-user saved prompt library</td>
+</tr>
+<tr>
+<td>Embedding Store</td>
+<td>In-memory</td>
+<td><code>mium.embedding.store</code> = <code>inmemory</code> | <code>neorunbase</code></td>
+<td>Vector store for embedding-based retrieval</td>
+</tr>
+<tr>
+<td>Temp File Store</td>
+<td>Local FS</td>
+<td><code>mium.tempfile.backend</code> = <code>local</code> | <code>s3</code></td>
+<td>Encrypted ciphertext of server-rendered exports</td>
 </tr>
 </tbody>
 </table>
+<p>IAM / KMS / Connection always live on RocksDB (they bootstrap the cluster itself). Memory / Prompt / Embedding can optionally be delegated to <strong>NeorunBase</strong>, the shared CCL-stack database, when Mium is deployed alongside the rest of the CCL stack. The Temp File Store can point at any S3-compatible object store (ShannonStore by default) so rendered exports don't pin the master node.</p>
 <h3 id="client-interfaces">Client Interfaces</h3>
 <table>
 <thead>

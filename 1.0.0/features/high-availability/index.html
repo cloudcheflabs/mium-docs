@@ -232,26 +232,6 @@
   
   
   
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../intro/intro/" class="md-tabs__link">
-          
-  
-  
-  Getting Started
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
     
   
   
@@ -395,93 +375,6 @@
       
   
   
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Getting Started
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../intro/intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -503,10 +396,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -524,8 +417,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -626,6 +519,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../job-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../connection-management/" class="md-nav__link">
         
   
@@ -662,6 +583,118 @@
     
   
     Chat & Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prompt-library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompt Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-backends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Backends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../temp-file-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temp File Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-side-export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server-Side Export
   
 
     
@@ -842,10 +875,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#state-synchronization-opcodes" class="md-nav__link">
+  <a href="#snapshot-replication" class="md-nav__link">
     <span class="md-ellipsis">
       
-        State Synchronization OpCodes
+        Snapshot Replication
       
     </span>
   </a>
@@ -943,40 +976,9 @@
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    &lt;nodeId-4&gt;  (ephemeral)
 </code></pre></div>
 <h2 id="state-stores">State Stores</h2>
-<p>All cluster state is stored in embedded RocksDB — no external database is needed:</p>
-<ul>
-<li>IAM users, groups, policies, and organizations</li>
-<li>KMS encrypted keystore with versioned KEKs</li>
-<li>Per-user connection credentials (encrypted)</li>
-<li>Per-user chat sessions and messages</li>
-</ul>
-<h2 id="state-synchronization-opcodes">State Synchronization OpCodes</h2>
-<table>
-<thead>
-<tr>
-<th>OpCode</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>IAM_SYNC</td>
-<td>User, group, policy, organization data</td>
-</tr>
-<tr>
-<td>KMS_SYNC</td>
-<td>Encryption key bundle</td>
-</tr>
-<tr>
-<td>CONNECTION_SYNC</td>
-<td>Per-user tool credentials</td>
-</tr>
-<tr>
-<td>MEMORY_SYNC</td>
-<td>Chat sessions and messages</td>
-</tr>
-</tbody>
-</table>
+<p>Core cluster state (IAM, KMS, ConnectionStore) is stored in embedded RocksDB on every Master — no external database needed for the platform to start. Memory, prompt, and embedding stores additionally support NeorunBase as the shared CCL-stack database when Mium is deployed alongside it. See <a href="../storage-backends/">Storage Backends</a> for the full matrix.</p>
+<h2 id="snapshot-replication">Snapshot Replication</h2>
+<p>The leader publishes a version-bumped snapshot to followers on every successful write. Followers pull the full snapshot when they see a version they haven't caught up to, and self-heal by periodically re-pulling. The write-only-on-leader invariant means mutating requests that land on a follower are transparently proxied to the leader via <code>LeaderRouter</code>.</p>
 
 
 
