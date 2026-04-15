@@ -1,48 +1,49 @@
 # Tool Integration
 
-Mium treats every external system as a **Tool** — a pluggable component that the LLM can invoke during a conversation. The Tool SPI provides a clean abstraction for exposing any system with an API to the AI agent.
+Mium treats every external system as a **Tool** — a pluggable component that the LLM can invoke during a conversation. The `Tool` SPI provides a clean abstraction for exposing any system with an API to the AI agent.
 
 ## Tool SPI
 
 The `Tool` interface defines how external systems are exposed to the LLM:
 
-- **Metadata**: Tool name, description, and capabilities
-- **SQL Reference**: A structured description injected into the LLM system prompt so the model understands what the tool can do and how to invoke it
-- **Execution**: The actual logic for calling the external system with user-provided credentials
+- **Metadata** — tool name and capabilities surfaced to the agent loop.
+- **`sqlReference()`** — a structured description of the tool's SQL dialect, available catalogs, and conventions, injected into the LLM system prompt so the model can produce valid invocations without trial and error.
+- **Execution** — the actual call into the external system, using credentials decrypted from the user's ConnectionStore entry.
 
-## Built-in Tools
+## Built-in Tool
 
-### Ontul SQL
+### Ontul
 
-Query the Ontul distributed data engine via SQL. The LLM can:
+Mium ships with one built-in tool: **Ontul**, the Cloud Chef Labs SQL engine. The agent connects via Arrow Flight SQL using the user's access-key credentials and supports:
 
-- Execute SQL queries against any registered Ontul catalog
-- Browse schemas, tables, and columns
-- Run analytical queries and return results in the chat
+- SQL queries against any registered Ontul catalog
+- Schema browsing (`SHOW CATALOGS`, `SHOW SCHEMAS`, `SHOW TABLES`, `DESCRIBE`)
+- Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see [Job Lifecycle](job-lifecycle.md))
+- Server-side code generation (Java BATCH / STREAMING / CLASS, Python) producing source the user can copy or submit
 
-## How Tools Work
+## How a Tool Call Flows
 
-1. When a chat session starts, Mium assembles the system prompt by collecting `sqlReference()` from all tools the user has configured connections for
-2. The LLM sees the tool descriptions and knows what external capabilities are available
-3. When the user asks a question that requires data from an external system, the LLM generates a tool invocation in its JSON response
-4. The agent loop dispatches the tool call to a Worker, which retrieves the user's credentials from the ConnectionStore and executes the operation
-5. Results are returned to the LLM for interpretation and response generation
+1. When a chat session starts, the agent loop assembles the system prompt by collecting `sqlReference()` from the tools available to the user.
+2. The LLM sees the tool descriptions and emits a strict-JSON action that names the SQL or job operation it wants to run.
+3. The agent loop dispatches the call. For `query` actions, it executes against the connected Ontul cluster directly; for job actions it calls the matching Ontul Admin REST endpoint.
+4. The agent loop can offload entire LLM iterations to a Worker via `EXECUTE_AGENT` for parallelism, or dispatch only the tool call via `EXECUTE_TOOL`. Worker execution falls back to the master if no Worker is ready.
+5. Results are returned to the LLM for interpretation and a user-facing response.
 
 ## Per-User Credential Isolation
 
-Tools use credentials from the user's ConnectionStore entry. This means:
+Tools use credentials from the calling user's ConnectionStore entry, which means:
 
-- Each user configures their own access to external systems
-- Credentials are encrypted at rest via KMS
-- The tool's own access control decides what data the user can access
-- Mium does NOT federate IAM with external systems — no principal pass-through complexity
+- Each user configures their own access to external systems.
+- Credentials are envelope-encrypted at rest via KMS; raw values never appear in logs.
+- The tool's own access control decides what data the user can touch — Mium does NOT federate IAM with external systems.
 
 ## Adding New Tools
 
 New tools are implemented by:
 
-1. Implementing the `Tool` interface
-2. Providing a `sqlReference()` that describes the tool's capabilities for the LLM
-3. Registering the tool in the tool registry
+1. Implementing the `Tool` interface.
+2. Providing `sqlReference()` (or equivalent capability description) for the LLM system prompt.
+3. Registering the tool so the agent loop can find it.
+4. Defining a `tool=...` value in the ConnectionStore so users can register credentials.
 
-The tool system is designed to be extensible — any system with an API can become a Mium tool.
+The tool system is designed to be extensible — additional CCL stack tools and external systems can plug in without touching the agent loop.

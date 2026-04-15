@@ -1,67 +1,55 @@
 # Admin UI
 
-Mium includes a built-in React web application for chatting with LLMs, managing settings, and administering the cluster.
+Mium ships a built-in React web application for chatting with LLMs, managing per-user settings, and administering the cluster. The UI is served by the master at `/admin/`.
 
 ## Technology Stack
 
 - React 18 with TypeScript
 - Vite build system
-- Tailwind CSS for styling
+- Tailwind CSS
 - Recharts for metrics visualization
-- React Router DOM for navigation
+- React Router DOM
 
 ## Pages
 
-### Chat (Default Home)
+### Chat (default home)
 
 The primary interface for interacting with LLMs:
 
-- Conversational chat with tool-calling capabilities
-- Create and manage multiple chat sessions
-- Resume previous conversations with full context
-- Export conversations to PDF, PPTX, or XLSX
+- Conversational chat with tool-calling, chart rendering, and result-payload export buttons (CSV / Markdown / XLSX / PDF / PPTX rendered client-side).
+- Create, rename, and delete chat sessions; resume any past conversation with full context.
 
-Routes: `/`, `/c/:sessionId`
+Routes: `/`, `/c/:sessionId`. The Settings entry point lives in the user footer at the bottom-left of the chat sidebar.
 
-### Settings
+### Settings — Your Account
 
-User-level configuration pages:
+- **Profile** — display name, contact, locale.
+- **LLM Backends** — register Anthropic Claude or Ollama connections.
+- **Tool Connections** — register Ontul (Arrow Flight access keys) and S3-compatible (ShannonStore / MinIO / AWS S3) connections.
+- **Password** — change your password.
 
-- **Profile** (`/settings/profile`): User profile management
-- **LLM** (`/settings/llm`): Configure LLM provider connection (API key, model selection)
-- **Connections** (`/settings/connections`): Manage tool connections (Ontul, Snowflake, GitHub, Slack)
-- **Password** (`/settings/password`): Change password
+### Settings — Administration (admin-only)
 
-### Admin Pages (Admin-Only)
-
-Administrative pages visible only to admin users:
-
-- **Dashboard** (`/settings/admin/dashboard`): Cluster metrics and health — query throughput, latency, JVM heap usage, and worker status visualized with Recharts
-- **Topology** (`/settings/admin/topology`): Node registry and cluster topology — active Masters and Workers with node status
-- **IAM** (`/settings/admin/iam`): User, group, policy, and organization management with a visual policy editor
-- **KMS** (`/settings/admin/kms`): Key management interface for viewing and managing encryption keys
+- **Dashboard** — cluster metrics and health (CPU, heap, thread count per node) plus worker status, charted with Recharts.
+- **Topology** — live registry of active Masters and Workers with health flags.
+- **IAM** — users, groups, policies, companies, organizations; visual policy editor; access-key issuance.
+- **Security & KMS** — list and rotate envelope-encryption keys.
+- **Temp File Storage** — switch the server-side export ciphertext backend between local filesystem and S3-compatible object storage; "Test connection" probe.
 
 ## REST API
 
-All operations available in the Admin UI are also accessible via the REST API on the Admin HTTP server (default port 8090):
+Every operation in the UI is also reachable on the Admin HTTP server (default port 8090). Endpoints are mounted under `/admin/api/*`:
 
-- **Auth**: `/admin/auth/login`, `/admin/auth/logout`, `/admin/auth/refresh`, `/admin/auth/password`
-- **IAM**: `/admin/iam/users`, `/admin/iam/groups`, `/admin/iam/policies`, `/admin/iam/organizations`
-- **Connections**: `/admin/connections`
-- **KMS**: `/admin/kms`
-- **Chat**: `/admin/chat/sessions`, `/admin/chat/messages`
-- **Monitoring**: `/admin/monitoring/topology`, `/admin/monitoring/metrics`, `/admin/monitoring/logs`
+- **Auth** — `/admin/auth/login`, `/admin/auth/refresh`, `/admin/auth/change-password`, `/admin/auth/whoami`
+- **IAM** — `/admin/api/iam/users`, `/admin/api/iam/groups`, `/admin/api/iam/policies`, `/admin/api/iam/companies`, `/admin/api/iam/orgs`, `/admin/api/iam/keys`
+- **STS** — `/admin/api/sts/sessions`, `/admin/api/sts/assume-role`
+- **Connections** — `/admin/api/connections`
+- **KMS** — `/admin/api/kms/list`, `/admin/api/kms/status/{keyId}`, `/admin/api/kms/rotate/{keyId}`
+- **Chat** — `/admin/api/chat`, `/admin/api/chat/sessions`
+- **Server-side Export** — `/admin/api/export`
+- **Temp File Settings** — `/admin/api/settings/tempfile`
+- **Monitoring** — `/admin/api/nodes/masters`, `/admin/api/nodes/workers`, `/admin/api/monitoring/metrics`, `/admin/api/logs/tail`
 
-## Metrics
+## Metrics & Observability
 
-Mium collects JVM and cluster metrics from all nodes:
-
-- CPU usage, heap usage, thread count (per node)
-- Node health and availability
-- Cluster-wide aggregated metrics on the Dashboard
-
-Metrics are collected from Workers via the NIO protocol (METRICS_REQ opcode) and visualized in the Dashboard.
-
-## Real-Time Log Streaming
-
-The Admin UI supports real-time log tailing from any node in the cluster, providing observability into Master and Worker operations without SSH access.
+Mium collects per-node JVM metrics (CPU, heap, threads) and aggregates them centrally for the Dashboard. Workers report metrics to the Master via the internal NIO protocol. Logs from any node are tailable in real time, no SSH required.

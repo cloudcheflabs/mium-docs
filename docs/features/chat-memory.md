@@ -4,45 +4,47 @@ Mium provides a persistent chat system where users interact with LLMs through a 
 
 ## Chat Interface
 
-The Admin UI provides a full-featured chat interface at the root path (`/` and `/c/:sessionId`):
+The Admin UI provides a full-featured chat interface at the root path:
 
 - Create new chat sessions
 - Continue previous conversations with full context
-- View and manage chat history
-- Export conversations to PDF, PPTX, or XLSX
+- Delete and rename sessions
+- Client-side export of the result payload to CSV, Markdown, XLSX, PDF, or PPTX
 
 ## Chat Sessions
 
 Each chat session maintains:
 
-- **Message History**: All user and assistant messages in the conversation
-- **Tool Invocations**: Records of tool calls and their results
-- **Context**: The accumulated context that the LLM uses to generate responses
+- **Message history** — user and assistant turns in order.
+- **Tool invocations** — records of tool calls and their results, surfaced as intermediate assistant messages so users can see the full reasoning chain, not just the final answer.
+- **Rolling context** — Mium trims the LLM context window with a configurable cap; long sessions can also be compacted by the `MemoryCompactor` which summarises older turns into a single synthetic message.
 
 Sessions are identified by unique IDs and can be resumed at any time.
 
 ## MemoryStore
 
-The MemoryStore is a RocksDB-backed per-user persistent store for chat sessions and messages:
+The MemoryStore has a pluggable backend chosen at startup by `mium.memory.backend`:
 
-- **Leader-owned**: The leader Master owns the MemoryStore and handles all writes
-- **Synchronized**: Chat data is replicated to follower Masters via the NIO protocol (MEMORY_SYNC opcode)
-- **Per-user isolation**: Each user's chat history is stored separately
+- **`rocksdb`** (default) — leader-owned, envelope-encrypted snapshot persisted locally. Followers receive the snapshot via internal NIO replication.
+- **`neorunbase`** — chat sessions and messages live in the shared CCL-stack NeorunBase database (`mium_chat_session` and `mium_chat_message` tables). Every Mium node reads and writes live; there is no Mium-side replication because NeorunBase handles durability natively.
+
+Both backends expose the same API to the rest of Mium; switch by editing `mium.memory.backend`. See [Storage Backends](storage-backends.md) for the full comparison.
 
 ## Chat API
 
-The Chat endpoints on the Admin HTTP server provide:
+The Chat endpoints on the Admin HTTP server (mounted under `/admin/api/chat`) provide:
 
-- Create a new session
-- Send a message and receive a response (with optional tool invocations)
+- Send a message and receive a reply (with optional tool invocations)
 - List sessions for the current user
-- Get session history
-- Delete sessions
+- Get a session's full message history
+- Rename or delete sessions
 
-## Export
+Writes are leader-only; followers transparently proxy via `LeaderRouter`.
 
-Conversations can be exported in multiple formats:
+## Retention and Compaction
 
-- **PDF**: Full conversation with formatting
-- **PPTX**: Presentation format for sharing insights
-- **XLSX**: Spreadsheet format for data-heavy conversations
+Long-running chats are kept manageable by two mechanisms:
+
+- **TTL sweep** — sessions older than a configured TTL are dropped.
+- **Per-user session cap** — each user's oldest sessions are evicted beyond a configured count.
+- **LLM-driven compaction** — `MemoryCompactor` replaces the oldest block of turns with a one-shot LLM summary once a session crosses a compaction threshold, preserving the most recent turns verbatim.
