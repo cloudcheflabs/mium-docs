@@ -38,8 +38,18 @@ ZooKeeper node layout:
 
 ## State Stores
 
-Core cluster state (IAM, KMS, ConnectionStore) is stored in embedded RocksDB on every Master — no external database needed for the platform to start. Memory, prompt, and embedding stores additionally support NeorunBase as the shared CCL-stack database when Mium is deployed alongside it. See [Storage Backends](storage-backends.md) for the full matrix.
+IAM, KMS, and ConnectionStore are stored in embedded RocksDB on every Master — these bootstrap the cluster and cannot depend on an external database. Memory, Prompt, and Embedding stores live in NeorunBase; TempFile stores live in S3-compatible storage. See [Storage Backends](storage-backends.md).
 
 ## Snapshot Replication
 
-The leader publishes a version-bumped snapshot to followers on every successful write. Followers pull the full snapshot when they see a version they haven't caught up to, and self-heal by periodically re-pulling. The write-only-on-leader invariant means mutating requests that land on a follower are transparently proxied to the leader via `LeaderRouter`.
+Only IAM, KMS, and ConnectionStore are replicated between Mium nodes. The leader pushes snapshots to followers on every successful write. Followers self-heal by periodically re-pulling. Memory, Prompt, and Embedding data live in NeorunBase and do not require Mium-side replication.
+
+## Cluster Readiness
+
+The leader does not accept user requests until every registered node is ready:
+
+1. Leader seeds KMS keys and sets `leader-ready` in ZK.
+2. Non-leader Masters and Workers watch for `leader-ready`, then pull KMS + IAM + ConnectionStore from the leader.
+3. Each node marks itself `ready=true` in ZK after all three stores are synced.
+4. The leader polls ZK every 2 seconds. Only when all non-leader Masters and all Workers are `ready=true` does the leader start accepting requests.
+5. If any node becomes unready (e.g. a Worker disconnects), the leader stops accepting requests until the cluster is whole again.

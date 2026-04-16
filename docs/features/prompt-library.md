@@ -13,14 +13,9 @@ A saved prompt has:
 
 Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate `MIUM:READ_PROMPT` / `MIUM:WRITE_PROMPT` policy.
 
-## Backends
+## Storage
 
-`PromptStore` is pluggable, chosen at startup by `mium.prompt.backend`:
-
-- **`rocksdb`** (default) — leader-owned, envelope-encrypted snapshot persisted locally; replicated to followers via internal NIO sync.
-- **`neorunbase`** — prompts live in the shared CCL-stack NeorunBase database (`mium_prompt` table). Every Mium node reads and writes live; NeorunBase handles durability.
-
-Both backends expose the same API; switch by editing `mium.prompt.backend`. See [Storage Backends](storage-backends.md).
+PromptStore persists prompts in **NeorunBase** (`mium_prompt` table). Every Mium node reads and writes directly — no Mium-side replication needed. See [Storage Backends](storage-backends.md).
 
 ## Limits
 

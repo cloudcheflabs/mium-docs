@@ -1,6 +1,6 @@
 # Tool Integration
 
-Mium treats every external system as a **Tool** — a pluggable component that the LLM can invoke during a conversation. The `Tool` SPI provides a clean abstraction for exposing any system with an API to the AI agent.
+Mium's primary and foundational tool is **Ontul** — the CCL stack's distributed data engine. The `Tool` SPI provides a clean abstraction, but today Ontul is the only shipped tool and the reason Mium exists. Without an Ontul connection, the agent has nothing to query.
 
 ## Tool SPI
 

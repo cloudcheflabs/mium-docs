@@ -1,10 +1,10 @@
 # Multi-Agent AI Platform
 
-Mium is an on-prem-first multi-agent AI platform that lets users chat with LLMs which can call external tools via per-user stored connections. Instead of building bespoke integrations for each AI workflow, Mium provides a unified platform where any external system becomes a tool the LLM can invoke.
+Mium is the AI agent platform for Ontul — an on-prem-first multi-agent system that lets users interact with Ontul through natural language. Without Ontul, Mium has nothing to query, no jobs to submit, and no code to generate. Every capability is built around Ontul as the data engine.
 
 ## Why Mium
 
-Organisations adopting LLMs face a recurring challenge: connecting AI to internal systems securely without exposing credentials, without cloud dependencies, and without writing glue code per integration. Mium addresses this with:
+Organisations running Ontul need a way to let non-SQL users query and operate on their data through natural language, without exposing credentials and without cloud dependencies. Mium addresses this with:
 
 - A **credential vault** (ConnectionStore) where each user keeps their own tool credentials, encrypted at rest.
 - A **Tool SPI** that exposes any system with an API to the LLM.
@@ -48,9 +48,10 @@ Each user manages their own connections to external systems. Credentials are sto
 
 ## Deployment Model
 
-Mium is designed for sovereign deployments:
+Mium is the AI agent for Ontul, deployed as part of the CCL stack:
 
-- IAM, KMS, and the ConnectionStore always live in embedded RocksDB on each Master — no external database is required to start the cluster.
-- Memory, Prompt, and Embedding stores can be delegated to NeorunBase (the shared CCL-stack database) so multi-master deployments share one authoritative source.
-- ZooKeeper is the only mandatory external dependency, used purely for leader election and service discovery.
+- IAM, KMS, and ConnectionStore live in embedded RocksDB on each Master (bootstrap deps).
+- Memory, Prompt, and Embedding stores live in **NeorunBase** (shared CCL-stack database).
+- Server-rendered export files live in any **S3-compatible** object store (ShannonStore, MinIO, AWS S3, etc.).
+- ZooKeeper handles leader election and service discovery.
 - Users bring their own LLM API keys via the ConnectionStore. No data leaves your network unless you point the LLM connection at a hosted provider.
