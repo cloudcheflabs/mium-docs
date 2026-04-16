@@ -965,12 +965,7 @@
 </ul>
 <p>Sessions are identified by unique IDs and can be resumed at any time.</p>
 <h2 id="memorystore">MemoryStore</h2>
-<p>The MemoryStore has a pluggable backend chosen at startup by <code>mium.memory.backend</code>:</p>
-<ul>
-<li><strong><code>rocksdb</code></strong> (default) — leader-owned, envelope-encrypted snapshot persisted locally. Followers receive the snapshot via internal NIO replication.</li>
-<li><strong><code>neorunbase</code></strong> — chat sessions and messages live in the shared CCL-stack NeorunBase database (<code>mium_chat_session</code> and <code>mium_chat_message</code> tables). Every Mium node reads and writes live; there is no Mium-side replication because NeorunBase handles durability natively.</li>
-</ul>
-<p>Both backends expose the same API to the rest of Mium; switch by editing <code>mium.memory.backend</code>. See <a href="../storage-backends/">Storage Backends</a> for the full comparison.</p>
+<p>The MemoryStore persists chat data in <strong>NeorunBase</strong> (<code>mium_chat_session</code> and <code>mium_chat_message</code> tables). Every Mium node reads and writes directly — no Mium-side replication needed because NeorunBase handles durability natively. See <a href="../storage-backends/">Storage Backends</a> for the full store layout.</p>
 <h2 id="chat-api">Chat API</h2>
 <p>The Chat endpoints on the Admin HTTP server (mounted under <code>/admin/api/chat</code>) provide:</p>
 <ul>

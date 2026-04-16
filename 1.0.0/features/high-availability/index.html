@@ -885,6 +885,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#cluster-readiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cluster Readiness
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -976,9 +987,18 @@
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    &lt;nodeId-4&gt;  (ephemeral)
 </code></pre></div>
 <h2 id="state-stores">State Stores</h2>
-<p>Core cluster state (IAM, KMS, ConnectionStore) is stored in embedded RocksDB on every Master — no external database needed for the platform to start. Memory, prompt, and embedding stores additionally support NeorunBase as the shared CCL-stack database when Mium is deployed alongside it. See <a href="../storage-backends/">Storage Backends</a> for the full matrix.</p>
+<p>IAM, KMS, and ConnectionStore are stored in embedded RocksDB on every Master — these bootstrap the cluster and cannot depend on an external database. Memory, Prompt, and Embedding stores live in NeorunBase; TempFile stores live in S3-compatible storage. See <a href="../storage-backends/">Storage Backends</a>.</p>
 <h2 id="snapshot-replication">Snapshot Replication</h2>
-<p>The leader publishes a version-bumped snapshot to followers on every successful write. Followers pull the full snapshot when they see a version they haven't caught up to, and self-heal by periodically re-pulling. The write-only-on-leader invariant means mutating requests that land on a follower are transparently proxied to the leader via <code>LeaderRouter</code>.</p>
+<p>Only IAM, KMS, and ConnectionStore are replicated between Mium nodes. The leader pushes snapshots to followers on every successful write. Followers self-heal by periodically re-pulling. Memory, Prompt, and Embedding data live in NeorunBase and do not require Mium-side replication.</p>
+<h2 id="cluster-readiness">Cluster Readiness</h2>
+<p>The leader does not accept user requests until every registered node is ready:</p>
+<ol>
+<li>Leader seeds KMS keys and sets <code>leader-ready</code> in ZK.</li>
+<li>Non-leader Masters and Workers watch for <code>leader-ready</code>, then pull KMS + IAM + ConnectionStore from the leader.</li>
+<li>Each node marks itself <code>ready=true</code> in ZK after all three stores are synced.</li>
+<li>The leader polls ZK every 2 seconds. Only when all non-leader Masters and all Workers are <code>ready=true</code> does the leader start accepting requests.</li>
+<li>If any node becomes unready (e.g. a Worker disconnects), the leader stops accepting requests until the cluster is whole again.</li>
+</ol>
 
 
 

@@ -747,10 +747,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#why-server-side" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why Server-Side
+        How It Works
       
     </span>
   </a>
@@ -769,10 +769,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pipeline" class="md-nav__link">
+  <a href="#supported-formats" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pipeline
+        Supported Formats
       
     </span>
   </a>
@@ -780,10 +780,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#encryption-properties" class="md-nav__link">
+  <a href="#encryption" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Encryption Properties
+        Encryption
       
     </span>
   </a>
@@ -791,32 +791,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#failure-modes" class="md-nav__link">
+  <a href="#python-bundle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Failure Modes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bundled-python" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Bundled Python
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Format Notes
+        Python Bundle
       
     </span>
   </a>
@@ -969,73 +947,61 @@
 
 
 <h1 id="server-side-export">Server-Side Export</h1>
-<p>Mium can render chat result tables into XLSX, PDF, or PPTX server-side using bundled Python scripts (<code>openpyxl</code>, <code>reportlab</code>, <code>python-pptx</code>). The output is envelope-encrypted before it touches durable storage and decrypted only on the way out to the client.</p>
-<h2 id="why-server-side">Why Server-Side</h2>
-<p>The chat UI also has client-side exporters that run inside the browser via <code>xlsx.js</code>, <code>jsPDF</code>, and <code>pptxgenjs</code> — fine for small results. The server-side path is the right tool when:</p>
-<ul>
-<li>The result set is large and you don't want to push it through the browser's JS heap.</li>
-<li>You want a consistent rendering across browsers (Python libraries are deterministic).</li>
-<li>You want the encrypted-at-rest audit trail provided by the <a href="../temp-file-storage/">Temp File Storage</a> layer.</li>
-</ul>
+<p>Mium renders chat result tables into XLSX, PDF, or PPTX on <strong>Workers</strong> using bundled Python scripts (<code>openpyxl</code>, <code>reportlab</code>, <code>python-pptx</code>). The output is envelope-encrypted and uploaded to S3-compatible storage. The Master serves the download to the user via a one-time link.</p>
+<h2 id="how-it-works">How It Works</h2>
+<ol>
+<li>User says "Excel 로 만들어줘" in chat.</li>
+<li>The LLM responds with <code>exportFormat: "xlsx"</code> alongside the query result.</li>
+<li><code>ChatEndpoints</code> detects the export format and dispatches <code>EXECUTE_EXPORT</code> to a ready Worker via internal NIO.</li>
+<li>The Worker runs <code>python3 export_xlsx.py</code>, envelope-encrypts the output under <code>mium-tempfile</code>, and PUTs the ciphertext to the configured S3 bucket.</li>
+<li>The Worker returns the S3 handle to the Master.</li>
+<li>The chat response includes a <code>downloadUrl</code>. The UI shows a <strong>"Download file"</strong> button (not an auto-download).</li>
+<li>When the user clicks, the UI fetches the download endpoint with the JWT token. The Master reads from S3, decrypts, streams to the browser, and deletes the S3 object.</li>
+</ol>
+<p>No Worker available → <code>503 Service Unavailable</code>. The Master never runs Python locally.</p>
 <h2 id="the-endpoint">The Endpoint</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>POST /admin/api/export
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>{
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  &quot;format&quot;:  &quot;xlsx&quot; | &quot;pdf&quot; | &quot;pptx&quot;,
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  &quot;title&quot;:   &quot;Quarterly revenue&quot;,
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  &quot;sql&quot;:     &quot;SELECT …&quot;,
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  &quot;columns&quot;: [{&quot;name&quot;:&quot;country&quot;,&quot;type&quot;:&quot;VARCHAR&quot;}, …],
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  &quot;rows&quot;:    [[&quot;KR&quot;, 12345], [&quot;US&quot;, 67890], …]
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>}
 </code></pre></div>
-<p>The response is a streaming download with <code>Content-Type</code> and <code>Content-Disposition</code> set for the chosen format.</p>
-<h2 id="pipeline">Pipeline</h2>
-<ol>
-<li>Serialize the request to JSON.</li>
-<li>Spawn <code>python3 &lt;script&gt; --output &lt;plaintextPath&gt;</code>, piping the JSON via stdin. Scripts live under <code>${MIUM_HOME}/python/</code>.</li>
-<li>When the subprocess exits 0, hand the plaintext path to the active TempFileStore — it envelope-encrypts under <code>mium-tempfile</code>, persists the ciphertext to the configured backend (local FS or S3-compatible), and deletes the plaintext.</li>
-<li>The endpoint streams the decrypted bytes to the HTTP response and tells the TempFileStore to delete the ciphertext after the response is written. Successful exports leave nothing behind.</li>
-</ol>
-<h2 id="encryption-properties">Encryption Properties</h2>
-<ul>
-<li>Plaintext on disk only exists between the subprocess writing and the encrypt step that follows it (single function call, ~tens of ms).</li>
-<li>The ciphertext blob has no XLSX / PDF / PPTX magic — <code>file(1)</code> reports it as opaque <code>data</code>. The bytes are AES-256-GCM with a per-file DEK, the DEK wrapped under the KMS <code>mium-tempfile</code> KEK.</li>
-<li>Decryption happens only in-process at download time; the response body never re-lands on disk.</li>
-</ul>
-<h2 id="failure-modes">Failure Modes</h2>
+<p>Accepts <code>{format, title, sql, columns, rows}</code> and returns the file directly (streaming download). Used for direct API calls outside the chat flow.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>GET /admin/api/export/download?handle=...&amp;name=...&amp;ct=...
+</code></pre></div>
+<p>Serves a file previously rendered via <code>EXECUTE_EXPORT</code>. The handle is an opaque S3 object key. The file is deleted after download.</p>
+<h2 id="supported-formats">Supported Formats</h2>
 <table>
 <thead>
 <tr>
-<th>Cause</th>
-<th>Behaviour</th>
+<th>Format</th>
+<th>Python Library</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Python missing or import error (e.g. <code>openpyxl</code> not bundled)</td>
-<td>Endpoint returns <code>500</code> with the Python stderr trimmed; nothing is persisted.</td>
+<td>XLSX</td>
+<td>openpyxl</td>
+<td>Workbook with optional SQL hint row</td>
 </tr>
 <tr>
-<td>Subprocess exits non-zero</td>
-<td>Same — partial plaintext file (if any) is best-effort deleted.</td>
+<td>PDF</td>
+<td>reportlab</td>
+<td>Auto landscape when columns &gt; 5, paginated</td>
 </tr>
 <tr>
-<td>TempFileStore PUT fails</td>
-<td>Plaintext deleted, error returned, no orphan ciphertext.</td>
-</tr>
-<tr>
-<td>Stream-decrypt fails</td>
-<td>Ciphertext is still cleaned up in the <code>finally</code> block.</td>
+<td>PPTX</td>
+<td>python-pptx</td>
+<td>Rows capped per slide with footer</td>
 </tr>
 </tbody>
 </table>
-<h2 id="bundled-python">Bundled Python</h2>
-<p><code>./package.sh</code> bundles <code>openpyxl</code>, <code>reportlab</code>, and <code>python-pptx</code> into <code>lib/python/</code> of the dist using <code>pip install --target</code>. The runtime needs the <code>python3</code> on <code>PATH</code> to be the same major.minor version as the one that built the bundle — wheel ABI tags must match. Operators on a host where <code>pip3</code> and <code>python3</code> resolve to different versions need to either pin both to the same Python or rebuild <code>lib/python/</code> against the runtime Python.</p>
-<h2 id="format-notes">Format Notes</h2>
+<h2 id="encryption">Encryption</h2>
 <ul>
-<li><strong>XLSX</strong> — straight <code>openpyxl</code> workbook.</li>
-<li><strong>PDF</strong> — <code>reportlab</code>; auto-switches to landscape when columns exceed 5; row pagination handled by the script.</li>
-<li><strong>PPTX</strong> — <code>python-pptx</code>; rows are capped (default 20) per slide with a "Showing N of M" footer to keep the deck readable.</li>
+<li>Plaintext exists on the Worker's local disk only between the Python write and the encrypt step (~tens of ms).</li>
+<li>The S3 object contains AES-256-GCM ciphertext (no XLSX/PDF/PPTX magic visible).</li>
+<li>Decryption happens in-memory on the Master at download time; no plaintext re-lands on disk.</li>
+<li>The S3 object is deleted immediately after the download response completes.</li>
 </ul>
+<h2 id="python-bundle">Python Bundle</h2>
+<p><code>package.sh</code> bundles Python dependencies into <code>lib/python/</code> of the dist. The runtime <code>python3</code> must match the Python version used during packaging (wheel ABI tags must match).</p>
 
 
 

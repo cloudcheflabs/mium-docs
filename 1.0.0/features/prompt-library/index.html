@@ -674,10 +674,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backends" class="md-nav__link">
+  <a href="#storage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Backends
+        Storage
       
     </span>
   </a>
@@ -946,13 +946,8 @@
 <li>Created / updated timestamps</li>
 </ul>
 <p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>MIUM:READ_PROMPT</code> / <code>MIUM:WRITE_PROMPT</code> policy.</p>
-<h2 id="backends">Backends</h2>
-<p><code>PromptStore</code> is pluggable, chosen at startup by <code>mium.prompt.backend</code>:</p>
-<ul>
-<li><strong><code>rocksdb</code></strong> (default) — leader-owned, envelope-encrypted snapshot persisted locally; replicated to followers via internal NIO sync.</li>
-<li><strong><code>neorunbase</code></strong> — prompts live in the shared CCL-stack NeorunBase database (<code>mium_prompt</code> table). Every Mium node reads and writes live; NeorunBase handles durability.</li>
-</ul>
-<p>Both backends expose the same API; switch by editing <code>mium.prompt.backend</code>. See <a href="../storage-backends/">Storage Backends</a>.</p>
+<h2 id="storage">Storage</h2>
+<p>PromptStore persists prompts in <strong>NeorunBase</strong> (<code>mium_prompt</code> table). Every Mium node reads and writes directly — no Mium-side replication needed. See <a href="../storage-backends/">Storage Backends</a>.</p>
 <h2 id="limits">Limits</h2>
 <p>The store enforces:</p>
 <ul>
