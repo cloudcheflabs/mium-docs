@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/prompt-library/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/operations/backup-restore/">
       
       
-        <link rel="prev" href="../chat-memory/">
+        <link rel="prev" href="../monitoring/">
       
       
-        <link rel="next" href="../storage-backends/">
+        <link rel="next" href="../retention/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Prompt Library - Mium</title>
+        <title>Backup & Restore - Mium</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#prompt-library" class="md-skip">
+        <a href="#backup-restore" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Prompt Library
+              Backup & Restore
             
           </span>
         </div>
@@ -293,13 +293,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../multi-agent-platform/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../features/multi-agent-platform/" class="md-tabs__link">
           
   
   
@@ -315,11 +313,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../operations/monitoring/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../monitoring/" class="md-tabs__link">
           
   
   
@@ -761,31 +761,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -803,7 +798,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -821,7 +816,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi-agent-platform/" class="md-nav__link">
+      <a href="../../features/multi-agent-platform/" class="md-nav__link">
         
   
   
@@ -849,7 +844,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../llm-backend/" class="md-nav__link">
+      <a href="../../features/llm-backend/" class="md-nav__link">
         
   
   
@@ -877,7 +872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tool-integration/" class="md-nav__link">
+      <a href="../../features/tool-integration/" class="md-nav__link">
         
   
   
@@ -905,7 +900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../job-lifecycle/" class="md-nav__link">
+      <a href="../../features/job-lifecycle/" class="md-nav__link">
         
   
   
@@ -933,7 +928,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../connection-management/" class="md-nav__link">
+      <a href="../../features/connection-management/" class="md-nav__link">
         
   
   
@@ -961,7 +956,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../chat-memory/" class="md-nav__link">
+      <a href="../../features/chat-memory/" class="md-nav__link">
         
   
   
@@ -969,6 +964,350 @@
     
   
     Chat & Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/prompt-library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompt Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/storage-backends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Backends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/temp-file-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temp File Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/server-side-export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server-Side Export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/worker-python-runtime/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worker Python Runtime
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/iam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Encryption & KMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/high-availability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    High Availability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/admin-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring & Observability
   
 
     
@@ -1005,7 +1344,7 @@
   <span class="md-ellipsis">
     
   
-    Prompt Library
+    Backup & Restore
   
 
     
@@ -1023,7 +1362,7 @@
   <span class="md-ellipsis">
     
   
-    Prompt Library
+    Backup & Restore
   
 
     
@@ -1049,10 +1388,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#model" class="md-nav__link">
+  <a href="#what-lives-where" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Model
+        What Lives Where
       
     </span>
   </a>
@@ -1060,10 +1399,77 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
+  <a href="#the-bootstrap-rocksdb-tier" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Storage
+        The Bootstrap RocksDB Tier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Bootstrap RocksDB Tier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hot-backup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hot Backup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restore
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neorunbase-tier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NeorunBase Tier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NeorunBase Tier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schema-auto-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Auto-Creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-ciphertext-tier-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Export Ciphertext Tier (S3)
       
     </span>
   </a>
@@ -1071,10 +1477,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#limits" class="md-nav__link">
+  <a href="#disaster-recovery-drill" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Limits
+        Disaster Recovery Drill
       
     </span>
   </a>
@@ -1082,10 +1488,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#future-surface" class="md-nav__link">
+  <a href="#what-you-cannot-restore" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Future Surface
+        What You Cannot Restore
       
     </span>
   </a>
@@ -1108,346 +1514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../storage-backends/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Storage Backends
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../temp-file-storage/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Temp File Storage
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../server-side-export/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Server-Side Export
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../worker-python-runtime/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Worker Python Runtime
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../iam/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    IAM
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../encryption/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Encryption & KMS
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../high-availability/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    High Availability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../admin-ui/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Admin UI
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operations
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Operations
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../operations/monitoring/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Monitoring & Observability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../operations/backup-restore/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Backup & Restore
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../operations/retention/" class="md-nav__link">
+      <a href="../retention/" class="md-nav__link">
         
   
   
@@ -1475,7 +1542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/" class="md-nav__link">
         
   
   
@@ -1607,27 +1674,99 @@
 
 
 
-<h1 id="prompt-library">Prompt Library</h1>
-<p>Mium provides a per-user prompt library — the <strong>PromptStore</strong> — so users can save, retrieve, and reuse prompts they care about. The store sits next to the MemoryStore, sharing the same pluggable-backend pattern.</p>
-<h2 id="model">Model</h2>
-<p>A saved prompt has:</p>
+<h1 id="backup-restore">Backup &amp; Restore</h1>
+<p>Mium splits its persistent state across three storage tiers, and each tier needs its own backup strategy. There is no "one backup for everything" — restoring Mium is restoring three things in order.</p>
+<h2 id="what-lives-where">What Lives Where</h2>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Backend</th>
+<th>What It Holds</th>
+<th>Backup Cadence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bootstrap RocksDB</td>
+<td>embedded on each Master</td>
+<td>IAM (users / groups / policies / companies / orgs), KMS keys, ConnectionStore</td>
+<td>Daily snapshot of <code>data/</code> on <strong>the leader Master</strong></td>
+</tr>
+<tr>
+<td>Application data</td>
+<td>NeorunBase (PostgreSQL)</td>
+<td>Chat sessions, chat messages, saved prompts, embeddings</td>
+<td>Use NeorunBase's standard PG backup (<code>pg_dump</code> / WAL archiving)</td>
+</tr>
+<tr>
+<td>Export ciphertext</td>
+<td>S3-compatible bucket</td>
+<td>Server-rendered XLSX / PDF / PPTX (encrypted)</td>
+<td>S3 lifecycle / cross-region replication if needed; usually not backed up — files are short-lived</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>master key</strong> (<code>MIUM_MASTER_KEY</code>) is the secret that unlocks the KMS bundle. Without it, nothing in any tier is recoverable. Back the master key up in your secret manager — separately from the data — and treat it like a database master password.</p>
+<h2 id="the-bootstrap-rocksdb-tier">The Bootstrap RocksDB Tier</h2>
+<p>The leader's <code>data/</code> directory contains three RocksDB instances:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>data/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── kms/            # Encrypted KEK bundle (versioned)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── iam/            # Users, groups, policies, companies, orgs
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>└── connections/    # Per-user encrypted tool &amp; LLM credentials
+</code></pre></div>
+<p>Followers hold replicas of all three, but the leader is the source of truth. Back up from the <strong>leader</strong> to avoid catching a partial snapshot mid-replication.</p>
+<h3 id="hot-backup">Hot Backup</h3>
+<p>RocksDB exposes a checkpoint API that creates a consistent snapshot of the live data without stopping writes. The simplest operator-side approximation is a flush + filesystem copy:</p>
+<ol>
+<li>On the leader, send <code>SIGTERM</code> to drain in-flight writes, <strong>or</strong> quiesce traffic at the load balancer for ~5 seconds.</li>
+<li><code>rsync -a data/ /path/to/backup/data-$(date +%Y%m%d)/</code></li>
+<li>Resume traffic.</li>
+</ol>
+<p>This costs a brief read-only window. Operators who cannot accept that should run a pre-built backup tool against RocksDB's checkpoint API.</p>
+<h3 id="restore">Restore</h3>
+<p>Restoring the bootstrap tier is destructive — it overwrites the cluster's identities and credentials. Coordinate the steps:</p>
+<ol>
+<li>Stop <strong>every</strong> Master and Worker. The cluster cannot be partially restored.</li>
+<li>Restore the master key into <code>MIUM_MASTER_KEY</code> on every node — this must match the value the backup was taken under.</li>
+<li>On every Master, replace <code>data/</code> with the backup snapshot (one snapshot copied to all Masters; followers will overwrite from the leader on next start, but seeding all of them avoids a long initial sync).</li>
+<li>Workers do <strong>not</strong> carry RocksDB state — leave their <code>data/</code> empty.</li>
+<li>Start the leader Master first, wait for <code>/ready</code>, then start the followers, then the Workers.</li>
+</ol>
+<h2 id="neorunbase-tier">NeorunBase Tier</h2>
+<p>Chat sessions, messages, prompts, and embeddings live in NeorunBase tables under the <code>mium.neorunbase.schema</code> schema (default <code>mium</code>):</p>
 <ul>
-<li>An owner user id</li>
-<li>A short name and a longer prompt body</li>
-<li>Optional tags</li>
-<li>Created / updated timestamps</li>
+<li><code>mium_chat_session</code></li>
+<li><code>mium_chat_message</code></li>
+<li><code>mium_prompt</code></li>
+<li><code>mium_embedding</code></li>
 </ul>
-<p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>MIUM:READ_PROMPT</code> / <code>MIUM:WRITE_PROMPT</code> policy.</p>
-<h2 id="storage">Storage</h2>
-<p>PromptStore persists prompts in <strong>NeorunBase</strong> (<code>mium_prompt</code> table). Every Mium node reads and writes directly — no Mium-side replication needed. See <a href="../storage-backends/">Storage Backends</a>.</p>
-<h2 id="limits">Limits</h2>
-<p>The store enforces:</p>
+<p>Use NeorunBase's standard PostgreSQL-compatible backup — <code>pg_dump</code> for periodic dumps, WAL archiving for point-in-time recovery, or the platform's snapshot mechanism if it has one. There is nothing Mium-specific here.</p>
+<h3 id="schema-auto-creation">Schema Auto-Creation</h3>
+<p>Mium creates these tables on startup if they don't exist. After a NeorunBase restore (or migration to a fresh cluster), simply restart any Master and the schema is materialised. Restoring from <code>pg_dump</code> includes the schema directly.</p>
+<h2 id="export-ciphertext-tier-s3">Export Ciphertext Tier (S3)</h2>
+<p>Server-rendered exports are stored as opaque ciphertext in the configured S3 bucket. They are short-lived by design:</p>
 <ul>
-<li><strong>Per-user prompt cap</strong> — oldest prompts are evicted beyond a configured count (<code>mium.prompt.max.per.user</code>).</li>
-<li><strong>Body size cap</strong> — bodies above <code>mium.prompt.max.body.bytes</code> are rejected at write time.</li>
+<li>The download endpoint deletes the object as soon as the download response completes.</li>
+<li>The retention sweep (<code>mium.tempfile.ttl.days</code>, default 10 days) deletes any orphans.</li>
 </ul>
-<h2 id="future-surface">Future Surface</h2>
-<p>Today the PromptStore is reachable through the REST layer; an Admin UI page for browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") is on the roadmap. The agent loop will eventually expose a <code>save_prompt</code> action so the LLM itself can persist a prompt the user asks it to remember.</p>
+<p>Backups are usually unnecessary — a lost export is regenerated by re-running the chat turn. If your compliance regime requires it, S3 cross-region replication or versioning is the right tool.</p>
+<h2 id="disaster-recovery-drill">Disaster Recovery Drill</h2>
+<p>A recovery is only as good as the rehearsal. Quarterly drill:</p>
+<ol>
+<li>Provision a fresh empty cluster.</li>
+<li>Restore master key, then bootstrap RocksDB, then NeorunBase schema.</li>
+<li>Log in with a non-bootstrap user (the bootstrap admin should already be rotated — see <a href="../../security/hardening/">Security</a>) and verify chat history loads, saved prompts are present, and existing connections work.</li>
+<li>Run a SQL query end-to-end through Ontul.</li>
+<li>Render and download an XLSX export.</li>
+</ol>
+<p>If any step fails, the gap is in your backup runbook, not in Mium.</p>
+<h2 id="what-you-cannot-restore">What You Cannot Restore</h2>
+<ul>
+<li><strong>Lost master key</strong> — every encrypted store becomes unreadable. Treat the master key with at least the same care as the bootstrap database password.</li>
+<li><strong>Partial-cluster snapshots</strong> — restoring the leader's RocksDB while followers run a different generation produces split-brain on the next <code>KMS_SYNC</code>. Always stop the whole cluster before restoring.</li>
+<li><strong>Time-travel for individual users</strong> — Mium does not version chat history at the row level. NeorunBase point-in-time recovery is the only path back.</li>
+</ul>
 
 
 

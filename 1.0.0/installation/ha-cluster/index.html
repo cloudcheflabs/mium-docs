@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/prompt-library/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/installation/ha-cluster/">
       
       
-        <link rel="prev" href="../chat-memory/">
+        <link rel="prev" href="../running/">
       
       
-        <link rel="next" href="../storage-backends/">
+        <link rel="next" href="../../configuration/reference/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Prompt Library - Mium</title>
+        <title>HA Cluster - Mium</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#prompt-library" class="md-skip">
+        <a href="#ha-cluster" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Prompt Library
+              HA Cluster
             
           </span>
         </div>
@@ -253,11 +253,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../installation/prerequisites/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../prerequisites/" class="md-tabs__link">
           
   
   
@@ -293,13 +295,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../multi-agent-platform/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../features/multi-agent-platform/" class="md-tabs__link">
           
   
   
@@ -503,26 +503,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -540,7 +545,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -558,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/prerequisites/" class="md-nav__link">
+      <a href="../prerequisites/" class="md-nav__link">
         
   
   
@@ -586,7 +591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/install/" class="md-nav__link">
+      <a href="../install/" class="md-nav__link">
         
   
   
@@ -614,7 +619,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/running/" class="md-nav__link">
+      <a href="../running/" class="md-nav__link">
         
   
   
@@ -639,10 +644,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../installation/ha-cluster/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HA Cluster
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -658,6 +690,136 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Topology
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-node-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Node Install
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cluster-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cluster Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bring-up-the-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bring Up the Cluster
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#front-the-cluster-with-a-load-balancer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Front the Cluster With a Load Balancer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#failover-behaviour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Failover Behaviour
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-worker-online" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a Worker Online
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removing-a-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removing a Worker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-master-online" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a Master Online
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Reads
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -761,31 +923,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -803,7 +960,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -821,7 +978,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi-agent-platform/" class="md-nav__link">
+      <a href="../../features/multi-agent-platform/" class="md-nav__link">
         
   
   
@@ -849,7 +1006,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../llm-backend/" class="md-nav__link">
+      <a href="../../features/llm-backend/" class="md-nav__link">
         
   
   
@@ -877,7 +1034,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tool-integration/" class="md-nav__link">
+      <a href="../../features/tool-integration/" class="md-nav__link">
         
   
   
@@ -905,7 +1062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../job-lifecycle/" class="md-nav__link">
+      <a href="../../features/job-lifecycle/" class="md-nav__link">
         
   
   
@@ -933,7 +1090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../connection-management/" class="md-nav__link">
+      <a href="../../features/connection-management/" class="md-nav__link">
         
   
   
@@ -961,7 +1118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../chat-memory/" class="md-nav__link">
+      <a href="../../features/chat-memory/" class="md-nav__link">
         
   
   
@@ -986,37 +1143,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Prompt Library
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../features/prompt-library/" class="md-nav__link">
         
   
   
@@ -1032,70 +1162,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Model
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Storage
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Limits
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-surface" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future Surface
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1108,7 +1174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../storage-backends/" class="md-nav__link">
+      <a href="../../features/storage-backends/" class="md-nav__link">
         
   
   
@@ -1136,7 +1202,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../temp-file-storage/" class="md-nav__link">
+      <a href="../../features/temp-file-storage/" class="md-nav__link">
         
   
   
@@ -1164,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../server-side-export/" class="md-nav__link">
+      <a href="../../features/server-side-export/" class="md-nav__link">
         
   
   
@@ -1192,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../worker-python-runtime/" class="md-nav__link">
+      <a href="../../features/worker-python-runtime/" class="md-nav__link">
         
   
   
@@ -1220,7 +1286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iam/" class="md-nav__link">
+      <a href="../../features/iam/" class="md-nav__link">
         
   
   
@@ -1248,7 +1314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../encryption/" class="md-nav__link">
+      <a href="../../features/encryption/" class="md-nav__link">
         
   
   
@@ -1276,7 +1342,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../high-availability/" class="md-nav__link">
+      <a href="../../features/high-availability/" class="md-nav__link">
         
   
   
@@ -1304,7 +1370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/" class="md-nav__link">
+      <a href="../../features/admin-ui/" class="md-nav__link">
         
   
   
@@ -1607,27 +1673,110 @@
 
 
 
-<h1 id="prompt-library">Prompt Library</h1>
-<p>Mium provides a per-user prompt library — the <strong>PromptStore</strong> — so users can save, retrieve, and reuse prompts they care about. The store sits next to the MemoryStore, sharing the same pluggable-backend pattern.</p>
-<h2 id="model">Model</h2>
-<p>A saved prompt has:</p>
+<h1 id="ha-cluster">HA Cluster</h1>
+<p>A production Mium deployment runs <strong>multiple Masters</strong> for leader/follower failover and <strong>multiple Workers</strong> for parallel LLM, tool, and export load. ZooKeeper is the only thing that elects the leader; Mium does the rest itself.</p>
+<p>This page walks through provisioning a multi-host cluster. The single-host walkthrough is in <a href="../running/">Run Mium</a>.</p>
+<h2 id="topology">Topology</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                ┌─────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                │        ZooKeeper Ensemble       │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                │     (3 or 5 nodes, your own)    │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                └──────────────┬──────────────────┘
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                               │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        ┌──────────────────────┴───────────────────────┐
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        │                                              │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>   ┌────▼─────┐    ┌──────────┐    ┌──────────┐  ┌────▼─────┐
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>   │ Master 1 │ ←→ │ Master 2 │ ←→ │ Master 3 │  │ Worker N │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>   │ (leader) │    │(follower)│    │(follower)│  │          │
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>   └────┬─────┘    └──────────┘    └──────────┘  └──────────┘
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>   ┌────▼────────────┐  ┌──────────────────┐  ┌──────────────┐
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>   │   NeorunBase    │  │ S3-compatible    │  │   Ontul      │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>   │ (chat / prompt) │  │  (export ct)     │  │   (data)     │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>   └─────────────────┘  └──────────────────┘  └──────────────┘
+</code></pre></div>
+<p>Recommended starting point:</p>
 <ul>
-<li>An owner user id</li>
-<li>A short name and a longer prompt body</li>
-<li>Optional tags</li>
-<li>Created / updated timestamps</li>
+<li><strong>3 Masters</strong> — survives one-node failure with quorum to spare.</li>
+<li><strong>2+ Workers</strong> — required for export to work (the Master will not render Python locally; if no Worker is ready, exports return <code>503</code>).</li>
+<li><strong>3 ZooKeeper nodes</strong> — your existing CCL stack ensemble is reused; Mium does not need its own.</li>
 </ul>
-<p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>MIUM:READ_PROMPT</code> / <code>MIUM:WRITE_PROMPT</code> policy.</p>
-<h2 id="storage">Storage</h2>
-<p>PromptStore persists prompts in <strong>NeorunBase</strong> (<code>mium_prompt</code> table). Every Mium node reads and writes directly — no Mium-side replication needed. See <a href="../storage-backends/">Storage Backends</a>.</p>
-<h2 id="limits">Limits</h2>
-<p>The store enforces:</p>
+<h2 id="per-node-install">Per-Node Install</h2>
+<p>Repeat the <a href="../install/">Install</a> steps on every host:</p>
+<ol>
+<li>Unpack the same <code>mium-VERSION.tar.gz</code>.</li>
+<li>Set the <strong>same</strong> <code>MIUM_MASTER_KEY</code> everywhere — followers cannot decrypt the leader's KMS bundle without it.</li>
+<li>Edit <code>conf/mium.properties</code> with the values appropriate to that host.</li>
+</ol>
+<h2 id="cluster-configuration">Cluster Configuration</h2>
+<p>Every node in the cluster shares these settings:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Same ZK ensemble on every node</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="na">mium.zk.connect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zk1.internal:2181,zk2.internal:2181,zk3.internal:2181</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="na">mium.zk.root</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">/mium</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Same NeorunBase on every node</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="na">mium.neorunbase.jdbc.url</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">jdbc:postgresql://nb.internal:5432/neorunbase?preferQueryMode=simple</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="na">mium.neorunbase.username</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="na">mium.neorunbase.password</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;secret&gt;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="na">mium.neorunbase.schema</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Same S3-compatible store on every node</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="na">mium.tempfile.s3.endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">https://s3.internal</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="na">mium.tempfile.s3.region</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">us-east-1</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="na">mium.tempfile.s3.bucket</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">mium-tempfile</span>
+</code></pre></div>
+<p>Per-node settings (different on each host):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># bind on the host&#39;s own NIC, advertise its routable hostname</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="na">mium.master.host</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="na">mium.master.admin.port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">8090</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="na">mium.master.internal.port</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">19099</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="na">mium.worker.host</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="na">mium.worker.internal.port</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">19098</span>
+</code></pre></div>
+<h2 id="bring-up-the-cluster">Bring Up the Cluster</h2>
+<p>Order matters on the first boot — the leader has to seed KMS keys before followers can sync.</p>
+<ol>
+<li>Start ZooKeeper (already running in your environment).</li>
+<li>Start Master #1. Wait for <code>leader-ready</code> in the log.</li>
+<li>Start Master #2 and #3 in any order. Each will pull KMS / IAM / ConnectionStore from the leader and report ready.</li>
+<li>Start every Worker. Each pulls the same three stores and reports ready.</li>
+<li>The leader polls ZooKeeper and starts accepting traffic only when <strong>every</strong> registered Master and Worker reports <code>ready=true</code>.</li>
+</ol>
+<p><code>curl http://master1:8090/ready</code> returns 200 only after step 5 succeeds.</p>
+<h2 id="front-the-cluster-with-a-load-balancer">Front the Cluster With a Load Balancer</h2>
+<p>The Admin UI and REST API on port 8090 are stateless once the JWT is issued. Operators typically front all three Masters with a Layer-7 load balancer:</p>
 <ul>
-<li><strong>Per-user prompt cap</strong> — oldest prompts are evicted beyond a configured count (<code>mium.prompt.max.per.user</code>).</li>
-<li><strong>Body size cap</strong> — bodies above <code>mium.prompt.max.body.bytes</code> are rejected at write time.</li>
+<li><strong>Health probe</strong>: <code>GET /ready</code> on every Master. Mark unhealthy on 503.</li>
+<li><strong>Sticky sessions</strong>: not required — JWTs work on any Master.</li>
+<li><strong>Write requests on followers</strong>: Mium's <code>LeaderRouter</code> transparently proxies write traffic to the leader, so the LB does <strong>not</strong> need to know which Master is the leader.</li>
 </ul>
-<h2 id="future-surface">Future Surface</h2>
-<p>Today the PromptStore is reachable through the REST layer; an Admin UI page for browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") is on the roadmap. The agent loop will eventually expose a <code>save_prompt</code> action so the LLM itself can persist a prompt the user asks it to remember.</p>
+<p>Terminate TLS at the load balancer — Mium does not terminate TLS itself.</p>
+<h2 id="failover-behaviour">Failover Behaviour</h2>
+<ul>
+<li><strong>Leader Master fails</strong>: ZooKeeper expires its session; Curator elects a new leader; the new leader reloads its embedded RocksDB stores and resumes accepting writes. The bounded interruption is <code>mium.zk.session.timeout.ms</code> (default 30s).</li>
+<li><strong>Follower Master fails</strong>: traffic shifts to the remaining Masters via the load balancer. The leader marks the cluster unready until the follower returns or is removed from ZK.</li>
+<li><strong>Worker fails</strong>: its ephemeral ZK node disappears. The leader will not dispatch new work to it. The cluster becomes unready and rejects new requests until the remaining Workers report <code>ready=true</code> again — operators add Worker capacity ahead of failure to keep this transparent.</li>
+</ul>
+<h2 id="adding-a-worker-online">Adding a Worker Online</h2>
+<ol>
+<li>Install Mium on the new host as above.</li>
+<li>Confirm <code>MIUM_MASTER_KEY</code> matches the rest of the cluster.</li>
+<li><code>bin/start-worker.sh</code>.</li>
+</ol>
+<p>The Worker registers in ZK, pulls KMS / IAM / ConnectionStore, and reports ready. The leader detects it, re-validates cluster readiness, and resumes accepting requests.</p>
+<h2 id="removing-a-worker">Removing a Worker</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/stop-worker.sh
+</code></pre></div>
+<p>Graceful stop: the Worker deregisters from ZK, the leader sees the node count drop, the cluster stays ready as long as at least one Worker remains.</p>
+<p>To take a host out of rotation permanently, stop the Worker, then unpack and reinstall on a different host — there is no per-Worker state to migrate.</p>
+<h2 id="adding-a-master-online">Adding a Master Online</h2>
+<p>Same procedure as a Worker. The new Master joins as a follower, syncs from the leader, and stays in standby for failover.</p>
+<p>To <strong>promote</strong> an existing follower to leader, simply stop the current leader. The next leader election picks one of the remaining Masters.</p>
+<h2 id="operational-reads">Operational Reads</h2>
+<ul>
+<li><a href="../../operations/monitoring/">Monitoring</a> — the Topology page in the Admin UI shows live Master / Worker registries with health flags.</li>
+<li><a href="../../operations/backup-restore/">Backup &amp; Restore</a> — what to back up across the three storage tiers.</li>
+<li><a href="../../operations/troubleshooting/">Troubleshooting</a> — <code>cluster-not-ready</code> is the single most common operational issue.</li>
+</ul>
 
 
 

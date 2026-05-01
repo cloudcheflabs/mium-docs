@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/prompt-library/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/worker-python-runtime/">
       
       
-        <link rel="prev" href="../chat-memory/">
+        <link rel="prev" href="../server-side-export/">
       
       
-        <link rel="next" href="../storage-backends/">
+        <link rel="next" href="../iam/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Prompt Library - Mium</title>
+        <title>Worker Python Runtime - Mium</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#prompt-library" class="md-skip">
+        <a href="#worker-python-runtime" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Prompt Library
+              Worker Python Runtime
             
           </span>
         </div>
@@ -986,37 +986,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Prompt Library
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../prompt-library/" class="md-nav__link">
         
   
   
@@ -1032,70 +1005,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Model
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Storage
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Limits
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-surface" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future Surface
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1189,10 +1098,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../worker-python-runtime/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worker Python Runtime
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1208,6 +1144,192 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-worker-not-master" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Worker, Not Master
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#path-a-short-lived-export-subprocess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path A — Short-Lived Export Subprocess
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Path A — Short-Lived Export Subprocess">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-subprocess-not-daemon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Subprocess (Not Daemon)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependency-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency Bundle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#path-b-long-running-embedding-daemon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path B — Long-Running Embedding Daemon
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Path B — Long-Running Embedding Daemon">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-slots-many-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two Slots, Many Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lazy-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lazy Start
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hot-model-swap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hot Model Swap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#protocol-line-delimited-json-over-stdinstdout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocol — Line-Delimited JSON Over stdin/stdout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-embeddings-are-used-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Embeddings Are Used For
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#liveness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Liveness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#both-paths-in-one-place" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Both Paths in One Place
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1607,27 +1729,198 @@
 
 
 
-<h1 id="prompt-library">Prompt Library</h1>
-<p>Mium provides a per-user prompt library — the <strong>PromptStore</strong> — so users can save, retrieve, and reuse prompts they care about. The store sits next to the MemoryStore, sharing the same pluggable-backend pattern.</p>
-<h2 id="model">Model</h2>
-<p>A saved prompt has:</p>
+<h1 id="worker-python-runtime">Worker Python Runtime</h1>
+<p>Mium runs <strong>two kinds of Python on Workers</strong>:</p>
 <ul>
-<li>An owner user id</li>
-<li>A short name and a longer prompt body</li>
-<li>Optional tags</li>
-<li>Created / updated timestamps</li>
+<li><strong>Short-lived subprocesses</strong> for server-side <strong>file rendering</strong> — XLSX, PDF, PPTX exports.</li>
+<li><strong>Long-running daemon processes</strong> for <strong>embedding inference</strong> — text (BAAI/bge-m3) and multimodal (CLIP).</li>
 </ul>
-<p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>MIUM:READ_PROMPT</code> / <code>MIUM:WRITE_PROMPT</code> policy.</p>
-<h2 id="storage">Storage</h2>
-<p>PromptStore persists prompts in <strong>NeorunBase</strong> (<code>mium_prompt</code> table). Every Mium node reads and writes directly — no Mium-side replication needed. See <a href="../storage-backends/">Storage Backends</a>.</p>
-<h2 id="limits">Limits</h2>
-<p>The store enforces:</p>
+<p>Both paths land on Workers, never on Masters. Masters dispatch through internal NIO opcodes (<code>EXECUTE_EXPORT</code>, <code>EXECUTE_EMBED</code>) and Workers spawn the Python they need.</p>
+<h2 id="why-worker-not-master">Why Worker, Not Master</h2>
+<p>Putting Python on Workers — not Masters — buys three things:</p>
+<ol>
+<li><strong>Predictable Master memory.</strong> Embedding daemons hold ~5 GB of torch weights in RAM. Sharing that machine with a leader Master that owns IAM, KMS, and ConnectionStore would couple two very different RAM curves.</li>
+<li><strong>Horizontal scale for free.</strong> Adding Workers adds embedding throughput and export throughput. Masters scale for HA, not throughput.</li>
+<li><strong>No double-loading on multi-Master HA.</strong> If three Masters all loaded CLIP, you'd pay ~15 GB just for redundancy. With Workers owning Python, the daemon is loaded once per Worker — orthogonal to Master count.</li>
+</ol>
+<p>If no Worker is ready, the Master returns <code>503 Service Unavailable</code> for chat exports and embedding-dependent features. The Master never falls back to running Python locally.</p>
+<h2 id="path-a-short-lived-export-subprocess">Path A — Short-Lived Export Subprocess</h2>
+<p>Used by <code>EXECUTE_EXPORT</code> for chat-driven file renders.</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Script</th>
+<th>Library</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XLSX</td>
+<td><code>export_xlsx.py</code></td>
+<td>openpyxl</td>
+</tr>
+<tr>
+<td>PDF</td>
+<td><code>export_pdf.py</code></td>
+<td>reportlab</td>
+</tr>
+<tr>
+<td>PPTX</td>
+<td><code>export_pptx.py</code></td>
+<td>python-pptx</td>
+</tr>
+</tbody>
+</table>
+<h3 id="flow">Flow</h3>
+<ol>
+<li>Chat turn produces a result table; the LLM emits <code>exportFormat: "xlsx"</code>.</li>
+<li>The Master sends <code>EXECUTE_EXPORT {format, title, sql, columns, rows}</code> to a ready Worker.</li>
+<li>The Worker invokes <code>python3 export_&lt;format&gt;.py</code> via <code>PythonProcessRunner</code>, piping the spec on stdin.</li>
+<li>The script writes the rendered file bytes to stdout.</li>
+<li>The Worker envelope-encrypts the bytes under the <code>mium-tempfile</code> KMS key and PUTs the ciphertext to S3.</li>
+<li>The Worker returns the S3 handle to the Master; the chat response carries a <code>downloadUrl</code>.</li>
+</ol>
+<p>The plaintext file lives on the Worker's disk only between the script's write and the encrypt step (~tens of milliseconds). The Master's download endpoint streams from S3, decrypts in memory, and deletes the S3 object after the response completes.</p>
+<h3 id="why-subprocess-not-daemon">Why Subprocess (Not Daemon)</h3>
+<p>Export jobs are infrequent and CPU-bound on a single render — there's nothing to amortise. The startup cost of <code>python3</code> plus loading openpyxl is well under a second, far below the typical render time of an XLSX with several thousand rows. A daemon would just complicate the protocol.</p>
+<h3 id="dependency-bundle">Dependency Bundle</h3>
+<p>Wheels are pre-bundled inside the distribution at <code>lib/python/</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>lib/python/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── openpyxl/
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── reportlab/
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── pptx/
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>└── ...
+</code></pre></div>
+<p><code>PythonProcessRunner</code> sets <code>PYTHONPATH=lib/python</code> on the subprocess. The runtime <code>python3</code> interpreter must match the Python ABI the wheels were built against — the distribution ships wheels for Python 3.9–3.12.</p>
+<p>For full details of the export pipeline — including the encryption boundary and the download flow — see <a href="../server-side-export/">Server-Side Export</a> and <a href="../temp-file-storage/">Temp File Storage</a>.</p>
+<h2 id="path-b-long-running-embedding-daemon">Path B — Long-Running Embedding Daemon</h2>
+<p>Used by <code>EXECUTE_EMBED</code> for text and multimodal embedding inference. The daemon stays alive between calls so the ~5–10 s model load amortises across requests.</p>
+<h3 id="two-slots-many-models">Two Slots, Many Models</h3>
+<p>The Worker runs <strong>at most two daemons concurrently</strong>, one per slot:</p>
+<table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>Script</th>
+<th>Default Model</th>
+<th>Dim</th>
+<th>Modality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Text</td>
+<td><code>bge_embedding_server.py</code></td>
+<td><code>BAAI/bge-m3</code></td>
+<td>1024</td>
+<td>Text only</td>
+</tr>
+<tr>
+<td>Multimodal</td>
+<td><code>clip_embedding_server.py</code></td>
+<td><code>clip-ViT-B-32</code></td>
+<td>512</td>
+<td>Text + image (shared embedding space)</td>
+</tr>
+</tbody>
+</table>
+<p>The slots exist because text-only models reject image input and CLIP's text encoder is weaker than dedicated text encoders for retrieval. Within each slot the actual model identifier is dynamic — switching <code>BAAI/bge-m3</code> for <code>sentence-transformers/all-MiniLM-L6-v2</code> is just a different <code>MIUM_BGE_MODEL</code> env var on the same daemon script.</p>
+<p>Why two encoders rather than one:</p>
 <ul>
-<li><strong>Per-user prompt cap</strong> — oldest prompts are evicted beyond a configured count (<code>mium.prompt.max.per.user</code>).</li>
-<li><strong>Body size cap</strong> — bodies above <code>mium.prompt.max.body.bytes</code> are rejected at write time.</li>
+<li><strong>Korean + English chat retrieval</strong> lands on the text slot — <code>bge-m3</code> is SOTA for mixed-language corpora.</li>
+<li><strong>Image retrieval and cross-modal</strong> (text query → image hit and vice versa) lands on the CLIP slot — only encoders trained jointly produce a shared embedding space.</li>
 </ul>
-<h2 id="future-surface">Future Surface</h2>
-<p>Today the PromptStore is reachable through the REST layer; an Admin UI page for browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") is on the roadmap. The agent loop will eventually expose a <code>save_prompt</code> action so the LLM itself can persist a prompt the user asks it to remember.</p>
+<h3 id="lazy-start">Lazy Start</h3>
+<p>Daemons start <strong>on first call</strong>, not at Worker boot. A Worker that never receives <code>EXECUTE_EMBED</code> traffic never burns the ~5 GB it would take to load both models. Operators that want eager startup can warm the slots by sending one tiny <code>embedText</code> and one <code>embedImage</code> during deployment validation.</p>
+<h3 id="hot-model-swap">Hot Model Swap</h3>
+<p>Each <code>embedText</code> / <code>embedImage</code> call carries the desired model identifier:</p>
+<ul>
+<li>If the slot's daemon was started with the <strong>same</strong> identifier, the daemon is reused (~tens of ms per call).</li>
+<li>If the identifier <strong>changed</strong> (an admin switched models in Settings → Embedding), the running daemon is shut down and a fresh one is spawned. That's the one-time ~5–10 s model-load cost — paid lazily on the first call after the change.</li>
+</ul>
+<p>The swap is internal — callers don't see a different shape, just a longer first call after a model change.</p>
+<h3 id="protocol-line-delimited-json-over-stdinstdout">Protocol — Line-Delimited JSON Over stdin/stdout</h3>
+<p>Java's <code>EmbeddingDaemon</code> writes one JSON request per line to the daemon's stdin and reads one JSON response per line from stdout:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// request</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;op&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;embed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;texts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;hello world&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;foo bar&quot;</span><span class="p">]}</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;13&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;op&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;embed_text&quot;</span><span class="p">,</span><span class="w">  </span><span class="nt">&quot;texts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;a cat on a mat&quot;</span><span class="p">]}</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;14&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;op&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;embed_image&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;images_b64&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;base64 PNG/JPEG&gt;&quot;</span><span class="p">]}</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;15&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;op&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ping&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">// response</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ok&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;vectors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="err">…</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="err">…</span><span class="p">]]}</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;15&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ok&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;pong&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;16&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ok&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OOM during encode&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1">// startup banner</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;_ready&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ok&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BAAI/bge-m3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;dim&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">}</span>
+</code></pre></div>
+<p>Per-request errors do <strong>not</strong> kill the daemon — the Java side reads the next response and surfaces the error to the caller. Fatal load errors (model download failed, OOM at startup) exit the daemon non-zero and the Java side's daemon manager restarts the process with backoff.</p>
+<h3 id="what-the-embeddings-are-used-for">What the Embeddings Are Used For</h3>
+<ul>
+<li><strong>Chat memory recall</strong> — semantic retrieval over the user's past chat turns (text slot).</li>
+<li><strong>Prompt-library recall</strong> — find saved prompts by intent rather than substring (text slot).</li>
+<li><strong>Code-generation few-shot pool</strong> — pick the most similar Ontul SDK examples for the LLM prompt (text slot).</li>
+<li><strong>Image search and cross-modal retrieval</strong> — query images by text or vice versa (CLIP slot). Image inputs are base64-encoded PNG/JPEG bytes; the daemon's vision tower decides format from magic header.</li>
+</ul>
+<p>Vectors are persisted in NeorunBase via the <code>mium_embedding</code> table. The <code>mium.embedding.dim</code> config must match the active model's dimension at write time — <code>WorkerEmbeddingBackend</code> rejects mismatched vectors at upsert.</p>
+<h3 id="liveness">Liveness</h3>
+<p>Mium exposes a <code>ping</code> round-trip per daemon for health checks. The list of currently-loaded <code>(slot, model)</code> pairs is available to operators through the Topology / Embedding settings page.</p>
+<h3 id="dependencies">Dependencies</h3>
+<p>Embedding daemons need a heavier Python environment than the export scripts — <code>sentence-transformers</code>, <code>torch</code>, <code>transformers</code>, plus their CUDA / MPS bindings if you want GPU acceleration. These are <strong>not</strong> bundled in <code>lib/python/</code> because their wheel size and platform variability would balloon the distribution. Operators install them once on the Worker host:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip3<span class="w"> </span>install<span class="w"> </span>sentence-transformers<span class="w"> </span>torch<span class="w"> </span>transformers<span class="w"> </span>Pillow
+</code></pre></div>
+<p>The <code>mium.python.exe</code> system property (or <code>MIUM_PYTHON_EXE</code> env) lets you point the runner at a virtualenv or pyenv interpreter that already has these.</p>
+<p>The <code>MIUM_HF_HOME</code> env can pin the HuggingFace cache directory — useful when model weights are pre-staged for air-gapped installs.</p>
+<h2 id="both-paths-in-one-place">Both Paths in One Place</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Export</th>
+<th>Embedding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trigger</td>
+<td><code>EXECUTE_EXPORT</code> opcode</td>
+<td><code>EXECUTE_EMBED</code> opcode</td>
+</tr>
+<tr>
+<td>Java side</td>
+<td><code>PythonProcessRunner.run(...)</code></td>
+<td><code>EmbeddingDaemon.embedTexts(...)</code></td>
+</tr>
+<tr>
+<td>Process model</td>
+<td>One-shot subprocess</td>
+<td>Long-running daemon</td>
+</tr>
+<tr>
+<td>Wire format</td>
+<td>Stdin bytes / stdout bytes</td>
+<td>Line-delimited JSON</td>
+</tr>
+<tr>
+<td>Lifetime</td>
+<td>Per request</td>
+<td>Until model swap or Worker shutdown</td>
+</tr>
+<tr>
+<td>Failure mode</td>
+<td>Returns ciphertext to Master via S3</td>
+<td>Wraps and propagates as <code>Exception</code> to Master</td>
+</tr>
+<tr>
+<td>Python deps</td>
+<td>Bundled in <code>lib/python/</code></td>
+<td>Operator-installed (<code>sentence-transformers</code>, <code>torch</code>, …)</td>
+</tr>
+</tbody>
+</table>
+<p>Both paths run only on Workers. The Master never spawns Python — by design.</p>
 
 
 

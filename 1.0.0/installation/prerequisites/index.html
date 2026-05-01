@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/prompt-library/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/installation/prerequisites/">
       
       
-        <link rel="prev" href="../chat-memory/">
+        <link rel="prev" href="../../architecture/architecture/">
       
       
-        <link rel="next" href="../storage-backends/">
+        <link rel="next" href="../install/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Prompt Library - Mium</title>
+        <title>Prerequisites - Mium</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#prompt-library" class="md-skip">
+        <a href="#prerequisites" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Prompt Library
+              Prerequisites
             
           </span>
         </div>
@@ -253,11 +253,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../installation/prerequisites/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -293,13 +295,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../multi-agent-platform/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../features/multi-agent-platform/" class="md-tabs__link">
           
   
   
@@ -503,26 +503,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -540,7 +545,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -555,10 +560,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../installation/prerequisites/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -574,6 +606,92 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#required-external-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required External Services
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#required-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-llm-backends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional LLM Backends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sizing-hints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sizing Hints
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -586,7 +704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/install/" class="md-nav__link">
+      <a href="../install/" class="md-nav__link">
         
   
   
@@ -614,7 +732,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/running/" class="md-nav__link">
+      <a href="../running/" class="md-nav__link">
         
   
   
@@ -642,7 +760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/ha-cluster/" class="md-nav__link">
+      <a href="../ha-cluster/" class="md-nav__link">
         
   
   
@@ -761,31 +879,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -803,7 +916,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -821,7 +934,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi-agent-platform/" class="md-nav__link">
+      <a href="../../features/multi-agent-platform/" class="md-nav__link">
         
   
   
@@ -849,7 +962,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../llm-backend/" class="md-nav__link">
+      <a href="../../features/llm-backend/" class="md-nav__link">
         
   
   
@@ -877,7 +990,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tool-integration/" class="md-nav__link">
+      <a href="../../features/tool-integration/" class="md-nav__link">
         
   
   
@@ -905,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../job-lifecycle/" class="md-nav__link">
+      <a href="../../features/job-lifecycle/" class="md-nav__link">
         
   
   
@@ -933,7 +1046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../connection-management/" class="md-nav__link">
+      <a href="../../features/connection-management/" class="md-nav__link">
         
   
   
@@ -961,7 +1074,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../chat-memory/" class="md-nav__link">
+      <a href="../../features/chat-memory/" class="md-nav__link">
         
   
   
@@ -986,37 +1099,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Prompt Library
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../features/prompt-library/" class="md-nav__link">
         
   
   
@@ -1032,70 +1118,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Model
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Storage
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Limits
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-surface" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future Surface
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1108,7 +1130,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../storage-backends/" class="md-nav__link">
+      <a href="../../features/storage-backends/" class="md-nav__link">
         
   
   
@@ -1136,7 +1158,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../temp-file-storage/" class="md-nav__link">
+      <a href="../../features/temp-file-storage/" class="md-nav__link">
         
   
   
@@ -1164,7 +1186,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../server-side-export/" class="md-nav__link">
+      <a href="../../features/server-side-export/" class="md-nav__link">
         
   
   
@@ -1192,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../worker-python-runtime/" class="md-nav__link">
+      <a href="../../features/worker-python-runtime/" class="md-nav__link">
         
   
   
@@ -1220,7 +1242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iam/" class="md-nav__link">
+      <a href="../../features/iam/" class="md-nav__link">
         
   
   
@@ -1248,7 +1270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../encryption/" class="md-nav__link">
+      <a href="../../features/encryption/" class="md-nav__link">
         
   
   
@@ -1276,7 +1298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../high-availability/" class="md-nav__link">
+      <a href="../../features/high-availability/" class="md-nav__link">
         
   
   
@@ -1304,7 +1326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-ui/" class="md-nav__link">
+      <a href="../../features/admin-ui/" class="md-nav__link">
         
   
   
@@ -1607,27 +1629,170 @@
 
 
 
-<h1 id="prompt-library">Prompt Library</h1>
-<p>Mium provides a per-user prompt library — the <strong>PromptStore</strong> — so users can save, retrieve, and reuse prompts they care about. The store sits next to the MemoryStore, sharing the same pluggable-backend pattern.</p>
-<h2 id="model">Model</h2>
-<p>A saved prompt has:</p>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>Before installing Mium you need a small set of external services that the platform depends on. Mium is the AI control plane for the CCL stack — it stores its own bootstrap state in embedded RocksDB, but everything above the bootstrap layer (chat history, prompts, embeddings, exported files) lives in shared services that must be reachable from every Master and Worker.</p>
+<h2 id="runtime">Runtime</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java</td>
+<td>17 or later</td>
+<td>Required by Master and Worker. Detected via <code>JAVA_HOME</code> or <code>PATH</code>.</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.9 or later</td>
+<td>Required on every <strong>Worker</strong> for server-side export rendering. The Python wheels (<code>openpyxl</code>, <code>reportlab</code>, <code>python-pptx</code>) are pre-bundled under <code>lib/python/</code> in the distribution — no <code>pip install</code> step at install time.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="required-external-services">Required External Services</h2>
+<p>Mium will refuse to come up if any of these are missing.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Purpose</th>
+<th>Default Endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ZooKeeper</strong></td>
+<td>Leader election, service discovery, cluster readiness flag.</td>
+<td><code>localhost:2181</code></td>
+</tr>
+<tr>
+<td><strong>NeorunBase</strong> (PostgreSQL-compatible)</td>
+<td>Memory, Prompt, and Embedding stores. Tables auto-created on startup.</td>
+<td><code>jdbc:postgresql://localhost:5432/neorunbase</code></td>
+</tr>
+<tr>
+<td><strong>S3-compatible object store</strong></td>
+<td>Server-rendered export ciphertext. Works with ShannonStore, MinIO, or AWS S3.</td>
+<td><code>http://localhost:8000</code> (default for ShannonStore)</td>
+</tr>
+<tr>
+<td><strong>Ontul</strong></td>
+<td>The data engine Mium queries on the user's behalf. Mium without Ontul can boot, but it has nothing to query — every shipped capability is built around Ontul as the data source.</td>
+<td>per-user, registered in the ConnectionStore</td>
+</tr>
+</tbody>
+</table>
+<h2 id="required-environment">Required Environment</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required on</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MIUM_MASTER_KEY</code></td>
+<td>Every Master and Worker</td>
+<td>32+ character secret used to derive the KMS root key (PBKDF2-SHA256 / 200K iterations). Must be <strong>identical</strong> on every node in the cluster — followers cannot decrypt the leader's KMS bundle without it.</td>
+</tr>
+<tr>
+<td><code>JAVA_HOME</code></td>
+<td>Every Master and Worker</td>
+<td>Optional if <code>java</code> is on <code>PATH</code>; required otherwise.</td>
+</tr>
+<tr>
+<td><code>MIUM_HOME</code></td>
+<td>Every Master and Worker</td>
+<td>Set automatically by the launcher scripts to the package root. Override only if you run Mium from a non-standard layout.</td>
+</tr>
+</tbody>
+</table>
+<p>Generate a master key once and store it in your secret manager:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>openssl<span class="w"> </span>rand<span class="w"> </span>-base64<span class="w"> </span><span class="m">48</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-c<span class="w"> </span><span class="m">32</span>
+</code></pre></div>
+<h2 id="optional-llm-backends">Optional LLM Backends</h2>
+<p>Each user brings their own LLM credentials via the ConnectionStore. The platform itself does not require an LLM at install time, but at least one of the following must be reachable for end-to-end chat to work:</p>
 <ul>
-<li>An owner user id</li>
-<li>A short name and a longer prompt body</li>
-<li>Optional tags</li>
-<li>Created / updated timestamps</li>
+<li><strong>Anthropic Claude</strong> — Messages API. Connection <code>tool=anthropic</code>, <code>authType=api-key</code>.</li>
+<li><strong>Ollama</strong> — local or self-hosted. Connection <code>tool=ollama</code>, <code>authType=api-key</code> (optional).</li>
 </ul>
-<p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>MIUM:READ_PROMPT</code> / <code>MIUM:WRITE_PROMPT</code> policy.</p>
-<h2 id="storage">Storage</h2>
-<p>PromptStore persists prompts in <strong>NeorunBase</strong> (<code>mium_prompt</code> table). Every Mium node reads and writes directly — no Mium-side replication needed. See <a href="../storage-backends/">Storage Backends</a>.</p>
-<h2 id="limits">Limits</h2>
-<p>The store enforces:</p>
-<ul>
-<li><strong>Per-user prompt cap</strong> — oldest prompts are evicted beyond a configured count (<code>mium.prompt.max.per.user</code>).</li>
-<li><strong>Body size cap</strong> — bodies above <code>mium.prompt.max.body.bytes</code> are rejected at write time.</li>
-</ul>
-<h2 id="future-surface">Future Surface</h2>
-<p>Today the PromptStore is reachable through the REST layer; an Admin UI page for browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") is on the roadmap. The agent loop will eventually expose a <code>save_prompt</code> action so the LLM itself can persist a prompt the user asks it to remember.</p>
+<p>Embeddings used by retrieval features are served by <code>OllamaEmbeddingBackend</code> (e.g. <code>bge-m3</code>).</p>
+<h2 id="network">Network</h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Direction</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>8090</code></td>
+<td>Inbound (browser, REST clients)</td>
+<td>Master HTTP — Admin UI and REST API</td>
+</tr>
+<tr>
+<td><code>19099</code></td>
+<td>Master ↔ Master, Worker → Master</td>
+<td>Master internal NIO (control plane)</td>
+</tr>
+<tr>
+<td><code>19098</code></td>
+<td>Master → Worker</td>
+<td>Worker internal NIO (execute agent / tool / export)</td>
+</tr>
+<tr>
+<td><code>2181</code></td>
+<td>All nodes → ZooKeeper</td>
+<td>Curator client traffic</td>
+</tr>
+<tr>
+<td><code>5432</code></td>
+<td>All nodes → NeorunBase</td>
+<td>JDBC traffic</td>
+</tr>
+<tr>
+<td>S3 endpoint</td>
+<td>Master + Worker → S3</td>
+<td>Temp-file ciphertext upload / download</td>
+</tr>
+</tbody>
+</table>
+<p>The browser↔Master HTTP path is expected to terminate TLS at your reverse proxy (nginx, Envoy, etc.). Mium does not terminate TLS itself.</p>
+<h2 id="sizing-hints">Sizing Hints</h2>
+<p>These are starting points, not hard requirements.</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Heap</th>
+<th>Disk</th>
+<th>CPU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Master</td>
+<td>2–4 GB</td>
+<td>20 GB (RocksDB stores)</td>
+<td>2–4 cores</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td>4–8 GB</td>
+<td>5 GB (logs + temp render scratch)</td>
+<td>4+ cores</td>
+</tr>
+</tbody>
+</table>
+<p>Workers are stateless beyond local logs — scale them out for parallel tool / LLM / export load. Masters scale for HA, not throughput.</p>
 
 
 
