@@ -32,8 +32,16 @@ theme:
 
 
 nav:
+  - "Home": index.md
   - "Architecture":
       - "Mium Architecture": architecture/architecture.md
+  - "Installation":
+      - "Prerequisites": installation/prerequisites.md
+      - "Install": installation/install.md
+      - "Run Mium": installation/running.md
+      - "HA Cluster": installation/ha-cluster.md
+  - "Configuration":
+      - "Reference": configuration/reference.md
   - "Features":
       - "Multi-Agent AI Platform": features/multi-agent-platform.md
       - "LLM Backend": features/llm-backend.md
@@ -45,10 +53,18 @@ nav:
       - "Storage Backends": features/storage-backends.md
       - "Temp File Storage": features/temp-file-storage.md
       - "Server-Side Export": features/server-side-export.md
+      - "Worker Python Runtime": features/worker-python-runtime.md
       - "IAM": features/iam.md
       - "Encryption & KMS": features/encryption.md
       - "High Availability": features/high-availability.md
       - "Admin UI": features/admin-ui.md
+  - "Operations":
+      - "Monitoring & Observability": operations/monitoring.md
+      - "Backup & Restore": operations/backup-restore.md
+      - "Retention & Sweeps": operations/retention.md
+      - "Troubleshooting": operations/troubleshooting.md
+  - "Security":
+      - "Hardening Guide": security/hardening.md
 
 
 
@@ -59,8 +75,8 @@ extra:
     default: 1.0.0
 
 
-extra_javascript:
-  - javascripts/extra.js
+extra_css:
+  - stylesheets/extra.css
 
 
 markdown_extensions:

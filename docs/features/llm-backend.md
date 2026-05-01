@@ -18,7 +18,12 @@ Mium does not use vendor-specific tool APIs (Anthropic `tool_use` or OpenAI func
 
 ## Embeddings
 
-For retrieval-augmented features (e.g. few-shot pools used by code generation), Mium uses an embedding backend separate from the chat backend. The shipped implementation is `OllamaEmbeddingBackend`; vector storage is handled by the [Storage Backends](storage-backends.md) layer.
+For retrieval-augmented features — chat memory recall, prompt-library recall, code-generation few-shot pools, and cross-modal image search — Mium uses an embedding backend separate from the chat backend. Two implementations ship:
+
+- **`WorkerEmbeddingBackend`** (default) — the Master delegates inference to a Worker via the `EXECUTE_EMBED` opcode. The Worker runs long-running Python daemons (`bge-m3` for text, `clip-ViT-B-32` for multimodal) and reuses them across calls. Models hot-swap when an admin switches them in Settings → Embedding. See [Worker Python Runtime](worker-python-runtime.md).
+- **`OllamaEmbeddingBackend`** — alternative when an Ollama instance already serves embeddings. HTTP-based, no daemon to manage.
+
+Vector storage in either case is handled by the [Storage Backends](storage-backends.md) layer (NeorunBase `VECTOR(N)` columns).
 
 ## Configuration
 
