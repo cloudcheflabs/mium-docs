@@ -46,6 +46,7 @@ nav:
       - "Temp File Storage": features/temp-file-storage.md
       - "Server-Side Export": features/server-side-export.md
       - "IAM": features/iam.md
+      - "Admin Password Recovery": features/admin-password-recovery.md
       - "Encryption & KMS": features/encryption.md
       - "High Availability": features/high-availability.md
       - "Admin UI": features/admin-ui.md
