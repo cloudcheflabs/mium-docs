@@ -1617,7 +1617,7 @@
 <li>Optional tags</li>
 <li>Created / updated timestamps</li>
 </ul>
-<p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>MIUM:READ_PROMPT</code> / <code>MIUM:WRITE_PROMPT</code> policy.</p>
+<p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>SYSTEM:READ_PROMPT</code> / <code>SYSTEM:WRITE_PROMPT</code> policy.</p>
 <h2 id="storage">Storage</h2>
 <p>PromptStore persists prompts in <strong>NeorunBase</strong> (<code>mium_prompt</code> table). Every Mium node reads and writes directly — no Mium-side replication needed. See <a href="../storage-backends/">Storage Backends</a>.</p>
 <h2 id="limits">Limits</h2>
