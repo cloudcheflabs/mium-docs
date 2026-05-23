@@ -29,12 +29,12 @@ Mium uses AWS-style JSON policies with deny-by-default semantics:
   "statements": [
     {
       "effect": "ALLOW",
-      "actions": ["MIUM:CHAT", "MIUM:USE_CONNECTION"],
+      "actions": ["SYSTEM:CHAT", "SYSTEM:USE_CONNECTION"],
       "resources": ["*"]
     },
     {
       "effect": "DENY",
-      "actions": ["MIUM:MANAGE_IAM", "MIUM:MANAGE_KMS"],
+      "actions": ["SYSTEM:MANAGE_IAM", "SYSTEM:MANAGE_KMS"],
       "resources": ["*"]
     }
   ]
@@ -51,11 +51,11 @@ The shipped action constants cover all platform operations:
 
 | Category | Actions |
 |---|---|
-| Chat / Agent | `MIUM:CHAT`, `MIUM:USE_TOOL`, `MIUM:MANAGE_AGENT` |
-| Connections | `MIUM:USE_CONNECTION`, `MIUM:READ_CONNECTION`, `MIUM:WRITE_CONNECTION` |
-| Memory / Prompt | `MIUM:READ_MEMORY`, `MIUM:WRITE_MEMORY`, `MIUM:READ_PROMPT`, `MIUM:WRITE_PROMPT` |
-| LLM | `MIUM:MANAGE_LLM_BACKEND` |
-| Admin | `MIUM:MANAGE_IAM`, `MIUM:MANAGE_KMS`, `MIUM:MANAGE_COMPANY`, `MIUM:MANAGE_ORG` |
+| Chat / Agent | `SYSTEM:CHAT`, `SYSTEM:USE_TOOL`, `SYSTEM:MANAGE_AGENT` |
+| Connections | `SYSTEM:USE_CONNECTION`, `SYSTEM:READ_CONNECTION`, `SYSTEM:WRITE_CONNECTION` |
+| Memory / Prompt | `SYSTEM:READ_MEMORY`, `SYSTEM:WRITE_MEMORY`, `SYSTEM:READ_PROMPT`, `SYSTEM:WRITE_PROMPT` |
+| LLM | `SYSTEM:MANAGE_LLM_BACKEND` |
+| Admin | `SYSTEM:MANAGE_IAM`, `SYSTEM:MANAGE_KMS`, `SYSTEM:MANAGE_COMPANY`, `SYSTEM:MANAGE_ORG` |
 
 ## Management
 

@@ -11,7 +11,7 @@ A saved prompt has:
 - Optional tags
 - Created / updated timestamps
 
-Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate `MIUM:READ_PROMPT` / `MIUM:WRITE_PROMPT` policy.
+Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate `SYSTEM:READ_PROMPT` / `SYSTEM:WRITE_PROMPT` policy.
 
 ## Storage
 
