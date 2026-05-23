@@ -54,16 +54,6 @@ admin's next login (the `requirePasswordChange` flag is set automatically).
 ```bash
 # Inside the master host or container:
 bin/mium-cli.sh iam:reset-password
-
-# Or with the packaged docker image:
-docker exec mium-master /app/bin/mium-cli.sh iam:reset-password
-```
-
-When stdout is piped or redirected, the password alone is printed — suitable
-for capturing in automation:
-
-```bash
-NEW_PW=$(docker exec mium-master /app/bin/mium-cli.sh iam:reset-password)
 ```
 
 ## Input modes
