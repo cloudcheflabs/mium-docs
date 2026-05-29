@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/tool-integration/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/backup-restore/">
       
       
-        <link rel="prev" href="../llm-backend/">
+        <link rel="prev" href="../high-availability/">
       
       
-        <link rel="next" href="../job-lifecycle/">
+        <link rel="next" href="../admin-ui/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Tool Integration - Mium</title>
+        <title>Backup & Restore - Mium</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tool-integration" class="md-skip">
+        <a href="#backup-restore" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tool Integration
+              Backup & Restore
             
           </span>
         </div>
@@ -874,37 +874,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tool Integration
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../tool-integration/" class="md-nav__link">
         
   
   
@@ -920,98 +893,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tool-spi" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tool SPI
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#built-in-tool" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Built-in Tool
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Built-in Tool">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ontul" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Ontul
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-a-tool-call-flows" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How a Tool Call Flows
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#per-user-credential-isolation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Per-User Credential Isolation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-new-tools" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Adding New Tools
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1357,10 +1238,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../backup-restore/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backup & Restore
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1376,6 +1284,87 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cron-vs-interval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cron vs. Interval
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-gets-backed-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What gets backed up
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restore
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rest-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REST Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1691,48 +1680,99 @@
 
 
 
-<h1 id="tool-integration">Tool Integration</h1>
-<p>Mium's primary and foundational tool is <strong>Ontul</strong> — the CCL stack's distributed data engine. The <code>Tool</code> SPI provides a clean abstraction, but today Ontul is the only shipped tool and the reason Mium exists. Without an Ontul connection, the agent has nothing to query.</p>
-<h2 id="tool-spi">Tool SPI</h2>
-<p>The <code>Tool</code> interface defines how external systems are exposed to the LLM:</p>
+<h1 id="backup-restore">Backup &amp; Restore</h1>
+<p>Mium can periodically ship its control-plane state — the <strong>KMS keystore</strong>, the <strong>IAM</strong> snapshot, and the <strong>Connection Store</strong> — to an S3-compatible target. Backups are leader-only, incremental, opt-in, and run on either a fixed interval, a 5-field UNIX cron expression, or both at once.</p>
+<p><strong>Intentionally not in scope:</strong> Memory, Prompt Library, and Embedding Settings live in NeorunBase. They are restored by restoring NeorunBase itself (see <a href="https://cloudcheflabs.github.io/neorunbase-docs/latest/features/backup-restore/">the NeorunBase backup docs</a>). Mium's own backup only covers what is local to the Mium master.</p>
+<h2 id="configuration">Configuration</h2>
+<p>The <code>Backup &amp; Restore</code> page in the admin UI exposes the full configuration:</p>
 <ul>
-<li><strong>Metadata</strong> — tool name and capabilities surfaced to the agent loop.</li>
-<li><strong><code>sqlReference()</code></strong> — a structured description of the tool's SQL dialect, available catalogs, and conventions, injected into the LLM system prompt so the model can produce valid invocations without trial and error.</li>
-<li><strong>Execution</strong> — the actual call into the external system, using credentials decrypted from the user's ConnectionStore entry.</li>
+<li><strong>Enabled</strong> — master switch (default: off).</li>
+<li><strong>S3 Endpoint, Region, Bucket, Prefix</strong> — destination object store.</li>
+<li><strong>Access Key / Secret Key</strong> — long-lived static credentials for the destination.</li>
+<li><strong>Path-style addressing</strong> — required for ShannonStore / MinIO destinations.</li>
+<li><strong>Interval (minutes)</strong> — how often the scheduled backup runs.</li>
+<li><strong>Cron</strong> — optional 5-field UNIX cron expression (e.g. <code>0 2 * * *</code> daily at 02:00). Coexists with the interval rule — both can be set, whichever comes due first fires the backup.</li>
+<li><strong>Retention (days)</strong> — how long the visible history is kept.</li>
 </ul>
-<h2 id="built-in-tool">Built-in Tool</h2>
-<h3 id="ontul">Ontul</h3>
-<p>Mium ships with one built-in tool: <strong>Ontul</strong>, the Cloud Chef Labs SQL engine. The agent connects via Arrow Flight SQL using the user's access-key credentials and supports:</p>
+<p>The same page has a <strong>Backup Now</strong> button and a <strong>Restore</strong> button on each row of the available-backups list.</p>
+<h3 id="cron-vs-interval">Cron vs. Interval</h3>
+<p>The two automatic rules are independent and share the same tick loop on the leader master:</p>
 <ul>
-<li>SQL queries against any registered Ontul catalog</li>
-<li>Schema browsing (<code>SHOW CATALOGS</code>, <code>SHOW SCHEMAS</code>, <code>SHOW TABLES</code>, <code>DESCRIBE</code>)</li>
-<li>Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see <a href="../job-lifecycle/">Job Lifecycle</a>)</li>
-<li>Server-side code generation (Java BATCH / STREAMING / CLASS, Python) producing source the user can copy or submit</li>
+<li><strong>Interval</strong> is a relative "at least N minutes since the last successful backup" timer.</li>
+<li><strong>Cron</strong> is wall-clock based, evaluated in the leader's local time zone.</li>
 </ul>
-<h2 id="how-a-tool-call-flows">How a Tool Call Flows</h2>
-<ol>
-<li>When a chat session starts, the agent loop assembles the system prompt by collecting <code>sqlReference()</code> from the tools available to the user.</li>
-<li>The LLM sees the tool descriptions and emits a strict-JSON action that names the SQL or job operation it wants to run.</li>
-<li>The agent loop dispatches the call. For <code>query</code> actions, it executes against the connected Ontul cluster directly; for job actions it calls the matching Ontul Admin REST endpoint.</li>
-<li>The agent loop can offload entire LLM iterations to a Worker via <code>EXECUTE_AGENT</code> for parallelism, or dispatch only the tool call via <code>EXECUTE_TOOL</code>. Worker execution falls back to the master if no Worker is ready.</li>
-<li>Results are returned to the LLM for interpretation and a user-facing response.</li>
-</ol>
-<h2 id="per-user-credential-isolation">Per-User Credential Isolation</h2>
-<p>Tools use credentials from the calling user's ConnectionStore entry, which means:</p>
-<ul>
-<li>Each user configures their own access to external systems.</li>
-<li>Credentials are envelope-encrypted at rest via KMS; raw values never appear in logs.</li>
-<li>The tool's own access control decides what data the user can touch — Mium does NOT federate IAM with external systems.</li>
-</ul>
-<h2 id="adding-new-tools">Adding New Tools</h2>
-<p>New tools are implemented by:</p>
-<ol>
-<li>Implementing the <code>Tool</code> interface.</li>
-<li>Providing <code>sqlReference()</code> (or equivalent capability description) for the LLM system prompt.</li>
-<li>Registering the tool so the agent loop can find it.</li>
-<li>Defining a <code>tool=...</code> value in the ConnectionStore so users can register credentials.</li>
-</ol>
-<p>The tool system is designed to be extensible — additional CCL stack tools and external systems can plug in without touching the agent loop.</p>
+<p>The first sighting after the cron is set, or after a leader handoff, <strong>arms from "now"</strong> — Mium does not back-fire missed cron times on startup. An invalid cron is rejected with HTTP 400 at config-save time rather than being silently skipped at tick time.</p>
+<h2 id="what-gets-backed-up">What gets backed up</h2>
+<p>Each backup captures three stores under one shared backup id, so a single restore reassembles a consistent point in time:</p>
+<table>
+<thead>
+<tr>
+<th>Store</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kms</code></td>
+<td>KMS keystore (all DEKs/KEKs)</td>
+</tr>
+<tr>
+<td><code>iam</code></td>
+<td>Users, groups, policies, access keys</td>
+</tr>
+<tr>
+<td><code>connections</code></td>
+<td>Encrypted external-connection definitions</td>
+</tr>
+</tbody>
+</table>
+<p>Each store is content-hashed (SHA-256). If a store's bytes are unchanged since the last backup, it is <strong>not re-uploaded</strong> — the new backup's manifest simply points at the backup id that already holds it. A backup taken with no Mium activity uploads only a tiny manifest.</p>
+<h2 id="restore">Restore</h2>
+<p>The available-backups list shows every backup id present at the configured prefix, newest first. <strong>Restore</strong> is destructive — it overwrites the live KMS, IAM, and Connection stores with whichever snapshot the chosen backup id points to (possibly an older backup id, per the incremental layout). The admin UI confirms before proceeding.</p>
+<p>Restore is leader-only and gated by the <code>SYSTEM:MANAGE_BACKUP</code> IAM action; followers receive the broadcast state through the existing sync protocols.</p>
+<h2 id="rest-endpoints">REST Endpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/backup/config</code></td>
+<td>Read current config (secret never echoed)</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/backup/config</code></td>
+<td>Update; sticky secret (only overwrites on non-empty); <code>MANAGE_BACKUP</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/backup/run</code></td>
+<td>Trigger an immediate backup; <code>MANAGE_BACKUP</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/backup/history</code></td>
+<td>Last 100 history entries</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/backup/list</code></td>
+<td>Backup ids in S3, newest first</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/backup/restore</code></td>
+<td>Restore from <code>{backupId}</code>; <code>MANAGE_BACKUP</code></td>
+</tr>
+</tbody>
+</table>
+<p>All mutating routes are leader-only and forwarded automatically by the admin HTTP server.</p>
 
 
 
