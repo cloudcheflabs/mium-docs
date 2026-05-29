@@ -58,6 +58,7 @@ nav:
       - "Admin Password Recovery": features/admin-password-recovery.md
       - "Encryption & KMS": features/encryption.md
       - "High Availability": features/high-availability.md
+      - "Backup & Restore": features/backup-restore.md
       - "Admin UI": features/admin-ui.md
   - "Operations":
       - "Monitoring & Observability": operations/monitoring.md
