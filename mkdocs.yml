@@ -35,6 +35,7 @@ nav:
   - "Architecture":
       - "Mium Architecture": architecture/architecture.md
   - "Features":
+      - "Configuration": features/configuration.md
       - "Multi-Agent AI Platform": features/multi-agent-platform.md
       - "LLM Backend": features/llm-backend.md
       - "Tool Integration": features/tool-integration.md
