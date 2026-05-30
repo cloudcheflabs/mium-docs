@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/storage-backends/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/configuration/">
       
       
-        <link rel="prev" href="../prompt-library/">
+        <link rel="prev" href="../../configuration/reference/">
       
       
-        <link rel="next" href="../temp-file-storage/">
+        <link rel="next" href="../multi-agent-platform/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Storage Backends - Mium</title>
+        <title>Configuration - Mium</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#storage-backends" class="md-skip">
+        <a href="#configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Storage Backends
+              Configuration
             
           </span>
         </div>
@@ -299,7 +299,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../configuration/" class="md-tabs__link">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -818,10 +818,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../configuration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -837,6 +864,213 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#precedence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precedence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variable-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variable Naming
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zookeeper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ZooKeeper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#master" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Master
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KMS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#iam" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IAM
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connectionstore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ConnectionStore
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neorunbase-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NeorunBase (required)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jwt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#s3-temp-file-storage-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S3 Temp File Storage (required)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#llm-backend-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Backend HTTP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-http-follower-leader-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin HTTP Follower → Leader Proxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1042,37 +1276,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Storage Backends
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../storage-backends/" class="md-nav__link">
         
   
   
@@ -1088,81 +1295,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#store-matrix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Store Matrix
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#why-this-split" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why This Split
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#neorunbase-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        NeorunBase Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#s3-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        S3 Configuration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#replication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Replication
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1702,76 +1834,461 @@
 
 
 
-<h1 id="storage-backends">Storage Backends</h1>
-<p>Mium splits its persistent state across stores backed by three CCL-stack technologies: embedded RocksDB for bootstrap-critical data, NeorunBase for shared application data, and S3-compatible storage for rendered files.</p>
-<h2 id="store-matrix">Store Matrix</h2>
+<h1 id="configuration">Configuration</h1>
+<p>Mium is configured through a single <code>mium.properties</code> file, with overrides available from the environment or the JVM command line.</p>
+<h2 id="precedence">Precedence</h2>
+<p>For any key, the highest-priority source wins:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>System Property (-D) &gt; Environment Variable &gt; properties file
+</code></pre></div>
+<p>So a value baked into <code>mium.properties</code> can be overridden by an environment variable, which in turn can be overridden by a <code>-D</code> system property passed to the JVM.</p>
+<h2 id="environment-variable-naming">Environment Variable Naming</h2>
+<p>To set a property via an environment variable, take the property key, replace every <code>.</code> with <code>_</code>, and uppercase it:</p>
 <table>
 <thead>
 <tr>
-<th>Store</th>
-<th>Backend</th>
-<th>Purpose</th>
+<th>Property key</th>
+<th>Environment variable</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>IAM</td>
-<td>RocksDB</td>
-<td>Users, groups, policies, companies, organizations</td>
+<td><code>mium.master.admin.port</code></td>
+<td><code>MIUM_MASTER_ADMIN_PORT</code></td>
 </tr>
 <tr>
-<td>KMS</td>
-<td>RocksDB</td>
-<td>Versioned envelope encryption keys</td>
+<td><code>mium.zk.connect</code></td>
+<td><code>MIUM_ZK_CONNECT</code></td>
 </tr>
 <tr>
-<td>ConnectionStore</td>
-<td>RocksDB</td>
-<td>Per-user tool/LLM credentials (KMS-encrypted)</td>
-</tr>
-<tr>
-<td>MemoryStore</td>
-<td>NeorunBase</td>
-<td>Per-user chat sessions and messages</td>
-</tr>
-<tr>
-<td>PromptStore</td>
-<td>NeorunBase</td>
-<td>Per-user saved prompt library</td>
-</tr>
-<tr>
-<td>EmbeddingStore</td>
-<td>NeorunBase (VECTOR)</td>
-<td>Vector embeddings for retrieval</td>
-</tr>
-<tr>
-<td>TempFileStore</td>
-<td>S3-compatible</td>
-<td>Encrypted ciphertext of server-rendered exports</td>
+<td><code>mium.kms.master.key.env</code></td>
+<td><code>MIUM_KMS_MASTER_KEY_ENV</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="why-this-split">Why This Split</h2>
-<p><strong>IAM / KMS / ConnectionStore → RocksDB</strong>: These stores bootstrap the cluster itself. The leader must seed KMS keys and create the admin user before it can connect to anything external. Embedding them in RocksDB means the cluster starts with zero external dependencies beyond ZooKeeper.</p>
-<p><strong>MemoryStore / PromptStore / EmbeddingStore → NeorunBase</strong>: Chat history, prompts, and embeddings are application-level data shared across all Mium nodes. Storing them in NeorunBase means every Master and Worker reads and writes directly — no Mium-side snapshot replication, no leader bottleneck for writes. NeorunBase handles durability and consistency natively.</p>
-<p><strong>TempFileStore → S3-compatible storage</strong>: Server-rendered export files (XLSX / PDF / PPTX) are produced by Workers and downloaded by users via the Master. S3 is the natural shared medium — the Worker PUTs the encrypted file, the Master GETs and streams it. No file needs to live on a single node's local disk.</p>
-<h2 id="neorunbase-configuration">NeorunBase Configuration</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="na">mium.neorunbase.jdbc.url</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">jdbc:postgresql://&lt;host&gt;:5432/neorunbase?preferQueryMode=simple</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">mium.neorunbase.username</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">admin</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="na">mium.neorunbase.password</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">...</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="na">mium.neorunbase.schema</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
-</code></pre></div>
-<p>Tables (<code>mium_chat_session</code>, <code>mium_chat_message</code>, <code>mium_prompt</code>, <code>mium_embedding</code>) are auto-created on startup.</p>
-<h2 id="s3-configuration">S3 Configuration</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="na">mium.tempfile.s3.connection</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">s3-default       # ConnectionStore id (tool=s3, authType=access_key)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="na">mium.tempfile.s3.endpoint</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">http://localhost:8000</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="na">mium.tempfile.s3.region</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">us-east-1</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="na">mium.tempfile.s3.bucket</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">mium-tempfile</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="na">mium.tempfile.s3.path.style</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-</code></pre></div>
-<p>S3 credentials live in the ConnectionStore (not in <code>mium.properties</code>). The bucket is auto-created on first use.</p>
-<h2 id="replication">Replication</h2>
-<p>Only IAM, KMS, and ConnectionStore are replicated between Mium nodes via internal NIO sync messages. The leader pushes snapshots to followers, and followers self-heal by periodically pulling. Memory, Prompt, Embedding, and TempFile stores do not require Mium-side replication because NeorunBase and S3 handle distribution natively.</p>
+<h2 id="base">Base</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.base.data.dir</code></td>
+<td><code>./data</code></td>
+<td>Root directory for all node-local persistent state (KMS, IAM, ConnectionStore RocksDB stores, admin recovery socket, IAM audit log). Referenced by <code>${mium.base.data.dir}</code> in many keys below. In containers this must be an absolute, mounted volume path or state is lost on restart.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="zookeeper">ZooKeeper</h2>
+<p>ZooKeeper is the coordination backbone — leader election (Curator <code>LeaderLatch</code>) and the master/worker <code>NodeRegistry</code> both live here.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.zk.connect</code></td>
+<td><code>localhost:2181</code></td>
+<td>Comma-separated <code>host:port</code> connect string for the ZooKeeper ensemble.</td>
+</tr>
+<tr>
+<td><code>mium.zk.root</code></td>
+<td><code>/mium</code></td>
+<td>Base znode namespace for all Mium coordination state (e.g. <code>/mium/leader</code>, <code>/mium/nodes</code>). Give each cluster sharing one ensemble a distinct root.</td>
+</tr>
+<tr>
+<td><code>mium.zk.session.timeout.ms</code></td>
+<td><code>30000</code></td>
+<td>ZK session timeout in milliseconds. If a node fails to heartbeat within this window the session expires and it loses leadership / registry entries. Higher tolerates GC pauses but slows failover detection.</td>
+</tr>
+<tr>
+<td><code>mium.zk.connect.timeout.ms</code></td>
+<td><code>10000</code></td>
+<td>Max milliseconds to wait when first establishing the ZK connection at startup. Should stay well below the session timeout.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="master">Master</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.master.host</code></td>
+<td><code>0.0.0.0</code></td>
+<td>Bind address for both master servers (admin HTTP and internal NIO control plane). <code>0.0.0.0</code> binds all interfaces; pin to a NIC to restrict exposure.</td>
+</tr>
+<tr>
+<td><code>mium.master.admin.port</code></td>
+<td><code>8090</code></td>
+<td>TCP port for the admin HTTP server — serves the admin UI, REST API (<code>/api/*</code>), and <code>/health</code> + <code>/ready</code> probes. The port users and the UI talk to; also part of this master's node id.</td>
+</tr>
+<tr>
+<td><code>mium.master.internal.port</code></td>
+<td><code>19099</code></td>
+<td>TCP port for the master's internal NIO control plane. Carries master-to-master peer RPC (metrics polling, KMS key-seed broadcast, follower→leader coordination). Keep on a trusted network.</td>
+</tr>
+<tr>
+<td><code>mium.admin.context.path</code></td>
+<td><em>(empty)</em></td>
+<td>URL prefix the entire HTTP surface is mounted under. Default <code>""</code> = root. When changed (e.g. <code>/admin</code>), the UI bundle must be rebuilt with <code>VITE_BASE_PATH</code> set to the same prefix.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="worker">Worker</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.worker.host</code></td>
+<td><code>0.0.0.0</code></td>
+<td>Bind address the worker advertises and listens on for its internal NIO control plane. <code>0.0.0.0</code> binds all interfaces.</td>
+</tr>
+<tr>
+<td><code>mium.worker.internal.port</code></td>
+<td><code>19098</code></td>
+<td>TCP port for the worker's internal NIO server. The master dispatches work (Python-subprocess export jobs, embedding daemons) over this port. Also forms the worker's node id. Not HTTP, not user-facing — keep on a trusted network.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="kms">KMS</h2>
+<p>The envelope-encryption Key Management Service. See <a href="../encryption/">Encryption &amp; KMS</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.kms.enabled</code></td>
+<td><code>true</code></td>
+<td>Master switch for the envelope-encryption KMS. When true, a RocksDB-backed KMS with versioned KEKs initialises before any at-rest store opens. Setting false disables encryption-at-rest entirely — only safe for throwaway dev.</td>
+</tr>
+<tr>
+<td><code>mium.kms.rocksdb.path</code></td>
+<td><code>${mium.base.data.dir}/kms</code></td>
+<td>Filesystem directory for the KMS RocksDB instance (wrapped KEKs and key metadata).</td>
+</tr>
+<tr>
+<td><code>mium.kms.master.key.env</code></td>
+<td><code>MIUM_MASTER_KEY</code></td>
+<td>Name of the <strong>environment variable</strong> that holds the actual master key (the env-var name, not the value). The KMS reads it at startup and derives the root key via PBKDF2. Must be set on every node or the master fails fast.</td>
+</tr>
+<tr>
+<td><code>mium.kms.pbkdf2.iterations</code></td>
+<td><code>200000</code></td>
+<td>PBKDF2 iteration count used to stretch the master-key value into the root key. Must be identical across restarts and all nodes; changing it invalidates existing KMS material.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="iam">IAM</h2>
+<p>See <a href="../iam/">IAM</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.iam.rocksdb.path</code></td>
+<td><code>${mium.base.data.dir}/iam</code></td>
+<td>Filesystem directory for the IAM RocksDB instance — users, password hashes, policies, and group/organization membership.</td>
+</tr>
+<tr>
+<td><code>mium.iam.admin.user</code></td>
+<td><code>admin</code></td>
+<td>Username of the bootstrap admin account. Created only on first boot; changing it later does not rename the existing account.</td>
+</tr>
+<tr>
+<td><code>mium.iam.admin.password</code></td>
+<td><code>admin</code></td>
+<td>Initial password for the bootstrap admin account, applied only on first-boot seeding. <strong>Change this before any real deployment</strong>, or rotate it afterwards. Editing it after first boot has no effect.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="connectionstore">ConnectionStore</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.connection.rocksdb.path</code></td>
+<td><code>${mium.base.data.dir}/connections</code></td>
+<td>Filesystem directory for the ConnectionStore RocksDB instance. Holds per-user external-tool credentials (Ontul, Snowflake, S3, LLM API keys). Auth payloads are KMS-encrypted at rest.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="neorunbase-required">NeorunBase (required)</h2>
+<p>NeorunBase is a hard dependency — the per-user chat Memory store, Prompt store, and Embedding (VECTOR) store all live in it. The master fails fast at startup if it cannot reach NeorunBase.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.neorunbase.jdbc.url</code></td>
+<td><code>jdbc:postgresql://localhost:5432/neorunbase?preferQueryMode=simple</code></td>
+<td>Postgres-wire JDBC URL of the NeorunBase instance. <code>preferQueryMode=simple</code> is required for wire compatibility — keep it on.</td>
+</tr>
+<tr>
+<td><code>mium.neorunbase.username</code></td>
+<td><code>admin</code></td>
+<td>JDBC username used to connect to NeorunBase.</td>
+</tr>
+<tr>
+<td><code>mium.neorunbase.password</code></td>
+<td><em>(empty)</em></td>
+<td>JDBC password for the NeorunBase user. Blank = no password.</td>
+</tr>
+<tr>
+<td><code>mium.neorunbase.schema</code></td>
+<td><code>mium</code></td>
+<td>Schema/namespace inside NeorunBase under which Mium's tables (memory, prompts, embeddings) are created. Isolates Mium's data from other tenants.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="embedding">Embedding</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.embedding.dim</code></td>
+<td><code>768</code></td>
+<td>Vector dimension for the NeorunBase embedding store; becomes the width of the <code>VECTOR(dim)</code> column. Must exactly match the embedding model's output dimension. Cannot be changed after the table is created without recreating it. The embedding store is only wired up when <code>mium.embedding.enabled</code> is true (defaults to false).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="retention">Retention</h2>
+<p>All TTLs default to <code>0</code> = retention sweep <strong>disabled</strong>; operators set days explicitly to opt in. Sweep cadence is governed by <code>mium.retention.sweep.interval.seconds</code>. Recommended on-prem values: memory 50 days, prompt 100 days, embedding 50 days.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.memory.ttl.days</code></td>
+<td><code>0</code></td>
+<td>Chat-memory retention in days. <code>0</code> = sweep disabled. When &gt; 0, the leader deletes sessions whose <code>updatedAt</code> is older than this.</td>
+</tr>
+<tr>
+<td><code>mium.prompt.ttl.days</code></td>
+<td><code>0</code></td>
+<td>Prompt-store retention in days. <code>0</code> = sweep disabled. When &gt; 0, prompts older than this are deleted.</td>
+</tr>
+<tr>
+<td><code>mium.embedding.ttl.days</code></td>
+<td><code>0</code></td>
+<td>Embedding-store retention in days. <code>0</code> = sweep disabled. Global age sweep keyed on <code>(namespace, id)</code> — no per-user path.</td>
+</tr>
+<tr>
+<td><code>mium.memory.user.maxSessions</code></td>
+<td><code>0</code></td>
+<td>Per-user cap on retained chat sessions. <code>0</code> = unlimited. When &gt; 0, the oldest sessions beyond the cap are pruned.</td>
+</tr>
+<tr>
+<td><code>mium.prompt.user.maxPrompts</code></td>
+<td><code>0</code></td>
+<td>Per-user cap on stored prompts. <code>0</code> = unlimited. When &gt; 0, <code>createPrompt</code> is rejected once the user is at the cap.</td>
+</tr>
+<tr>
+<td><code>mium.memory.session.maxTurns</code></td>
+<td><code>200</code></td>
+<td>Max message turns kept per chat session (a count, not time). When exceeded, the oldest turns are dropped. Bounds per-session memory growth and LLM context size.</td>
+</tr>
+<tr>
+<td><code>mium.prompt.body.maxBytes</code></td>
+<td><code>65536</code></td>
+<td>Max size in bytes of a single prompt's body (64 KiB). create/update is rejected if exceeded.</td>
+</tr>
+<tr>
+<td><code>mium.retention.sweep.interval.seconds</code></td>
+<td><code>3600</code></td>
+<td>How often the leader runs the retention sweep, in seconds (hourly). Governs every TTL sweep above plus the S3 temp-file sweep. Only the leader runs it.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="jwt">JWT</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.jwt.ttl.seconds</code></td>
+<td><code>86400</code></td>
+<td>Lifetime of issued auth JWTs in seconds (24 hours). After this, tokens expire and clients must re-authenticate.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s3-temp-file-storage-required">S3 Temp File Storage (required)</h2>
+<p>Server-rendered export ciphertext (XLSX / PDF / PPTX) is stored in S3. Credentials live in the ConnectionStore (<code>tool=s3</code>, <code>authType=access_key</code>). See <a href="../temp-file-storage/">Temp File Storage</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.tempfile.filename.prefix</code></td>
+<td><code>mium-export</code></td>
+<td>Filename prefix applied to every generated export object key in S3. Cosmetic/organisational — makes Mium's objects easy to spot and target with lifecycle rules.</td>
+</tr>
+<tr>
+<td><code>mium.tempfile.kms.key.id</code></td>
+<td><code>mium-tempfile</code></td>
+<td>KMS key id used to envelope-encrypt export ciphertext before upload to S3. Resolved against the configured KMS.</td>
+</tr>
+<tr>
+<td><code>mium.tempfile.s3.connection</code></td>
+<td><code>s3-default</code></td>
+<td>ConnectionStore connection id (<code>tool=s3</code>, <code>authType=access_key</code>) supplying the S3 access key / secret. Only the id is referenced here; the credentials live in the ConnectionStore.</td>
+</tr>
+<tr>
+<td><code>mium.tempfile.s3.endpoint</code></td>
+<td><code>http://localhost:8000</code></td>
+<td>S3 endpoint URL for the temp-file bucket. Point at AWS S3, MinIO, or ShannonStore.</td>
+</tr>
+<tr>
+<td><code>mium.tempfile.s3.region</code></td>
+<td><code>us-east-1</code></td>
+<td>S3 region for the temp-file bucket. For non-AWS stores, any non-empty value is typically accepted.</td>
+</tr>
+<tr>
+<td><code>mium.tempfile.s3.bucket</code></td>
+<td><code>mium-tempfile</code></td>
+<td>Name of the S3 bucket holding exported temp files. Must exist or be creatable with the supplied credentials.</td>
+</tr>
+<tr>
+<td><code>mium.tempfile.s3.path.style</code></td>
+<td><code>true</code></td>
+<td>Use path-style S3 addressing instead of virtual-host style. <code>true</code> is required for MinIO/ShannonStore and most non-AWS endpoints; AWS S3 supports either.</td>
+</tr>
+<tr>
+<td><code>mium.tempfile.ttl.days</code></td>
+<td><code>10</code></td>
+<td>Days to keep exported temp files in S3. Files older than this are swept by the housekeeping loop. <code>0</code> = sweep disabled (use S3 lifecycle rules instead). Default keeps chat-shared download links valid for ~a week.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="llm-backend-http">LLM Backend HTTP</h2>
+<p>Shared HTTP knobs for every LLM/embedding backend wired through <code>LlmBackendFactory</code> (Anthropic, Ollama, Ollama-embed). Per-call <code>LlmRequest.timeoutMs</code> still wins when set — these are the factory defaults.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.llm.http.connect.timeout.ms</code></td>
+<td><code>10000</code></td>
+<td>Connect timeout in milliseconds for LLM backend HTTP calls.</td>
+</tr>
+<tr>
+<td><code>mium.llm.http.request.timeout.ms</code></td>
+<td><code>60000</code></td>
+<td>Request timeout in milliseconds for LLM backend HTTP calls.</td>
+</tr>
+<tr>
+<td><code>mium.llm.embedding.request.timeout.ms</code></td>
+<td><code>60000</code></td>
+<td>Per-request timeout in milliseconds for embedding calls, which are batchy and not driven by <code>LlmRequest</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="admin-http-follower-leader-proxy">Admin HTTP Follower → Leader Proxy</h2>
+<p>When a master is a follower, write routes are reverse-proxied to the current leader. See <a href="../high-availability/">High Availability</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.admin.proxy.connect.timeout.ms</code></td>
+<td><code>2000</code></td>
+<td>Connect timeout in milliseconds for the follower→leader proxy. Short by design — master nodes share a LAN.</td>
+</tr>
+<tr>
+<td><code>mium.admin.proxy.request.timeout.ms</code></td>
+<td><code>10000</code></td>
+<td>Request timeout in milliseconds for the follower→leader proxy. Covers the slowest synchronous IAM / Connection admin call.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="optional-properties">Optional Properties</h2>
+<p>These keys are not listed in the shipped <code>mium.properties</code> but are honoured when set:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.embedding.enabled</code></td>
+<td><code>false</code></td>
+<td>When true, wires up the NeorunBase embedding (VECTOR) store. Required before <code>mium.embedding.dim</code> and embedding TTL take effect.</td>
+</tr>
+</tbody>
+</table>
 
 
 

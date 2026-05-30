@@ -2,118 +2,122 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/architecture/architecture/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/configuration/reference/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/admin-password-recovery/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/admin-ui/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/backup-restore/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/chat-memory/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
+    </url>
+    <url>
+         <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/configuration/</loc>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/connection-management/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/encryption/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/high-availability/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/iam/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/job-lifecycle/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/llm-backend/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/multi-agent-platform/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/prompt-library/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/server-side-export/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/storage-backends/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/temp-file-storage/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/tool-integration/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/features/worker-python-runtime/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/installation/ha-cluster/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/installation/install/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/installation/prerequisites/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/installation/running/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/operations/backup-restore/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/operations/monitoring/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/operations/retention/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/operations/troubleshooting/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
          <loc>https://cloudcheflabs.github.io/mium-docs/1.0.0/security/hardening/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-05-30</lastmod>
     </url>
 </urlset>
