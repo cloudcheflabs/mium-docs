@@ -8,13 +8,9 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/architecture/architecture/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/nic-fail-safety/">
       
       
-        <link rel="prev" href="../..">
-      
-      
-        <link rel="next" href="../../installation/prerequisites/">
       
       
         
@@ -25,7 +21,7 @@
     
     
       
-        <title>Mium Architecture - Mium</title>
+        <title>NIC Silent-Fail Safety - Mium</title>
       
     
     
@@ -78,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture" class="md-skip">
+        <a href="#nic-silent-fail-safety" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Mium Architecture
+              NIC Silent-Fail Safety
             
           </span>
         </div>
@@ -233,13 +229,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../architecture/architecture/" class="md-tabs__link">
           
   
   
@@ -299,7 +293,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../features/configuration/" class="md-tabs__link">
+        <a href="../configuration/" class="md-tabs__link">
           
   
   
@@ -416,31 +410,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -458,7 +447,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -473,37 +462,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Mium Architecture
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../architecture/architecture/" class="md-nav__link">
         
   
   
@@ -519,153 +481,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#mium-architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mium Architecture
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Mium Architecture">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#master" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Master
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#worker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Worker
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#communication-architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Communication Architecture
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cluster-coordination" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Cluster Coordination
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#llm-backend-abstraction" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        LLM Backend Abstraction
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ontul-tool-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Ontul Tool Integration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#data-stores" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Data Stores
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#external-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        External Dependencies
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#client-interfaces" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Client Interfaces
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#key-design-principles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Key Design Principles
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -995,7 +810,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/configuration/" class="md-nav__link">
+      <a href="../configuration/" class="md-nav__link">
         
   
   
@@ -1023,7 +838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/multi-agent-platform/" class="md-nav__link">
+      <a href="../multi-agent-platform/" class="md-nav__link">
         
   
   
@@ -1051,7 +866,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/llm-backend/" class="md-nav__link">
+      <a href="../llm-backend/" class="md-nav__link">
         
   
   
@@ -1079,7 +894,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/tool-integration/" class="md-nav__link">
+      <a href="../tool-integration/" class="md-nav__link">
         
   
   
@@ -1107,7 +922,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/job-lifecycle/" class="md-nav__link">
+      <a href="../job-lifecycle/" class="md-nav__link">
         
   
   
@@ -1135,7 +950,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/connection-management/" class="md-nav__link">
+      <a href="../connection-management/" class="md-nav__link">
         
   
   
@@ -1163,7 +978,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/chat-memory/" class="md-nav__link">
+      <a href="../chat-memory/" class="md-nav__link">
         
   
   
@@ -1191,7 +1006,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/prompt-library/" class="md-nav__link">
+      <a href="../prompt-library/" class="md-nav__link">
         
   
   
@@ -1219,7 +1034,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/storage-backends/" class="md-nav__link">
+      <a href="../storage-backends/" class="md-nav__link">
         
   
   
@@ -1247,7 +1062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/temp-file-storage/" class="md-nav__link">
+      <a href="../temp-file-storage/" class="md-nav__link">
         
   
   
@@ -1275,7 +1090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/server-side-export/" class="md-nav__link">
+      <a href="../server-side-export/" class="md-nav__link">
         
   
   
@@ -1303,7 +1118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/worker-python-runtime/" class="md-nav__link">
+      <a href="../worker-python-runtime/" class="md-nav__link">
         
   
   
@@ -1331,7 +1146,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/iam/" class="md-nav__link">
+      <a href="../iam/" class="md-nav__link">
         
   
   
@@ -1359,7 +1174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/admin-password-recovery/" class="md-nav__link">
+      <a href="../admin-password-recovery/" class="md-nav__link">
         
   
   
@@ -1387,7 +1202,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/encryption/" class="md-nav__link">
+      <a href="../encryption/" class="md-nav__link">
         
   
   
@@ -1415,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/high-availability/" class="md-nav__link">
+      <a href="../high-availability/" class="md-nav__link">
         
   
   
@@ -1443,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/backup-restore/" class="md-nav__link">
+      <a href="../backup-restore/" class="md-nav__link">
         
   
   
@@ -1471,7 +1286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/admin-ui/" class="md-nav__link">
+      <a href="../admin-ui/" class="md-nav__link">
         
   
   
@@ -1774,174 +1589,85 @@
 
 
 
-<h1 id="architecture">Architecture</h1>
-<p>Mium is the <strong>AI Agent Platform for Ontul</strong> — a Java-native, on-prem-first multi-agent platform purpose-built to give users natural-language access to data stored in Ontul. Mium without Ontul is meaningless; every capability — SQL analytics, job lifecycle, code generation — is designed around Ontul as the data engine. Over time Mium may grow into a control plane for the broader CCL stack, but Ontul is and will remain its foundational dependency.</p>
-<ul>
-<li><strong>Ontul-Native Analytics</strong>: Mium is purpose-built as the AI agent layer for Ontul. Users ask questions in natural language, and Mium's agent orchestrates SQL queries against Ontul to deliver analytical insights — aggregations, trend analysis, filtering, joins, and more.</li>
-<li><strong>Multi-Agent Orchestration</strong>: Planner/executor/specialist agent patterns with a pluggable LLM backend. The agent understands Ontul's schema and SQL dialect, automatically generating optimized queries for the user's analytical intent.</li>
-<li><strong>CCL Stack Integration</strong>: IAM, KMS, and connection credentials live in embedded RocksDB on each Master. Chat history, prompt library, and embeddings live in NeorunBase. Server-rendered export files are stored in any S3-compatible object store (ShannonStore, MinIO, AWS S3, etc.).</li>
-</ul>
-<h2 id="mium-architecture">Mium Architecture</h2>
-<p><img alt="Mium Architecture" src="../../images/architecture/mium-architecture.png" /></p>
-<p>Mium consists of two main deployable components: <strong>Master</strong> and <strong>Worker</strong>.</p>
-<h3 id="master">Master</h3>
-<p>The Master is the central coordination node — handling user sessions, administrative operations, and cluster state management.</p>
-<ul>
-<li><strong>Admin HTTP Server</strong>: Netty-based HTTP server serving the React Admin UI and REST API endpoints under <code>/admin/api/*</code>. JWT authentication (HMAC-SHA256) on all routes except <code>/health</code> and <code>/admin/auth/login</code>. HA routing: write requests on followers are transparently proxied to the leader.</li>
-<li><strong>IAM (AuthManager)</strong>: RocksDB-backed singleton IAM store managing users, groups, policies, companies, and organizations. AWS-style JSON policy evaluation with deny-by-default semantics.</li>
-<li><strong>ConnectionStore</strong>: Per-user encrypted credential vault for tool and LLM connections. Encrypted at rest via KMS envelope encryption (AES-256-GCM).</li>
-<li><strong>MemoryStore</strong>: Per-user persistent chat history stored in NeorunBase (<code>mium_chat_session</code> / <code>mium_chat_message</code> tables).</li>
-<li><strong>PromptStore</strong>: Per-user saved-prompt library stored in NeorunBase (<code>mium_prompt</code> table).</li>
-<li><strong>EmbeddingStore</strong>: Vector store for embedding-based retrieval stored in NeorunBase using <code>VECTOR(N)</code> columns.</li>
-<li><strong>KMS (MiumKmsProvider)</strong>: Built-in envelope encryption service with versioned Key Encryption Keys (KEKs). PBKDF2-SHA256 master key derivation with 200K iterations.</li>
-<li><strong>AgentLoop</strong>: Multi-action dispatch over a strict-JSON protocol. Actions: <code>query</code>, <code>submit_batch</code>, <code>submit_streaming</code>, <code>job_status</code>, <code>job_logs</code>, <code>kill_job</code>, <code>list_jobs</code>, <code>list_history</code>, <code>generate_code</code>.</li>
-<li><strong>Admin Endpoints</strong>: Auth, IAM CRUD, connection management, KMS key management, chat session management, server-side export dispatch, temp-file S3 settings, monitoring.</li>
-</ul>
-<h3 id="worker">Worker</h3>
-<p>The Worker is the execution node that handles LLM calls, tool execution, and server-side file rendering.</p>
-<ul>
-<li><strong>Tool Execution</strong>: Receives <code>EXECUTE_TOOL</code> opcodes from the Master and runs Ontul SQL queries using per-user credentials from the ConnectionStore.</li>
-<li><strong>LLM Execution</strong>: Receives <code>EXECUTE_AGENT</code> opcodes and drives LLM inference via the pluggable LLM backend.</li>
-<li><strong>Export Rendering</strong>: Receives <code>EXECUTE_EXPORT</code> opcodes and runs Python scripts (openpyxl / reportlab / python-pptx) to render XLSX / PDF / PPTX files. The rendered file is envelope-encrypted and uploaded to S3. The Master then serves the download to the user.</li>
-<li><strong>Metrics Reporting</strong>: Reports CPU, heap, and thread count metrics to the Master via the NIO protocol.</li>
-<li><strong>Log Tailing</strong>: Streams real-time logs to the Admin UI for observability.</li>
-<li><strong>Service Registration</strong>: Registers as an ephemeral ZooKeeper node — automatic detection of joins and failures.</li>
-</ul>
-<h3 id="communication-architecture">Communication Architecture</h3>
-<p>Mium uses a custom NIO-based binary protocol for all internal communication between nodes. The wire format carries a length prefix, a correlation id, a 2-byte opcode, and a flags byte before the payload. Opcodes cover cluster control, state synchronization between the leader and followers, agent/tool/export execution dispatch, and observability. The control plane is pure <code>java.nio</code> (Selector-based) — no Netty in this layer.</p>
-<h3 id="cluster-coordination">Cluster Coordination</h3>
-<p>Mium uses Apache ZooKeeper (via Curator) for:</p>
-<ul>
-<li><strong>Service Discovery</strong>: Masters and Workers register as ephemeral nodes under <code>/mium/masters/&lt;nodeId&gt;</code> and <code>/mium/workers/&lt;nodeId&gt;</code>, enabling automatic detection of node joins and failures.</li>
-<li><strong>Leader Election</strong>: Curator LeaderLatch elects a primary Master. On leader failure, a new leader is automatically elected and reloads persisted state from RocksDB.</li>
-<li><strong>Cluster Readiness</strong>: The leader sets a <code>leader-ready</code> flag in ZK after seeding KMS keys. Non-leader Masters and Workers watch for this flag, then pull KMS + IAM + ConnectionStore from the leader. Each node marks itself <code>ready=true</code> in ZK after all three stores are synced. The leader polls ZK and accepts user requests only when every registered node is ready. If any node becomes unready, the leader stops accepting requests until the cluster is whole again.</li>
-<li><strong>State Replication</strong>: The leader Master replicates IAM, KMS, and ConnectionStore to follower Masters and Workers via NIO sync messages. Memory, Prompt, and Embedding data live in NeorunBase and do not require Mium-side replication.</li>
-</ul>
-<h3 id="llm-backend-abstraction">LLM Backend Abstraction</h3>
-<p>Mium decouples from any single LLM vendor through a pluggable <code>LlmBackend</code> interface:</p>
-<ul>
-<li><strong>LlmBackendFactory</strong>: Builds backends from stored connections, so each user can connect their own LLM provider.</li>
-<li><strong>Strict JSON Protocol</strong>: All LLM interactions use structured JSON replies — no vendor-specific tool APIs.</li>
-<li><strong>Shipped backends</strong>: <code>AnthropicLlmBackend</code> (Anthropic Claude) and <code>OllamaLlmBackend</code> (local / self-hosted Ollama). Embedding backends: <code>OllamaEmbeddingBackend</code>.</li>
-</ul>
-<h3 id="ontul-tool-integration">Ontul Tool Integration</h3>
-<p>Mium's primary tool is <strong>Ontul SQL</strong> — enabling LLM-driven data analysis against Ontul:</p>
-<ul>
-<li><strong>Tool SPI</strong>: The <code>Tool</code> interface defines how Ontul is exposed to the LLM agent. The Ontul tool provides a <code>sqlReference()</code> that the agent loop injects into the LLM system prompt, enabling the LLM to understand Ontul's schema and SQL dialect.</li>
-<li><strong>Natural Language to SQL</strong>: Users ask analytical questions in natural language. The agent translates these into optimized SQL queries against Ontul.</li>
-<li><strong>Per-User Credentials</strong>: The Ontul tool uses credentials from the user's ConnectionStore entry. Mium does NOT federate IAM with Ontul — Ontul's own access control decides what data the user can access.</li>
-</ul>
-<h3 id="data-stores">Data Stores</h3>
-<table>
-<thead>
-<tr>
-<th>Store</th>
-<th>Backend</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>IAM</td>
-<td>RocksDB (embedded)</td>
-<td>Users, groups, policies, companies, organizations</td>
-</tr>
-<tr>
-<td>KMS</td>
-<td>RocksDB (embedded)</td>
-<td>Master key bundle with versioned data encryption keys</td>
-</tr>
-<tr>
-<td>ConnectionStore</td>
-<td>RocksDB (embedded)</td>
-<td>Per-user tool/LLM credentials (KMS-encrypted at rest)</td>
-</tr>
-<tr>
-<td>MemoryStore</td>
-<td>NeorunBase</td>
-<td>Per-user chat sessions and messages</td>
-</tr>
-<tr>
-<td>PromptStore</td>
-<td>NeorunBase</td>
-<td>Per-user saved prompt library</td>
-</tr>
-<tr>
-<td>EmbeddingStore</td>
-<td>NeorunBase (VECTOR)</td>
-<td>Vector store for embedding-based retrieval</td>
-</tr>
-<tr>
-<td>TempFileStore</td>
-<td>S3-compatible</td>
-<td>Encrypted ciphertext of server-rendered exports</td>
-</tr>
-</tbody>
-</table>
-<p>IAM, KMS, and ConnectionStore live on embedded RocksDB because they bootstrap the cluster itself — they cannot depend on an external database that hasn't started yet. Memory, Prompt, Embedding, and TempFile stores use shared infrastructure (NeorunBase and S3-compatible storage), keeping Masters and Workers stateless for those data types.</p>
-<h3 id="external-dependencies">External Dependencies</h3>
-<table>
-<thead>
-<tr>
-<th>Dependency</th>
-<th>Required</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Ontul</td>
-<td>Yes</td>
-<td>The data engine Mium exists to serve. Without Ontul, Mium has nothing to query.</td>
-</tr>
-<tr>
-<td>ZooKeeper</td>
-<td>Yes</td>
-<td>Leader election, service discovery, cluster readiness</td>
-</tr>
-<tr>
-<td>NeorunBase</td>
-<td>Yes</td>
-<td>Memory, Prompt, Embedding storage</td>
-</tr>
-<tr>
-<td>S3-compatible storage</td>
-<td>Yes</td>
-<td>Server-rendered export file storage (ShannonStore, MinIO, AWS S3, etc.)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="client-interfaces">Client Interfaces</h3>
-<table>
-<thead>
-<tr>
-<th>Port</th>
-<th>Protocol</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>8090</td>
-<td>HTTP (Netty)</td>
-<td>Admin UI, REST API, chat endpoints, monitoring</td>
-</tr>
-<tr>
-<td>Internal</td>
-<td>Custom NIO</td>
-<td>Internal cluster communication (Master-Master, Master-Worker)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="key-design-principles">Key Design Principles</h3>
+<h1 id="nic-silent-fail-safety">NIC Silent-Fail Safety</h1>
+<p>Mium's internal NIO plane survives the trickiest failure mode in distributed systems: <strong>a peer whose NIC dies after the socket was opened, but ZooKeeper hasn't expired the session yet</strong>. From ZooKeeper's POV the node is alive. From every neighbour's POV its TCP connection is also alive — the kernel does not surface a half-open peer for tens of seconds, sometimes minutes, while it exhausts its retransmit budget. RPCs that route to that peer hang. Membership-driven failover doesn't fire because membership is still healthy.</p>
+<p>The 1.0.0 release closes this gap on <strong>both ends</strong> of every internal RPC — <code>InternalNioClient</code> (used by every master → worker and worker → master call) and <code>InternalNioServer</code> (the response side).</p>
+<h2 id="why-the-legacy-nio-loop-is-dangerous">Why the legacy NIO loop is dangerous</h2>
+<p>A blocking <code>SocketChannel</code>-based loop in three places hangs on a silently-dead peer:</p>
 <ol>
-<li><strong>Ontul-First</strong> — Mium exists to serve Ontul. Every feature — natural-language SQL, job lifecycle, code generation — is built around Ontul as the data engine. Ontul is a hard dependency, not an optional tool.</li>
-<li><strong>Sovereign AI</strong> — All state lives on your infrastructure. Users bring their own LLM API keys. No data leaves your network unless you point the LLM connection at a hosted provider.</li>
-<li><strong>LLM-agnostic</strong> — Pluggable backend interface with strict JSON protocol. Switch LLM providers without changing application code.</li>
-<li><strong>Worker-centric compute</strong> — LLM calls, tool execution, and file rendering all run on Workers. Masters coordinate but don't do heavy lifting.</li>
-<li><strong>Cluster-wide readiness</strong> — The leader accepts requests only when every node has synced its state. If a node drops, the leader re-validates before resuming.</li>
-<li><strong>HA by default</strong> — Multi-Master leader election with automatic state replication for IAM, KMS, and ConnectionStore. Write-only-on-leader with transparent proxying.</li>
+<li><strong><code>connect()</code></strong> in blocking mode parks the caller inside the TCP three-way handshake until the OS retransmit budget drains. On Linux this is dictated by <code>tcp_syn_retries</code> and runs ~60–130 seconds by default.</li>
+<li><strong><code>channel.write()</code></strong> parks the caller the instant the kernel send buffer fills. For a peer that stopped draining, the buffer never frees up until the OS gives up — which is the <em>retransmit</em> budget, not the SYN budget. Linux <code>tcp_retries2</code> ranges from 5 to 15 minutes depending on tuning.</li>
+<li><strong><code>channel.read()</code></strong> in blocking mode is similar — no application-visible deadline.</li>
 </ol>
+<p>A single hung writer takes its calling thread out of service. If that thread is the master's heartbeat-sweep loop or a worker's coordinator-pull, the entire cluster appears wedged from outside even though only one peer is sick.</p>
+<h2 id="what-changed-in-the-client">What changed in the client</h2>
+<p><code>com.cloudcheflabs.mium.protocol.internal.InternalNioClient</code>:</p>
+<ul>
+<li><strong>Non-blocking for its lifetime.</strong> <code>connect()</code> opens the channel in non-blocking mode, registers <code>OP_CONNECT</code> on a per-call <code>Selector</code>, and waits for completion bounded by a 10s deadline. Then the channel <strong>stays</strong> non-blocking — no <code>configureBlocking(true)</code> flip on return, which used to race the reader thread.</li>
+<li><strong>Selector-driven reader.</strong> <code>readLoop()</code> waits on <code>OP_READ</code> with a 200ms tick so an externally-set <code>connected=false</code> propagates within a tick. No more blocking <code>channel.read()</code> calls that the test harness can't shut down.</li>
+<li><strong>Bounded <code>sendRequest</code>.</strong> Writers serialise under a <code>writeLock</code>, open a per-call <code>Selector</code>, register <code>OP_WRITE</code>, and bound the write with a 10s deadline. On timeout, <code>connected.set(false)</code> flips so the pool re-mints the next time around. The same channel can sit in the reader's selector (<code>OP_READ</code>) while a per-call writer selector (<code>OP_WRITE</code>) is active — Java NIO supports multiple selector registrations per channel as long as each selector sees it at most once.</li>
+<li><strong>SO_KEEPALIVE + TCP_NODELAY</strong> enabled on every new socket so the OS itself eventually flags long-dead peers, independent of any application protocol.</li>
+</ul>
+<p>Both deadlines are overridable per JVM:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>-Dmium.protocol.internal.connect.timeout.seconds=10
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>-Dmium.protocol.internal.write.timeout.seconds=10
+</code></pre></div>
+<h2 id="what-changed-in-the-server">What changed in the server</h2>
+<p><code>com.cloudcheflabs.mium.protocol.internal.InternalNioServer</code>:</p>
+<ul>
+<li>The accept path already left client channels non-blocking — the server uses a Selector reactor.</li>
+<li>The <strong>response write</strong> path previously did a bare <code>while (buf.hasRemaining()) channel.write(buf);</code> under a <code>synchronized(channel)</code> block. In non-blocking mode <code>channel.write()</code> returns 0 the moment the send buffer is full — the old loop <strong>busy-spun forever</strong> on a wedged peer because there was no <code>Selector</code> to wait on writability.</li>
+<li>The new path factors response and error-response into a single <code>writeBoundedResponse()</code> helper that opens a per-call <code>Selector(OP_WRITE)</code> and bounds the loop with the same 10s deadline as the client. On timeout it throws <code>IOException</code> and the worker thread frees up.</li>
+</ul>
+<p>Same override:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>-Dmium.protocol.internal.write.timeout.seconds=10
+</code></pre></div>
+<h2 id="failure-handling-invariants">Failure-handling invariants</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Old behaviour</th>
+<th>1.0.0 behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Peer NIC dies mid-handshake</td>
+<td><code>connect()</code> hangs for OS SYN budget (~60–130s)</td>
+<td><code>SocketTimeoutException</code> raised at 10s</td>
+</tr>
+<tr>
+<td>Peer NIC dies after socket established, mid-write</td>
+<td><code>channel.write()</code> hangs for OS retransmit budget (5–15 min)</td>
+<td><code>SocketTimeoutException</code> raised at 10s; caller sees a fast failure and can fall back</td>
+</tr>
+<tr>
+<td>Peer process paused (kernel still ACKs but app doesn't drain)</td>
+<td>Same as above — kernel send buffer fills, then writer blocks indefinitely</td>
+<td><code>Selector.select()</code> wakes on the 10s deadline; writer fails out cleanly</td>
+</tr>
+<tr>
+<td>Reader thread in a long blocking <code>read()</code> during shutdown</td>
+<td>Reader could not be interrupted cleanly</td>
+<td>200ms select tick — next loop iteration sees <code>connected=false</code> and exits</td>
+</tr>
+</tbody>
+</table>
+<h2 id="verifying-it-on-your-stack">Verifying it on your stack</h2>
+<p><code>tests/test-nic-failure-channel-health.sh</code> (shipped with the 1.0.0 release) drives the failure on a 2-node compose:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>tests/docker-compose-mium.yml<span class="w"> </span>up<span class="w"> </span>-d
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>docker<span class="w"> </span>pause<span class="w"> </span>mium-worker-2<span class="w">          </span><span class="c1"># silent NIC sim</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>./tests/test-nic-failure-channel-health.sh<span class="w">    </span><span class="c1"># expect PASS</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>docker<span class="w"> </span>unpause<span class="w"> </span>mium-worker-2
+</code></pre></div>
+<p>The test hammers the surviving master's admin endpoint while one peer is paused. With the fix the master returns <code>200 OK</code> for every call within sub-second latencies; without it the master would block, often for minutes, on the dead peer's internal RPC.</p>
+<h2 id="operational-notes">Operational notes</h2>
+<ul>
+<li><strong>Defaults are conservative</strong>. 10 seconds is far below any realistic peer-to-peer round trip on a healthy cluster but above the worst-case TCP retransmit on a busy network. If you run with very low-latency expectations, tighten the deadlines via the JVM flags above.</li>
+<li><strong>No backwards-compatible setting reverts to the old blocking behaviour</strong>. There is no safe value here — the old behaviour was always a hang.</li>
+<li>The fix changes only the <em>internal</em> RPC plane. External clients (Arrow Flight, Postgres wire, S3 wire, HTTP admin, etc.) keep their existing transport-specific timeouts.</li>
+</ul>
 
 
 
