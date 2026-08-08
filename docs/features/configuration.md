@@ -12,6 +12,8 @@ System Property (-D) > Environment Variable > properties file
 
 So a value baked into `mium.properties` can be overridden by an environment variable, which in turn can be overridden by a `-D` system property passed to the JVM.
 
+The properties file itself is located in this order: (1) an explicit `-Dmium.config.file=…` path, (2) `./conf/mium.properties` relative to the process working directory, (3) the bundled `mium.properties` on the classpath. The packaged `bin/*` scripts pass `-Dmium.config.file=$base_dir/conf/mium.properties`, so a distribution always uses its `conf/` copy.
+
 ## Environment Variable Naming
 
 To set a property via an environment variable, take the property key, replace every `.` with `_`, and uppercase it:
@@ -97,7 +99,7 @@ NeorunBase is a hard dependency — the per-user chat Memory store, Prompt store
 
 | Property | Default | Description |
 |---|---|---|
-| `mium.embedding.dim` | `768` | Vector dimension for the NeorunBase embedding store; becomes the width of the `VECTOR(dim)` column. Must exactly match the embedding model's output dimension. Cannot be changed after the table is created without recreating it. The embedding store is only wired up when `mium.embedding.enabled` is true (defaults to false). |
+| `mium.embedding.dim` | `1024` | Vector dimension for the NeorunBase embedding store; becomes the width of the `VECTOR(dim)` column. The code default in `MiumConfig` is `1024` (matches the `bge-m3` model); note the shipped `mium.properties` template overrides it to `768`, so the effective default depends on whether you deploy with the template. Must exactly match the embedding model's output dimension. Cannot be changed after the table is created without recreating it. The embedding store is only wired up when `mium.embedding.enabled` is true (defaults to false). |
 
 ## Retention
 
@@ -161,3 +163,12 @@ These keys are not listed in the shipped `mium.properties` but are honoured when
 | Property | Default | Description |
 |---|---|---|
 | `mium.embedding.enabled` | `false` | When true, wires up the NeorunBase embedding (VECTOR) store. Required before `mium.embedding.dim` and embedding TTL take effect. |
+| `mium.embedding.clip.enabled` | `false` | When true, wires the CLIP image-embedding backend alongside the text backend. Requires `mium.embedding.enabled=true`. |
+| `mium.embedding.python` | `python3` | Python interpreter used to run the on-worker embedding daemons (bge-m3 / CLIP). |
+| `mium.embedding.hf.home` | _(empty)_ | Overrides `HF_HOME` — the HuggingFace cache directory for downloaded model weights. Empty leaves the interpreter's default. |
+| `mium.memory.compaction.threshold` | `100` | Compact a chat session once it grows past this many turns. `<= 0` disables LLM-driven compaction. See [Chat & Memory](chat-memory.md). |
+| `mium.memory.compaction.keepLatest` | `40` | Number of most-recent turns kept verbatim when a session is compacted; older turns are replaced by a single LLM summary. |
+| `mium.memory.compaction.maxPerRun` | `5` | Max number of sessions compacted per housekeeping tick, to bound LLM cost per sweep. |
+| `mium.admin.socket.enabled` | `true` | Enables the local Unix-domain admin recovery socket used by `bin/mium-cli.sh iam:reset-password`. See [Admin Password Recovery](admin-password-recovery.md). |
+| `mium.admin.socket.path` | `${mium.base.data.dir}/admin.sock` | Filesystem path of the admin recovery socket. |
+| `mium.iam.audit.dir` | `${mium.base.data.dir}/iam-audit` | Directory for the append-only IAM audit log (records admin password resets). |

@@ -9,9 +9,13 @@ Mium renders server-side export files (XLSX / PDF / PPTX) on **Workers** and sto
 3. The Worker runs the Python render script, envelope-encrypts the output, and PUTs it to S3.
 4. The Worker returns the S3 handle to the Master.
 5. The Master includes a `downloadUrl` in the chat response.
-6. The user clicks the download link → `GET /admin/api/export/download?handle=...` → Master fetches from S3, decrypts, streams to the user, and deletes the S3 object.
+6. The user clicks the download link → `GET /api/export/download?handle=...` → Master fetches from S3, decrypts, and streams to the user. The object is **not** deleted on download — the same link stays valid for re-downloads (it is shared in chat history) and is reaped later by the retention sweep.
 
 If no Worker is available, the Master returns `503 Service Unavailable` — it does not render locally.
+
+## Retention
+
+Exported objects are kept for `mium.tempfile.ttl.days` (default `10`) and removed by the leader's periodic `sweepExpired` sweep (same cadence as memory/prompt retention, `mium.retention.sweep.interval.seconds`). Set the TTL to `0` to disable Mium's sweep and rely on S3 lifecycle rules instead. (The separate direct-API path `POST /api/export`, used outside the chat flow, streams the file and deletes it immediately after — it does not persist a reusable link.)
 
 ## S3 Configuration
 

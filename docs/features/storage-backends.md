@@ -31,7 +31,7 @@ mium.neorunbase.password  = ...
 mium.neorunbase.schema    = mium
 ```
 
-Tables (`mium_chat_session`, `mium_chat_message`, `mium_prompt`, `mium_embedding`) are auto-created on startup.
+Tables (`mium_chat_session`, `mium_chat_message`, `mium_prompt`, `mium_embedding`) are auto-created on startup. `mium_chat_session` carries a `workspace VARCHAR(32) DEFAULT 'chat'` column so a session belongs to a workspace (`chat` / `analyze` / `dev`). Secondary indexes are deliberately **not** created (NeorunBase secondary-index population is not relied on); the stores use full scans instead.
 
 ## S3 Configuration
 
@@ -48,3 +48,16 @@ S3 credentials live in the ConnectionStore (not in `mium.properties`). The bucke
 ## Replication
 
 Only IAM, KMS, and ConnectionStore are replicated between Mium nodes via internal NIO sync messages. The leader pushes snapshots to followers, and followers self-heal by periodically pulling. Memory, Prompt, Embedding, and TempFile stores do not require Mium-side replication because NeorunBase and S3 handle distribution natively.
+
+## Retention & Data Management
+
+The leader runs a periodic retention sweep (`mium.retention.sweep.interval.seconds`, default hourly) that applies the configured TTLs to the NeorunBase stores (`sweepExpired` on memory, prompt, and embedding), enforces the per-user session cap, and reaps expired S3 temp files. See [Configuration](configuration.md).
+
+Users and admins can also wipe stored data directly via the REST layer:
+
+| Method | Path | Purpose |
+|---|---|---|
+| `DELETE` | `/api/storage/me` | Wipe the caller's own data. Optional body `{ "kinds": ["memory","prompt","embedding"] }` (default: all three). |
+| `DELETE` | `/api/storage/purge` | Admin-only (requires `SYSTEM:MANAGE_IAM` on `system:iam:*`). Wipes the store across all users. |
+
+Per-user embedding deletion is intentionally unsupported (embeddings are keyed on `(namespace, id)` with no owner column) — only the admin purge variant clears embeddings.

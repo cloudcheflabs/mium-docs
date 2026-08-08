@@ -3,7 +3,7 @@
 Mium is the **AI Agent Platform for Ontul** — a Java-native, on-prem-first multi-agent platform purpose-built to give users natural-language access to data stored in Ontul. Mium without Ontul is meaningless; every capability — SQL analytics, job lifecycle, code generation — is designed around Ontul as the data engine. Over time Mium may grow into a control plane for the broader CCL stack, but Ontul is and will remain its foundational dependency.
 
 - **Ontul-Native Analytics**: Mium is purpose-built as the AI agent layer for Ontul. Users ask questions in natural language, and Mium's agent orchestrates SQL queries against Ontul to deliver analytical insights — aggregations, trend analysis, filtering, joins, and more.
-- **Multi-Agent Orchestration**: Planner/executor/specialist agent patterns with a pluggable LLM backend. The agent understands Ontul's schema and SQL dialect, automatically generating optimized queries for the user's analytical intent.
+- **Agent Orchestration**: A single iterative agent loop over a pluggable LLM backend that understands Ontul's schema and SQL dialect, automatically generating optimized queries for the user's analytical intent. Planner/executor/specialist multi-agent patterns are on the roadmap (the `Agent` SPI is a placeholder for them today).
 - **CCL Stack Integration**: IAM, KMS, and connection credentials live in embedded RocksDB on each Master. Chat history, prompt library, and embeddings live in NeorunBase. Server-rendered export files are stored in any S3-compatible object store (ShannonStore, MinIO, AWS S3, etc.).
 
 ## Mium Architecture
@@ -16,14 +16,14 @@ Mium consists of two main deployable components: **Master** and **Worker**.
 
 The Master is the central coordination node — handling user sessions, administrative operations, and cluster state management.
 
-- **Admin HTTP Server**: Netty-based HTTP server serving the React Admin UI and REST API endpoints under `/admin/api/*`. JWT authentication (HMAC-SHA256) on all routes except `/health` and `/admin/auth/login`. HA routing: write requests on followers are transparently proxied to the leader.
+- **Admin HTTP Server**: Netty-based HTTP server serving the React Admin UI (at the root path) and REST API endpoints under `/api/*` with auth under `/auth/*`. The entire HTTP surface is re-prefixed only when `mium.admin.context.path` is set (e.g. to `/admin`); the default context path is empty. JWT authentication (HMAC-SHA256) on all routes except the public probes `/health`, `/ready`, and `/auth/login`. HA routing: write requests on followers are transparently proxied to the leader.
 - **IAM (AuthManager)**: RocksDB-backed singleton IAM store managing users, groups, policies, companies, and organizations. AWS-style JSON policy evaluation with deny-by-default semantics.
 - **ConnectionStore**: Per-user encrypted credential vault for tool and LLM connections. Encrypted at rest via KMS envelope encryption (AES-256-GCM).
 - **MemoryStore**: Per-user persistent chat history stored in NeorunBase (`mium_chat_session` / `mium_chat_message` tables).
 - **PromptStore**: Per-user saved-prompt library stored in NeorunBase (`mium_prompt` table).
 - **EmbeddingStore**: Vector store for embedding-based retrieval stored in NeorunBase using `VECTOR(N)` columns.
 - **KMS (MiumKmsProvider)**: Built-in envelope encryption service with versioned Key Encryption Keys (KEKs). PBKDF2-SHA256 master key derivation with 200K iterations.
-- **AgentLoop**: Multi-action dispatch over a strict-JSON protocol. Actions: `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`.
+- **AgentLoop**: Multi-action dispatch over a strict-JSON protocol. Actions: `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`, `list_catalogs`, `register_catalog`, `unregister_catalog`, `ontul_admin`, and `mium_admin` (which nests connection ops `list_connections` / `create_connection` / `delete_connection`).
 - **Admin Endpoints**: Auth, IAM CRUD, connection management, KMS key management, chat session management, server-side export dispatch, temp-file S3 settings, monitoring.
 
 ### Worker
@@ -33,13 +33,14 @@ The Worker is the execution node that handles LLM calls, tool execution, and ser
 - **Tool Execution**: Receives `EXECUTE_TOOL` opcodes from the Master and runs Ontul SQL queries using per-user credentials from the ConnectionStore.
 - **LLM Execution**: Receives `EXECUTE_AGENT` opcodes and drives LLM inference via the pluggable LLM backend.
 - **Export Rendering**: Receives `EXECUTE_EXPORT` opcodes and runs Python scripts (openpyxl / reportlab / python-pptx) to render XLSX / PDF / PPTX files. The rendered file is envelope-encrypted and uploaded to S3. The Master then serves the download to the user.
+- **Embedding Execution**: Receives `EXECUTE_EMBED` opcodes and runs a long-lived Python embedding daemon (bge-m3 text, optional CLIP image) to produce vectors for the EmbeddingStore.
 - **Metrics Reporting**: Reports CPU, heap, and thread count metrics to the Master via the NIO protocol.
 - **Log Tailing**: Streams real-time logs to the Admin UI for observability.
 - **Service Registration**: Registers as an ephemeral ZooKeeper node — automatic detection of joins and failures.
 
 ### Communication Architecture
 
-Mium uses a custom NIO-based binary protocol for all internal communication between nodes. The wire format carries a length prefix, a correlation id, a 2-byte opcode, and a flags byte before the payload. Opcodes cover cluster control, state synchronization between the leader and followers, agent/tool/export execution dispatch, and observability. The control plane is pure `java.nio` (Selector-based) — no Netty in this layer.
+Mium uses a custom NIO-based binary protocol for all internal communication between nodes. The wire format carries a length prefix, a correlation id, a 2-byte opcode, and a flags byte before the payload. Opcodes cover cluster control, state synchronization between the leader and followers, agent/tool/export/embedding execution dispatch, and observability. The control plane is pure `java.nio` (Selector-based) — no Netty in this layer.
 
 ### Cluster Coordination
 
@@ -56,7 +57,7 @@ Mium decouples from any single LLM vendor through a pluggable `LlmBackend` inter
 
 - **LlmBackendFactory**: Builds backends from stored connections, so each user can connect their own LLM provider.
 - **Strict JSON Protocol**: All LLM interactions use structured JSON replies — no vendor-specific tool APIs.
-- **Shipped backends**: `AnthropicLlmBackend` (Anthropic Claude) and `OllamaLlmBackend` (local / self-hosted Ollama). Embedding backends: `OllamaEmbeddingBackend`.
+- **Shipped backends**: `AnthropicLlmBackend` (Anthropic Claude) and `OllamaLlmBackend` (local / self-hosted Ollama). Embedding backends: `OllamaEmbeddingBackend`, and `WorkerEmbeddingBackend`, which drives the Worker-side Python embedding daemons (bge-m3 text / CLIP image).
 
 ### Ontul Tool Integration
 

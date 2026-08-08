@@ -23,9 +23,14 @@ Mium's agent loop turns each user message into one or more LLM calls plus the to
 | `submit_batch` / `submit_streaming` | Submit a long-running Ontul job |
 | `job_status` / `job_logs` / `kill_job` | Operate on a running or finished job by id |
 | `list_jobs` / `list_history` | Active and historical job lists |
-| `generate_code` | Produce Ontul SDK source (Java BATCH / STREAMING / CLASS, Python) the user can copy |
+| `generate_code` | Produce Ontul SDK source (`jobType` = `BATCH` / `STREAMING` / `CLASS` / `PYTHON`) the user can copy |
+| `list_catalogs` / `register_catalog` / `unregister_catalog` | Manage Ontul catalogs |
+| `ontul_admin` | Generic passthrough to the Ontul Admin REST API |
+| `mium_admin` | Manage the user's own connections (`list_connections` / `create_connection` / `delete_connection`) |
 
 See [Job Lifecycle](job-lifecycle.md) for the job-related actions in detail.
+
+Today Mium runs a **single iterative agent loop** (`AgentLoop`), not multiple cooperating agents. The `Agent` SPI is a placeholder for planner/executor/specialist multi-agent orchestration, which is on the roadmap rather than shipped.
 
 ### Tools
 
@@ -39,9 +44,9 @@ Each user manages their own connections to external systems. Credentials are sto
 
 ## How It Works
 
-1. User sends a message via the Chat UI or `/admin/api/chat`.
+1. User sends a message via the Chat UI or `/api/chat`.
 2. The agent loop builds a system prompt that includes the available tool descriptions and the user's rolling chat context.
-3. The loop calls the user's configured LLM (Anthropic Claude or Ollama) and parses the strict-JSON response.
+3. The loop calls the user's configured LLM (currently Anthropic Claude — the chat loop requires a `tool=anthropic` connection) and parses the strict-JSON response.
 4. If the action requires a tool call, Mium dispatches it — locally on the master or offloaded to a Worker via `EXECUTE_AGENT` / `EXECUTE_TOOL` — using the user's encrypted credentials.
 5. Tool results feed back to the LLM (when more iterations are needed) or directly to the user.
 6. The conversation is persisted in the MemoryStore so the next turn has the full context.

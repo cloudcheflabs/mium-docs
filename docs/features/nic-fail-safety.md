@@ -16,7 +16,7 @@ A single hung writer takes its calling thread out of service. If that thread is 
 
 ## What changed in the client
 
-`com.cloudcheflabs.mium.protocol.internal.InternalNioClient`:
+`com.cloudcheflabs.mium.protocol.InternalNioClient`:
 
 - **Non-blocking for its lifetime.** `connect()` opens the channel in non-blocking mode, registers `OP_CONNECT` on a per-call `Selector`, and waits for completion bounded by a 10s deadline. Then the channel **stays** non-blocking — no `configureBlocking(true)` flip on return, which used to race the reader thread.
 - **Selector-driven reader.** `readLoop()` waits on `OP_READ` with a 200ms tick so an externally-set `connected=false` propagates within a tick. No more blocking `channel.read()` calls that the test harness can't shut down.
@@ -32,11 +32,11 @@ Both deadlines are overridable per JVM:
 
 ## What changed in the server
 
-`com.cloudcheflabs.mium.protocol.internal.InternalNioServer`:
+`com.cloudcheflabs.mium.protocol.InternalNioServer`:
 
 - The accept path already left client channels non-blocking — the server uses a Selector reactor.
 - The **response write** path previously did a bare `while (buf.hasRemaining()) channel.write(buf);` under a `synchronized(channel)` block. In non-blocking mode `channel.write()` returns 0 the moment the send buffer is full — the old loop **busy-spun forever** on a wedged peer because there was no `Selector` to wait on writability.
-- The new path factors response and error-response into a single `writeBoundedResponse()` helper that opens a per-call `Selector(OP_WRITE)` and bounds the loop with the same 10s deadline as the client. On timeout it throws `IOException` and the worker thread frees up.
+- The new path factors response and error-response into a single `writeResponse()` helper that opens a per-call `Selector(OP_WRITE)` and bounds the loop with the same 10s deadline as the client. On timeout it throws `IOException` and the worker thread frees up.
 
 Same override:
 
@@ -53,18 +53,18 @@ Same override:
 | Peer process paused (kernel still ACKs but app doesn't drain) | Same as above — kernel send buffer fills, then writer blocks indefinitely | `Selector.select()` wakes on the 10s deadline; writer fails out cleanly |
 | Reader thread in a long blocking `read()` during shutdown | Reader could not be interrupted cleanly | 200ms select tick — next loop iteration sees `connected=false` and exits |
 
+The exception type differs by side: the **client** (`InternalNioClient`) raises `SocketTimeoutException` on a write/connect deadline; the **server** (`InternalNioServer`) raises a plain `IOException` when its bounded response write times out. Both free the calling thread at the 10s deadline.
+
 ## Verifying it on your stack
 
 `tests/test-nic-failure-channel-health.sh` (shipped with the 1.0.0 release) drives the failure on a 2-node compose:
 
 ```bash
-docker compose -f tests/docker-compose-mium.yml up -d
-docker pause mium-worker-2          # silent NIC sim
-./tests/test-nic-failure-channel-health.sh    # expect PASS
-docker unpause mium-worker-2
+docker compose -f tests/docker-compose-nic-fail-test.yml up -d --build
+./tests/test-nic-failure-channel-health.sh    # pauses/unpauses mium-nic-worker-2 itself; expect PASS
 ```
 
-The test hammers the surviving master's admin endpoint while one peer is paused. With the fix the master returns `200 OK` for every call within sub-second latencies; without it the master would block, often for minutes, on the dead peer's internal RPC.
+The script itself `docker pause`s `mium-nic-worker-2` (the silent-NIC simulation) and `docker unpause`s it on exit, then hammers the surviving master's `/health` route (via `docker exec`) while the peer is paused. With the fix the master returns `200 OK` for every call within sub-second latencies; without it the master would block, often for minutes, on the dead peer's internal RPC.
 
 ## Operational notes
 

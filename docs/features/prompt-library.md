@@ -11,7 +11,7 @@ A saved prompt has:
 - Optional tags
 - Created / updated timestamps
 
-Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate `SYSTEM:READ_PROMPT` / `SYSTEM:WRITE_PROMPT` policy.
+Per-user isolation is enforced at the store level — every read and write is owner-scoped, and `getPrompt` throws on an owner mismatch, so one user cannot see or modify another user's prompts. The `SYSTEM:READ_PROMPT` / `SYSTEM:WRITE_PROMPT` actions exist in the vocabulary, but because the PromptStore has no HTTP surface yet (below) nothing currently gates access through them; isolation comes from the owner-scoped store queries.
 
 ## Storage
 
@@ -21,9 +21,14 @@ PromptStore persists prompts in **NeorunBase** (`mium_prompt` table). Every Mium
 
 The store enforces:
 
-- **Per-user prompt cap** — oldest prompts are evicted beyond a configured count (`mium.prompt.max.per.user`).
-- **Body size cap** — bodies above `mium.prompt.max.body.bytes` are rejected at write time.
+- **Per-user prompt cap** — once a user reaches `mium.prompt.user.maxPrompts` (default `0` = unlimited), further `createPrompt` calls are **rejected** (there is no eviction of older prompts).
+- **Body size cap** — bodies above `mium.prompt.body.maxBytes` (default `65536` = 64 KiB) are rejected at write time.
+- **TTL sweep** — when `mium.prompt.ttl.days` > 0, the leader's retention sweep deletes prompts older than the TTL (default `0` = disabled).
+
+## Semantic Search (in code)
+
+A `PromptSemanticIndex` already implements cosine-similarity search over a per-user `prompt:` namespace, embedding each prompt's `name + body + tags` with write-through upsert/delete. It is wired to the embedding subsystem, so semantic prompt lookup is implemented at the store/index level even though no user-facing surface exposes it yet.
 
 ## Future Surface
 
-Today the PromptStore is reachable through the REST layer; an Admin UI page for browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") is on the roadmap. The agent loop will eventually expose a `save_prompt` action so the LLM itself can persist a prompt the user asks it to remember.
+The PromptStore is initialized on the master but is **not** yet reachable over REST — there is no `/api/prompts` endpoint and no Admin UI page. Browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") and a `save_prompt` agent-loop action so the LLM can persist a prompt on request are on the roadmap.

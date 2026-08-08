@@ -27,7 +27,7 @@ rotation.
 ┌────────────────────┐   JSON over UDS    ┌────────────────────┐
 │  mium-cli          │ ─────────────────▶ │  Master (running)  │
 │  iam:reset-password│                    │   AuthManager      │
-└────────────────────┘                    │   .adminResetPwd() │
+└────────────────────┘                    │ .adminResetPassword│
          ▲                                │                    │
          │ stdout: new password           │  saveToDb()        │
          │ (one-time)                     │  cluster sync push │
@@ -87,8 +87,9 @@ The CLI resolves the socket path in this order:
 
 1. `--socket /path/to/admin.sock` command-line flag
 2. `MIUM_ADMIN_SOCKET` environment variable
-3. `mium.admin.socket.path` in `conf/mium.properties`
-4. `<mium.base.data.dir>/admin.sock` (the default that matches the master)
+3. the built-in default `data/admin.sock` (relative to the CLI's working directory)
+
+The `mium.admin.socket.path` / `mium.iam.audit.dir` properties above configure the **master** side (where the socket is created and where the audit log is written); the CLI itself does not read `conf/mium.properties`. So if you relocate the socket via `mium.admin.socket.path`, pass the same path to the CLI with `--socket` (or `MIUM_ADMIN_SOCKET`).
 
 ## Security model
 

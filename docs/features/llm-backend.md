@@ -6,24 +6,22 @@ Mium decouples from any single LLM vendor through a pluggable `LlmBackend` inter
 
 The `LlmBackend` interface abstracts all LLM interactions:
 
-- **`AnthropicLlmBackend`** — Anthropic Claude (Messages API).
+- **`AnthropicLlmBackend`** — Anthropic Claude (Messages API). Default model `claude-opus-4-6` (override in the connection metadata).
 - **`OllamaLlmBackend`** — local or self-hosted Ollama; supports any model that Ollama serves.
 - **`LlmBackendFactory`** — builds a backend instance from a stored connection (`tool=anthropic` or `tool=ollama`), pulling the API key / endpoint out of the user's encrypted ConnectionStore entry.
 
-Each user can configure their own LLM provider — one user might use Claude while another points at a self-hosted Ollama instance.
+Backends are one-shot / **non-streaming**: each `chat` call returns a complete reply.
+
+!!! note "Chat is Anthropic-only today"
+    Although the factory can build both backends, the chat **agent loop** currently resolves an `anthropic` connection only (`AgentLoop.run` requires a `tool=anthropic` connection and errors otherwise). `OllamaLlmBackend` exists but is not yet selectable as the chat LLM. Ollama's shipped, active role is embeddings (below).
 
 ## Strict JSON Protocol
 
-Mium does not use vendor-specific tool APIs (Anthropic `tool_use` or OpenAI function-calling). The agent loop instead instructs the LLM to respond with a strict JSON object describing the next action — `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, or `generate_code` (see [Job Lifecycle](job-lifecycle.md)). This keeps the agent loop and the tool layer portable across providers; switching providers is a matter of registering a different connection.
+Mium does not use vendor-specific tool APIs (Anthropic `tool_use` or OpenAI function-calling). The agent loop instead instructs the LLM to respond with a strict JSON object describing the next action — `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`, `list_catalogs`, `register_catalog`, `unregister_catalog`, `ontul_admin`, or `mium_admin` (see [Job Lifecycle](job-lifecycle.md)). This keeps the agent loop and the tool layer portable across providers; switching providers is a matter of registering a different connection.
 
 ## Embeddings
 
-For retrieval-augmented features — chat memory recall, prompt-library recall, code-generation few-shot pools, and cross-modal image search — Mium uses an embedding backend separate from the chat backend. Two implementations ship:
-
-- **`WorkerEmbeddingBackend`** (default) — the Master delegates inference to a Worker via the `EXECUTE_EMBED` opcode. The Worker runs long-running Python daemons (`bge-m3` for text, `clip-ViT-B-32` for multimodal) and reuses them across calls. Models hot-swap when an admin switches them in Settings → Embedding. See [Worker Python Runtime](worker-python-runtime.md).
-- **`OllamaEmbeddingBackend`** — alternative when an Ollama instance already serves embeddings. HTTP-based, no daemon to manage.
-
-Vector storage in either case is handled by the [Storage Backends](storage-backends.md) layer (NeorunBase `VECTOR(N)` columns).
+For retrieval-augmented features (e.g. few-shot pools used by code generation, and cross-session semantic recall), Mium uses an embedding backend separate from the chat backend. The shipped implementations are `OllamaEmbeddingBackend` (default model `nomic-embed-text`, 768 dim) and `WorkerEmbeddingBackend`, which drives the Worker's Python embedding daemons (`bge-m3` text / CLIP image). Vector storage is handled by the [Storage Backends](storage-backends.md) layer.
 
 ## Configuration
 

@@ -7,7 +7,7 @@ Mium provides fault tolerance and high availability through multi-Master leader 
 Multiple Masters can run simultaneously in a leader/follower configuration:
 
 - **Leader Election**: Apache ZooKeeper (via Curator LeaderLatch) elects a primary Master. The leader owns all write operations to the state stores (RocksDB).
-- **State Replication**: The leader Master replicates IAM, KMS, ConnectionStore, and MemoryStore state to follower Masters via the internal NIO protocol.
+- **State Replication**: The leader Master replicates IAM, KMS, and ConnectionStore state to follower Masters via the internal NIO protocol (opcodes `IAM_SYNC`, `KMS_SYNC`, `CONNECTION_SYNC`). Memory/Prompt/Embedding live in NeorunBase and are not Mium-replicated (their former `MEMORY_SYNC` / `PROMPT_SYNC` opcodes were retired).
 - **Automatic Failover**: If the leader Master fails, ZooKeeper elects a new leader, which reloads persisted state from RocksDB and resumes operations.
 - **Transparent Proxying**: Follower Masters can serve read requests. Write requests received by followers are transparently proxied to the leader via `LeaderRouter`.
 - **Self-Healing**: Followers periodically pull state snapshots from the leader to ensure consistency.
@@ -28,6 +28,9 @@ ZooKeeper node layout:
 
 ```
 /mium/
+  election/                (Curator LeaderLatch)
+  leader-ready             (flag set by the leader after seeding KMS)
+  cluster-ready            (flag set when every node is ready)
   masters/
     <nodeId-1>  (ephemeral)
     <nodeId-2>  (ephemeral)
