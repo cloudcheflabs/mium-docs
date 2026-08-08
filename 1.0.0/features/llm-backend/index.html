@@ -969,6 +969,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1725,29 +1736,7 @@
 <h2 id="strict-json-protocol">Strict JSON Protocol</h2>
 <p>Mium does not use vendor-specific tool APIs (Anthropic <code>tool_use</code> or OpenAI function-calling). The agent loop instead instructs the LLM to respond with a strict JSON object describing the next action — <code>query</code>, <code>submit_batch</code>, <code>submit_streaming</code>, <code>job_status</code>, <code>job_logs</code>, <code>kill_job</code>, <code>list_jobs</code>, <code>list_history</code>, <code>generate_code</code>, <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, <code>ontul_admin</code>, or <code>mium_admin</code> (see <a href="../job-lifecycle/">Job Lifecycle</a>). This keeps the agent loop and the tool layer portable across providers; switching providers is a matter of registering a different connection.</p>
 <h2 id="embeddings">Embeddings</h2>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-For retrieval-augmented features — chat memory recall, prompt-library recall, code-generation few-shot pools, and cross-modal image search — Mium uses an embedding backend separate from the chat backend. Two implementations ship:</p>
-<ul>
-<li><strong><code>WorkerEmbeddingBackend</code></strong> (default) — the Master delegates inference to a Worker via the <code>EXECUTE_EMBED</code> opcode. The Worker runs long-running Python daemons (<code>bge-m3</code> for text, <code>clip-ViT-B-32</code> for multimodal) and reuses them across calls. Models hot-swap when an admin switches them in Settings → Embedding. See <a href="../worker-python-runtime/">Worker Python Runtime</a>.</li>
-<li><strong><code>OllamaEmbeddingBackend</code></strong> — alternative when an Ollama instance already serves embeddings. HTTP-based, no daemon to manage.</li>
-</ul>
-<h1 id="vector-storage-in-either-case-is-handled-by-the-storage-backends-layer-neorunbase-vectorn-columns">Vector storage in either case is handled by the <a href="../storage-backends/">Storage Backends</a> layer (NeorunBase <code>VECTOR(N)</code> columns).</h1>
 <p>For retrieval-augmented features (e.g. few-shot pools used by code generation, and cross-session semantic recall), Mium uses an embedding backend separate from the chat backend. The shipped implementations are <code>OllamaEmbeddingBackend</code> (default model <code>nomic-embed-text</code>, 768 dim) and <code>WorkerEmbeddingBackend</code>, which drives the Worker's Python embedding daemons (<code>bge-m3</code> text / CLIP image). Vector storage is handled by the <a href="../storage-backends/">Storage Backends</a> layer.</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>master</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
 <h2 id="configuration">Configuration</h2>
 <p>Connections are managed via the Admin UI (Settings → LLM Backends) or the REST API. Each connection stores:</p>
 <ul>
