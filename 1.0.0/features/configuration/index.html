@@ -2357,6 +2357,11 @@
 <td>Filesystem path of the admin recovery socket.</td>
 </tr>
 <tr>
+<td><code>mium.admin.socket.marker.file</code></td>
+<td><code>master.socket</code></td>
+<td>Name of the file under <code>&lt;mium.home&gt;/bin</code> where the master writes the socket path it actually bound to. <code>bin/mium-cli.sh</code> prefers that published path over re-deriving one from this file, since <code>mium.base.data.dir</code> can be overridden with <code>-D</code> at launch. Removed on shutdown.</td>
+</tr>
+<tr>
 <td><code>mium.iam.audit.dir</code></td>
 <td><code>${mium.base.data.dir}/iam-audit</code></td>
 <td>Directory for the append-only IAM audit log (records admin password resets).</td>
