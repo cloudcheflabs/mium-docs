@@ -14,7 +14,7 @@
         <link rel="prev" href="../encryption/">
       
       
-        <link rel="next" href="../backup-restore/">
+        <link rel="next" href="../nic-fail-safety/">
       
       
         
@@ -1382,6 +1382,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backup-restore/" class="md-nav__link">
         
   
@@ -1719,7 +1747,7 @@
 <p>Multiple Masters can run simultaneously in a leader/follower configuration:</p>
 <ul>
 <li><strong>Leader Election</strong>: Apache ZooKeeper (via Curator LeaderLatch) elects a primary Master. The leader owns all write operations to the state stores (RocksDB).</li>
-<li><strong>State Replication</strong>: The leader Master replicates IAM, KMS, ConnectionStore, and MemoryStore state to follower Masters via the internal NIO protocol.</li>
+<li><strong>State Replication</strong>: The leader Master replicates IAM, KMS, and ConnectionStore state to follower Masters via the internal NIO protocol (opcodes <code>IAM_SYNC</code>, <code>KMS_SYNC</code>, <code>CONNECTION_SYNC</code>). Memory/Prompt/Embedding live in NeorunBase and are not Mium-replicated (their former <code>MEMORY_SYNC</code> / <code>PROMPT_SYNC</code> opcodes were retired).</li>
 <li><strong>Automatic Failover</strong>: If the leader Master fails, ZooKeeper elects a new leader, which reloads persisted state from RocksDB and resumes operations.</li>
 <li><strong>Transparent Proxying</strong>: Follower Masters can serve read requests. Write requests received by followers are transparently proxied to the leader via <code>LeaderRouter</code>.</li>
 <li><strong>Self-Healing</strong>: Followers periodically pull state snapshots from the leader to ensure consistency.</li>
@@ -1735,12 +1763,15 @@
 <p>Masters and Workers register as ephemeral nodes in ZooKeeper. When a node joins or leaves the cluster, all other nodes are notified automatically. No manual configuration of cluster membership is required.</p>
 <p>ZooKeeper node layout:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>/mium/
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  masters/
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    &lt;nodeId-1&gt;  (ephemeral)
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    &lt;nodeId-2&gt;  (ephemeral)
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  workers/
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    &lt;nodeId-3&gt;  (ephemeral)
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    &lt;nodeId-4&gt;  (ephemeral)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  election/                (Curator LeaderLatch)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  leader-ready             (flag set by the leader after seeding KMS)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  cluster-ready            (flag set when every node is ready)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  masters/
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    &lt;nodeId-1&gt;  (ephemeral)
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    &lt;nodeId-2&gt;  (ephemeral)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  workers/
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    &lt;nodeId-3&gt;  (ephemeral)
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    &lt;nodeId-4&gt;  (ephemeral)
 </code></pre></div>
 <h2 id="state-stores">State Stores</h2>
 <p>IAM, KMS, and ConnectionStore are stored in embedded RocksDB on every Master — these bootstrap the cluster and cannot depend on an external database. Memory, Prompt, and Embedding stores live in NeorunBase; TempFile stores live in S3-compatible storage. See <a href="../storage-backends/">Storage Backends</a>.</p>

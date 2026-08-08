@@ -1360,6 +1360,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backup-restore/" class="md-nav__link">
         
   
@@ -1706,45 +1734,46 @@
 <thead>
 <tr>
 <th>Tool</th>
-<th>Auth Type</th>
+<th>Managed in</th>
 <th>Used By</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>anthropic</code></td>
-<td><code>api-key</code></td>
+<td>Settings → LLM Backends</td>
 <td>Agent loop — Anthropic Claude chat</td>
 </tr>
 <tr>
 <td><code>ollama</code></td>
-<td><code>api-key</code> (optional)</td>
+<td>Settings → LLM Backends</td>
 <td>Agent loop — local / self-hosted Ollama</td>
 </tr>
 <tr>
 <td><code>ontul</code></td>
-<td><code>access_key</code> or <code>token</code></td>
+<td>Settings → Tool Connections</td>
 <td>Tool layer — Ontul SQL queries and job lifecycle</td>
 </tr>
 <tr>
 <td><code>s3</code></td>
-<td><code>access_key</code></td>
+<td>Settings → Tool Connections</td>
 <td>Temp File Storage backend (ShannonStore / MinIO / AWS S3)</td>
 </tr>
 </tbody>
 </table>
 <p>Adding a new tool registers a new value here without touching ConnectionStore itself.</p>
+<p>Each connection also carries an <code>authType</code> string describing its auth payload. The canonical constants defined on <code>Connection</code> are <code>token</code>, <code>access_key</code>, <code>basic</code>, and <code>oauth2</code>; readers such as the Ontul client also infer the scheme directly from the payload keys, so the value is descriptive rather than strictly enforced. In the shipped UI, LLM-backend connections are saved with <code>authType=api-key</code> and Tool Connections (Ontul / S3) with <code>authType=static</code>. Ontul / S3 payloads use <code>accessKeyId</code> + <code>secretAccessKey</code> (the legacy <code>secretKey</code> spelling is also accepted).</p>
 <h2 id="management">Management</h2>
-<p>Connections are managed through the Admin UI (Settings → Tool Connections, Settings → LLM Backends) or the REST API at <code>/admin/api/connections</code>:</p>
+<p>Connections are managed through the Admin UI (Settings → Tool Connections, Settings → LLM Backends) or the REST API at <code>/api/connections</code> (the <code>/admin</code> prefix applies only when <code>mium.admin.context.path</code> is set):</p>
 <ul>
 <li><strong>Create</strong> — register a new connection with tool type, endpoint, and auth payload.</li>
-<li><strong>List</strong> — view connections owned by the current user; admins with the right policy can view other users' connections.</li>
-<li><strong>Delete</strong> — remove a connection.</li>
+<li><strong>List</strong> — view connections owned by the current user; admins with the right policy can view other users' connections. Auth payloads are never returned.</li>
+<li><strong>Delete</strong> — remove a connection; the <code>connectionId</code> is passed in the request body (<code>DELETE /api/connections</code> with <code>{connectionId}</code>), not as a path segment.</li>
 </ul>
 <p>Updates are leader-only; followers transparently proxy.</p>
 <h2 id="security">Security</h2>
 <ul>
-<li>Auth payloads are encrypted under per-connection DEKs wrapped by the cluster's KMS key — see <a href="../encryption/">Encryption &amp; KMS</a>.</li>
+<li>Auth payloads are encrypted under per-connection DEKs wrapped by the cluster's KMS key (<code>mium-connection</code>); the outer RocksDB snapshot and NIO sync blob are encrypted under a separate <code>mium-connection-snapshot</code> key, so the two layers rotate independently — see <a href="../encryption/">Encryption &amp; KMS</a>.</li>
 <li>Connection IDs are referenced everywhere downstream (e.g. <code>mium.tempfile.s3.connection</code>) — raw credentials never appear in <code>mium.properties</code>, REST responses, or logs.</li>
 <li>Replication of the encrypted store between Masters runs over the internal NIO protocol, which is itself envelope-encrypted once the cluster has a KMS key.</li>
 </ul>

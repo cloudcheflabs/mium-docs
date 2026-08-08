@@ -1071,6 +1071,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#semantic-recall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic Recall
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#memorystore" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1351,6 +1362,34 @@
     
   
     High Availability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
   
 
     
@@ -1710,34 +1749,41 @@
 <li>Create new chat sessions</li>
 <li>Continue previous conversations with full context</li>
 <li>Delete and rename sessions</li>
-<li>Client-side export of the result payload to CSV, Markdown, XLSX, PDF, or PPTX</li>
+<li>Export of the result payload: <strong>CSV and Markdown are produced client-side</strong> (inline preview / browser download); <strong>XLSX, PDF, and PPTX are rendered server-side</strong> on a Worker and returned as a <code>downloadUrl</code> (see <a href="../server-side-export/">Server-Side Export</a>)</li>
 </ul>
 <h2 id="chat-sessions">Chat Sessions</h2>
 <p>Each chat session maintains:</p>
 <ul>
 <li><strong>Message history</strong> — user and assistant turns in order.</li>
 <li><strong>Tool invocations</strong> — records of tool calls and their results, surfaced as intermediate assistant messages so users can see the full reasoning chain, not just the final answer.</li>
-<li><strong>Rolling context</strong> — Mium trims the LLM context window with a configurable cap; long sessions can also be compacted by the <code>MemoryCompactor</code> which summarises older turns into a single synthetic message.</li>
+<li><strong>Rolling context</strong> — the agent loop sends the LLM the most recent turns bounded by a fixed <code>MAX_HISTORY = 20</code> window (not configurable today).</li>
+<li><strong>Workspace</strong> — each session belongs to a workspace (<code>chat</code>, <code>analyze</code>, or <code>dev</code>); intent auto-routing can move a turn into a new session in a different workspace.</li>
 </ul>
 <p>Sessions are identified by unique IDs and can be resumed at any time.</p>
+<h2 id="semantic-recall">Semantic Recall</h2>
+<p>When an embedding backend is available, Mium embeds each turn and, on later turns, retrieves the top-K (default 5) most relevant past excerpts from the user's <code>memory:</code> namespace and injects them into the prompt — giving the agent cross-session recall beyond the fixed rolling window. This is gated on the embedding subsystem being ready; without it, only the rolling window is used.</p>
 <h2 id="memorystore">MemoryStore</h2>
 <p>The MemoryStore persists chat data in <strong>NeorunBase</strong> (<code>mium_chat_session</code> and <code>mium_chat_message</code> tables). Every Mium node reads and writes directly — no Mium-side replication needed because NeorunBase handles durability natively. See <a href="../storage-backends/">Storage Backends</a> for the full store layout.</p>
 <h2 id="chat-api">Chat API</h2>
-<p>The Chat endpoints on the Admin HTTP server (mounted under <code>/admin/api/chat</code>) provide:</p>
+<p>The Chat endpoints on the Admin HTTP server (mounted under <code>/api/chat</code> by default; a <code>/admin</code> prefix applies only when <code>mium.admin.context.path</code> is set) provide:</p>
 <ul>
-<li>Send a message and receive a reply (with optional tool invocations)</li>
-<li>List sessions for the current user</li>
-<li>Get a session's full message history</li>
-<li>Rename or delete sessions</li>
+<li><code>POST /api/chat</code> — send a message and receive a reply (with optional tool invocations / <code>downloadUrl</code>)</li>
+<li><code>GET /api/chat/sessions</code> — list the current user's sessions (<code>/api/chat/sessions/all</code> for the full set)</li>
+<li><code>GET /api/chat/sessions/messages</code> — get a session's full message history</li>
+<li><code>POST /api/chat/sessions/rename</code> — rename a session; delete via the sessions endpoint</li>
 </ul>
 <p>Writes are leader-only; followers transparently proxy via <code>LeaderRouter</code>.</p>
 <h2 id="retention-and-compaction">Retention and Compaction</h2>
-<p>Long-running chats are kept manageable by two mechanisms:</p>
+<p>Long-running chats are kept manageable by the leader's retention sweep:</p>
 <ul>
-<li><strong>TTL sweep</strong> — sessions older than a configured TTL are dropped.</li>
-<li><strong>Per-user session cap</strong> — each user's oldest sessions are evicted beyond a configured count.</li>
-<li><strong>LLM-driven compaction</strong> — <code>MemoryCompactor</code> replaces the oldest block of turns with a one-shot LLM summary once a session crosses a compaction threshold, preserving the most recent turns verbatim.</li>
+<li><strong>TTL sweep</strong> — sessions older than <code>mium.memory.ttl.days</code> are dropped (<code>0</code> = disabled).</li>
+<li><strong>Per-user session cap</strong> — each user's oldest sessions are evicted beyond <code>mium.memory.user.maxSessions</code> (<code>0</code> = unlimited).</li>
+<li><strong>Per-session turn cap</strong> — a session over <code>mium.memory.session.maxTurns</code> (default 200) has its oldest turns truncated.</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Compaction is not yet wired</p>
+<p><code>MemoryCompactor</code> / <code>Summarizer</code> (LLM summarisation of older turns) and the <code>mium.memory.compaction.*</code> settings exist in the codebase but are <strong>not</strong> invoked by the running retention sweep today — treat LLM-driven compaction as dormant/planned. The active retention mechanisms are the TTL sweep, the session cap, and the per-session turn cap above.</p>
+</div>
 
 
 

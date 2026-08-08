@@ -1159,6 +1159,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#retention-data-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retention &amp; Data Management
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1351,6 +1362,34 @@
     
   
     High Availability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
   
 
     
@@ -1761,7 +1800,7 @@
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="na">mium.neorunbase.password</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">...</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="na">mium.neorunbase.schema</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
 </code></pre></div>
-<p>Tables (<code>mium_chat_session</code>, <code>mium_chat_message</code>, <code>mium_prompt</code>, <code>mium_embedding</code>) are auto-created on startup.</p>
+<p>Tables (<code>mium_chat_session</code>, <code>mium_chat_message</code>, <code>mium_prompt</code>, <code>mium_embedding</code>) are auto-created on startup. <code>mium_chat_session</code> carries a <code>workspace VARCHAR(32) DEFAULT 'chat'</code> column so a session belongs to a workspace (<code>chat</code> / <code>analyze</code> / <code>dev</code>). Secondary indexes are deliberately <strong>not</strong> created (NeorunBase secondary-index population is not relied on); the stores use full scans instead.</p>
 <h2 id="s3-configuration">S3 Configuration</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="na">mium.tempfile.s3.connection</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">s3-default       # ConnectionStore id (tool=s3, authType=access_key)</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="na">mium.tempfile.s3.endpoint</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">http://localhost:8000</span>
@@ -1772,6 +1811,31 @@
 <p>S3 credentials live in the ConnectionStore (not in <code>mium.properties</code>). The bucket is auto-created on first use.</p>
 <h2 id="replication">Replication</h2>
 <p>Only IAM, KMS, and ConnectionStore are replicated between Mium nodes via internal NIO sync messages. The leader pushes snapshots to followers, and followers self-heal by periodically pulling. Memory, Prompt, Embedding, and TempFile stores do not require Mium-side replication because NeorunBase and S3 handle distribution natively.</p>
+<h2 id="retention-data-management">Retention &amp; Data Management</h2>
+<p>The leader runs a periodic retention sweep (<code>mium.retention.sweep.interval.seconds</code>, default hourly) that applies the configured TTLs to the NeorunBase stores (<code>sweepExpired</code> on memory, prompt, and embedding), enforces the per-user session cap, and reaps expired S3 temp files. See <a href="../configuration/">Configuration</a>.</p>
+<p>Users and admins can also wipe stored data directly via the REST layer:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/storage/me</code></td>
+<td>Wipe the caller's own data. Optional body <code>{ "kinds": ["memory","prompt","embedding"] }</code> (default: all three).</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/storage/purge</code></td>
+<td>Admin-only (requires <code>SYSTEM:MANAGE_IAM</code> on <code>system:iam:*</code>). Wipes the store across all users.</td>
+</tr>
+</tbody>
+</table>
+<p>Per-user embedding deletion is intentionally unsupported (embeddings are keyed on <code>(namespace, id)</code> with no owner column) — only the admin purge variant clears embeddings.</p>
 
 
 

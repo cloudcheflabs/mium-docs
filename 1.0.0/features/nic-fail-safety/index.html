@@ -11,6 +11,10 @@
         <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/nic-fail-safety/">
       
       
+        <link rel="prev" href="../high-availability/">
+      
+      
+        <link rel="next" href="../backup-restore/">
       
       
         
@@ -289,10 +293,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../configuration/" class="md-tabs__link">
           
   
@@ -755,26 +761,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -792,7 +803,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1255,6 +1266,147 @@
                 
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-the-legacy-nio-loop-is-dangerous" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the legacy NIO loop is dangerous
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-changed-in-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What changed in the client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-changed-in-the-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What changed in the server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#failure-handling-invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Failure-handling invariants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-it-on-your-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verifying it on your stack
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
@@ -1601,7 +1753,7 @@
 </ol>
 <p>A single hung writer takes its calling thread out of service. If that thread is the master's heartbeat-sweep loop or a worker's coordinator-pull, the entire cluster appears wedged from outside even though only one peer is sick.</p>
 <h2 id="what-changed-in-the-client">What changed in the client</h2>
-<p><code>com.cloudcheflabs.mium.protocol.internal.InternalNioClient</code>:</p>
+<p><code>com.cloudcheflabs.mium.protocol.InternalNioClient</code>:</p>
 <ul>
 <li><strong>Non-blocking for its lifetime.</strong> <code>connect()</code> opens the channel in non-blocking mode, registers <code>OP_CONNECT</code> on a per-call <code>Selector</code>, and waits for completion bounded by a 10s deadline. Then the channel <strong>stays</strong> non-blocking — no <code>configureBlocking(true)</code> flip on return, which used to race the reader thread.</li>
 <li><strong>Selector-driven reader.</strong> <code>readLoop()</code> waits on <code>OP_READ</code> with a 200ms tick so an externally-set <code>connected=false</code> propagates within a tick. No more blocking <code>channel.read()</code> calls that the test harness can't shut down.</li>
@@ -1613,11 +1765,11 @@
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>-Dmium.protocol.internal.write.timeout.seconds=10
 </code></pre></div>
 <h2 id="what-changed-in-the-server">What changed in the server</h2>
-<p><code>com.cloudcheflabs.mium.protocol.internal.InternalNioServer</code>:</p>
+<p><code>com.cloudcheflabs.mium.protocol.InternalNioServer</code>:</p>
 <ul>
 <li>The accept path already left client channels non-blocking — the server uses a Selector reactor.</li>
 <li>The <strong>response write</strong> path previously did a bare <code>while (buf.hasRemaining()) channel.write(buf);</code> under a <code>synchronized(channel)</code> block. In non-blocking mode <code>channel.write()</code> returns 0 the moment the send buffer is full — the old loop <strong>busy-spun forever</strong> on a wedged peer because there was no <code>Selector</code> to wait on writability.</li>
-<li>The new path factors response and error-response into a single <code>writeBoundedResponse()</code> helper that opens a per-call <code>Selector(OP_WRITE)</code> and bounds the loop with the same 10s deadline as the client. On timeout it throws <code>IOException</code> and the worker thread frees up.</li>
+<li>The new path factors response and error-response into a single <code>writeResponse()</code> helper that opens a per-call <code>Selector(OP_WRITE)</code> and bounds the loop with the same 10s deadline as the client. On timeout it throws <code>IOException</code> and the worker thread frees up.</li>
 </ul>
 <p>Same override:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>-Dmium.protocol.internal.write.timeout.seconds=10
@@ -1654,14 +1806,13 @@
 </tr>
 </tbody>
 </table>
+<p>The exception type differs by side: the <strong>client</strong> (<code>InternalNioClient</code>) raises <code>SocketTimeoutException</code> on a write/connect deadline; the <strong>server</strong> (<code>InternalNioServer</code>) raises a plain <code>IOException</code> when its bounded response write times out. Both free the calling thread at the 10s deadline.</p>
 <h2 id="verifying-it-on-your-stack">Verifying it on your stack</h2>
 <p><code>tests/test-nic-failure-channel-health.sh</code> (shipped with the 1.0.0 release) drives the failure on a 2-node compose:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>tests/docker-compose-mium.yml<span class="w"> </span>up<span class="w"> </span>-d
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>docker<span class="w"> </span>pause<span class="w"> </span>mium-worker-2<span class="w">          </span><span class="c1"># silent NIC sim</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>./tests/test-nic-failure-channel-health.sh<span class="w">    </span><span class="c1"># expect PASS</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>docker<span class="w"> </span>unpause<span class="w"> </span>mium-worker-2
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>tests/docker-compose-nic-fail-test.yml<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--build
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>./tests/test-nic-failure-channel-health.sh<span class="w">    </span><span class="c1"># pauses/unpauses mium-nic-worker-2 itself; expect PASS</span>
 </code></pre></div>
-<p>The test hammers the surviving master's admin endpoint while one peer is paused. With the fix the master returns <code>200 OK</code> for every call within sub-second latencies; without it the master would block, often for minutes, on the dead peer's internal RPC.</p>
+<p>The script itself <code>docker pause</code>s <code>mium-nic-worker-2</code> (the silent-NIC simulation) and <code>docker unpause</code>s it on exit, then hammers the surviving master's <code>/health</code> route (via <code>docker exec</code>) while the peer is paused. With the fix the master returns <code>200 OK</code> for every call within sub-second latencies; without it the master would block, often for minutes, on the dead peer's internal RPC.</p>
 <h2 id="operational-notes">Operational notes</h2>
 <ul>
 <li><strong>Defaults are conservative</strong>. 10 seconds is far below any realistic peer-to-peer round trip on a healthy cluster but above the worst-case TCP retransmit on a busy network. If you run with very low-latency expectations, tighten the deadlines via the JVM flags above.</li>

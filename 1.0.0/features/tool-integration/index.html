@@ -998,6 +998,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1388,6 +1399,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backup-restore/" class="md-nav__link">
         
   
@@ -1734,15 +1773,24 @@
 <ul>
 <li>SQL queries against any registered Ontul catalog</li>
 <li>Schema browsing (<code>SHOW CATALOGS</code>, <code>SHOW SCHEMAS</code>, <code>SHOW TABLES</code>, <code>DESCRIBE</code>)</li>
-<li>Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see <a href="../job-lifecycle/">Job Lifecycle</a>)</li>
-<li>Server-side code generation (Java BATCH / STREAMING / CLASS, Python) producing source the user can copy or submit</li>
+<li>Catalog management — <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, plus a generic <code>ontul_admin</code> passthrough to the Ontul Admin REST API</li>
+<li>Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see <a href="../job-lifecycle/">Job Lifecycle</a>). Job types are the <code>OntulJobType</code> enum values <code>BATCH</code>, <code>STREAMING</code>, <code>CLASS</code>, <code>PYTHON</code></li>
+<li>Dependency upload for <code>CLASS</code> / <code>PYTHON</code> jobs (<code>uploadDep</code>, <code>listServerDeps</code>, auto-deps)</li>
+<li>Retrieval-grounded code generation (see below)</li>
+</ul>
+<h3 id="code-generation">Code Generation</h3>
+<p><code>generate_code</code> produces Ontul SDK source grounded in real few-shot examples and the connected schema:</p>
+<ul>
+<li>A curated example index (<code>OntulExampleIndex</code>) holds Ontul SDK samples (<code>batch-dataframe.java</code>, <code>streaming-windowed.java</code>, <code>class-submit.java</code>, <code>remote-query.java</code>, <code>python-map.py</code>, <code>remote-query.py</code>) bundled under <code>mium-tools/.../resources/ontul-examples/</code>.</li>
+<li>Retrieval is three-tier: persistent vector search (namespace <code>ontul-codegen-examples</code>), then in-memory embeddings, then a tag-overlap fallback — so codegen still works without an embedding backend.</li>
+<li>The router (<code>OntulRouteResult</code>) can classify a request as <code>CODE</code>, <code>CLARIFY</code> (ask the user a question first), or <code>META</code> (e.g. fall through to <code>list_jobs</code>), and a fix-it loop can repair generated code from a reported error (<code>/api/jobs/codegen-fix</code>).</li>
 </ul>
 <h2 id="how-a-tool-call-flows">How a Tool Call Flows</h2>
 <ol>
 <li>When a chat session starts, the agent loop assembles the system prompt by collecting <code>sqlReference()</code> from the tools available to the user.</li>
 <li>The LLM sees the tool descriptions and emits a strict-JSON action that names the SQL or job operation it wants to run.</li>
 <li>The agent loop dispatches the call. For <code>query</code> actions, it executes against the connected Ontul cluster directly; for job actions it calls the matching Ontul Admin REST endpoint.</li>
-<li>The agent loop can offload entire LLM iterations to a Worker via <code>EXECUTE_AGENT</code> for parallelism, or dispatch only the tool call via <code>EXECUTE_TOOL</code>. Worker execution falls back to the master if no Worker is ready.</li>
+<li>The agent loop can offload entire LLM iterations to a Worker via <code>EXECUTE_AGENT</code> for parallelism, or dispatch only the tool call via <code>EXECUTE_TOOL</code>. Worker execution falls back to the master if no Worker is ready. Note the <code>EXECUTE_TOOL</code> worker path handles only <code>query</code> / <code>listTables</code> / <code>describeTable</code>; job-lifecycle actions always run on the master through the Ontul Admin REST client.</li>
 <li>Results are returned to the LLM for interpretation and a user-facing response.</li>
 </ol>
 <h2 id="per-user-credential-isolation">Per-User Credential Isolation</h2>

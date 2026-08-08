@@ -1503,6 +1503,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backup-restore/" class="md-nav__link">
         
   
@@ -1841,6 +1869,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>System Property (-D) &gt; Environment Variable &gt; properties file
 </code></pre></div>
 <p>So a value baked into <code>mium.properties</code> can be overridden by an environment variable, which in turn can be overridden by a <code>-D</code> system property passed to the JVM.</p>
+<p>The properties file itself is located in this order: (1) an explicit <code>-Dmium.config.file=…</code> path, (2) <code>./conf/mium.properties</code> relative to the process working directory, (3) the bundled <code>mium.properties</code> on the classpath. The packaged <code>bin/*</code> scripts pass <code>-Dmium.config.file=$base_dir/conf/mium.properties</code>, so a distribution always uses its <code>conf/</code> copy.</p>
 <h2 id="environment-variable-naming">Environment Variable Naming</h2>
 <p>To set a property via an environment variable, take the property key, replace every <code>.</code> with <code>_</code>, and uppercase it:</p>
 <table>
@@ -2092,8 +2121,8 @@
 <tbody>
 <tr>
 <td><code>mium.embedding.dim</code></td>
-<td><code>768</code></td>
-<td>Vector dimension for the NeorunBase embedding store; becomes the width of the <code>VECTOR(dim)</code> column. Must exactly match the embedding model's output dimension. Cannot be changed after the table is created without recreating it. The embedding store is only wired up when <code>mium.embedding.enabled</code> is true (defaults to false).</td>
+<td><code>1024</code></td>
+<td>Vector dimension for the NeorunBase embedding store; becomes the width of the <code>VECTOR(dim)</code> column. The code default in <code>MiumConfig</code> is <code>1024</code> (matches the <code>bge-m3</code> model); note the shipped <code>mium.properties</code> template overrides it to <code>768</code>, so the effective default depends on whether you deploy with the template. Must exactly match the embedding model's output dimension. Cannot be changed after the table is created without recreating it. The embedding store is only wired up when <code>mium.embedding.enabled</code> is true (defaults to false).</td>
 </tr>
 </tbody>
 </table>
@@ -2286,6 +2315,51 @@
 <td><code>mium.embedding.enabled</code></td>
 <td><code>false</code></td>
 <td>When true, wires up the NeorunBase embedding (VECTOR) store. Required before <code>mium.embedding.dim</code> and embedding TTL take effect.</td>
+</tr>
+<tr>
+<td><code>mium.embedding.clip.enabled</code></td>
+<td><code>false</code></td>
+<td>When true, wires the CLIP image-embedding backend alongside the text backend. Requires <code>mium.embedding.enabled=true</code>.</td>
+</tr>
+<tr>
+<td><code>mium.embedding.python</code></td>
+<td><code>python3</code></td>
+<td>Python interpreter used to run the on-worker embedding daemons (bge-m3 / CLIP).</td>
+</tr>
+<tr>
+<td><code>mium.embedding.hf.home</code></td>
+<td><em>(empty)</em></td>
+<td>Overrides <code>HF_HOME</code> — the HuggingFace cache directory for downloaded model weights. Empty leaves the interpreter's default.</td>
+</tr>
+<tr>
+<td><code>mium.memory.compaction.threshold</code></td>
+<td><code>100</code></td>
+<td>Compact a chat session once it grows past this many turns. <code>&lt;= 0</code> disables LLM-driven compaction. See <a href="../chat-memory/">Chat &amp; Memory</a>.</td>
+</tr>
+<tr>
+<td><code>mium.memory.compaction.keepLatest</code></td>
+<td><code>40</code></td>
+<td>Number of most-recent turns kept verbatim when a session is compacted; older turns are replaced by a single LLM summary.</td>
+</tr>
+<tr>
+<td><code>mium.memory.compaction.maxPerRun</code></td>
+<td><code>5</code></td>
+<td>Max number of sessions compacted per housekeeping tick, to bound LLM cost per sweep.</td>
+</tr>
+<tr>
+<td><code>mium.admin.socket.enabled</code></td>
+<td><code>true</code></td>
+<td>Enables the local Unix-domain admin recovery socket used by <code>bin/mium-cli.sh iam:reset-password</code>. See <a href="../admin-password-recovery/">Admin Password Recovery</a>.</td>
+</tr>
+<tr>
+<td><code>mium.admin.socket.path</code></td>
+<td><code>${mium.base.data.dir}/admin.sock</code></td>
+<td>Filesystem path of the admin recovery socket.</td>
+</tr>
+<tr>
+<td><code>mium.iam.audit.dir</code></td>
+<td><code>${mium.base.data.dir}/iam-audit</code></td>
+<td>Directory for the append-only IAM audit log (records admin password resets).</td>
 </tr>
 </tbody>
 </table>

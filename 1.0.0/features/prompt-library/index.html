@@ -1110,6 +1110,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#semantic-search-in-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic Search (in code)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#future-surface" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1340,6 +1351,34 @@
     
   
     High Availability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
   
 
     
@@ -1701,17 +1740,20 @@
 <li>Optional tags</li>
 <li>Created / updated timestamps</li>
 </ul>
-<p>Per-user isolation is enforced at every read and write — one user cannot see or modify another user's prompts unless they hold the appropriate <code>SYSTEM:READ_PROMPT</code> / <code>SYSTEM:WRITE_PROMPT</code> policy.</p>
+<p>Per-user isolation is enforced at the store level — every read and write is owner-scoped, and <code>getPrompt</code> throws on an owner mismatch, so one user cannot see or modify another user's prompts. The <code>SYSTEM:READ_PROMPT</code> / <code>SYSTEM:WRITE_PROMPT</code> actions exist in the vocabulary, but because the PromptStore has no HTTP surface yet (below) nothing currently gates access through them; isolation comes from the owner-scoped store queries.</p>
 <h2 id="storage">Storage</h2>
 <p>PromptStore persists prompts in <strong>NeorunBase</strong> (<code>mium_prompt</code> table). Every Mium node reads and writes directly — no Mium-side replication needed. See <a href="../storage-backends/">Storage Backends</a>.</p>
 <h2 id="limits">Limits</h2>
 <p>The store enforces:</p>
 <ul>
-<li><strong>Per-user prompt cap</strong> — oldest prompts are evicted beyond a configured count (<code>mium.prompt.max.per.user</code>).</li>
-<li><strong>Body size cap</strong> — bodies above <code>mium.prompt.max.body.bytes</code> are rejected at write time.</li>
+<li><strong>Per-user prompt cap</strong> — once a user reaches <code>mium.prompt.user.maxPrompts</code> (default <code>0</code> = unlimited), further <code>createPrompt</code> calls are <strong>rejected</strong> (there is no eviction of older prompts).</li>
+<li><strong>Body size cap</strong> — bodies above <code>mium.prompt.body.maxBytes</code> (default <code>65536</code> = 64 KiB) are rejected at write time.</li>
+<li><strong>TTL sweep</strong> — when <code>mium.prompt.ttl.days</code> &gt; 0, the leader's retention sweep deletes prompts older than the TTL (default <code>0</code> = disabled).</li>
 </ul>
+<h2 id="semantic-search-in-code">Semantic Search (in code)</h2>
+<p>A <code>PromptSemanticIndex</code> already implements cosine-similarity search over a per-user <code>prompt:</code> namespace, embedding each prompt's <code>name + body + tags</code> with write-through upsert/delete. It is wired to the embedding subsystem, so semantic prompt lookup is implemented at the store/index level even though no user-facing surface exposes it yet.</p>
 <h2 id="future-surface">Future Surface</h2>
-<p>Today the PromptStore is reachable through the REST layer; an Admin UI page for browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") is on the roadmap. The agent loop will eventually expose a <code>save_prompt</code> action so the LLM itself can persist a prompt the user asks it to remember.</p>
+<p>The PromptStore is initialized on the master but is <strong>not</strong> yet reachable over REST — there is no <code>/api/prompts</code> endpoint and no Admin UI page. Browsing / saving prompts ("save this prompt to my library", "load a saved prompt into chat") and a <code>save_prompt</code> agent-loop action so the LLM can persist a prompt on request are on the roadmap.</p>
 
 
 

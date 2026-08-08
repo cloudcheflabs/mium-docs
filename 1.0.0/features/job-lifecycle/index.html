@@ -1026,6 +1026,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rest-jobs-api-dev-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REST Jobs API (Dev workspace)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#per-user-credentials" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1340,6 +1351,34 @@
     
   
     High Availability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
   
 
     
@@ -1712,7 +1751,7 @@
 </tr>
 <tr>
 <td><code>job_status</code></td>
-<td>Look up the current state of a job by id. Returns <code>status</code> (<code>SUBMITTED</code>, <code>RUNNING</code>, <code>SUCCEEDED</code>, <code>FAILED</code>, <code>KILLED</code>), <code>durationMs</code>, <code>errorMessage</code> if applicable.</td>
+<td>Look up the current state of a job by id. Returns <code>status</code> (<code>SUBMITTED</code>, <code>PLANNING</code>, <code>RUNNING</code>, <code>COMPLETED</code>, <code>FAILED</code>, <code>KILLED</code>), <code>durationMs</code>, <code>errorMessage</code> if applicable. The terminal success state is <code>COMPLETED</code>; <code>isTerminal()</code> covers <code>COMPLETED</code>, <code>FAILED</code>, <code>KILLED</code>.</td>
 </tr>
 <tr>
 <td><code>job_logs</code></td>
@@ -1742,14 +1781,63 @@
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Agent:   submit_batch   → jobId: e5240f5d-…, status: SUBMITTED
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>User:    &quot;방금 제출한 job 상태 확인해줘.&quot;
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Agent:   job_status     → status: SUCCEEDED, durationMs: 301
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Agent:   job_status     → status: COMPLETED, durationMs: 301
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>User:    &quot;job history 보여줘.&quot;
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>Agent:   list_history   → [{jobId: e5240f5d-…, status: SUCCEEDED, …}]
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>Agent:   list_history   → [{jobId: e5240f5d-…, status: COMPLETED, …}]
 </code></pre></div>
 <p>Across new sessions the user typically retrieves the id via <code>list_history</code> first.</p>
 <h2 id="code-generation">Code Generation</h2>
 <p><code>generate_code</code> does NOT submit anything — it returns Ontul SDK source the user can copy, version, or hand to a different submit pipeline. It's the right action when the user asks "write me the Java" or "give me a Python script that …".</p>
+<h2 id="rest-jobs-api-dev-workspace">REST Jobs API (Dev workspace)</h2>
+<p>Besides the chat-agent verbs above, the Admin UI's <strong>Dev</strong> workspace drives jobs through a dedicated REST surface on the master (default context path):</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/jobs/codegen</code></td>
+<td>Generate Ontul SDK source from a natural-language prompt</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/jobs/codegen-fix</code></td>
+<td>Feed an error back to the generator for a fix-it iteration</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/jobs/submit</code></td>
+<td>Submit a job in one of the <code>Mode</code> values below</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/jobs/status</code></td>
+<td>Poll job status</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/jobs/logs</code></td>
+<td>Fetch job logs</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/jobs/list</code></td>
+<td>List jobs</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/jobs/kill</code></td>
+<td>Kill a job</td>
+</tr>
+</tbody>
+</table>
+<p><code>POST /api/jobs/submit</code> accepts a <code>Mode</code>: <code>QUERY</code>, <code>BATCH</code>, <code>STREAMING</code>, <code>REMOTE_JAVA</code>, <code>REMOTE_PYTHON</code>, <code>CLUSTER_JAVA</code>, <code>CLUSTER_PYTHON</code>. The <code>REMOTE_*</code> modes run user-supplied Java/Python as a <strong>Mium-side subprocess</strong> via <code>RemoteJobRunner</code> (job ids prefixed <code>mium-remote-</code>), independent of Ontul cluster jobs; <code>CLUSTER_*</code> and <code>BATCH</code>/<code>STREAMING</code>/<code>QUERY</code> go to the Ontul cluster.</p>
 <h2 id="per-user-credentials">Per-User Credentials</h2>
 <p>All job actions go through the user's Ontul connection in the ConnectionStore (<code>tool=ontul</code>). The Ontul cluster decides what the calling principal is allowed to do — Mium does not federate IAM with Ontul, so authorization comes from Ontul's own access-control layer.</p>
 

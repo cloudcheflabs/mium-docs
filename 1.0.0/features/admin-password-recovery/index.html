@@ -1404,6 +1404,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backup-restore/" class="md-nav__link">
         
   
@@ -1758,7 +1786,7 @@ rotation.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌────────────────────┐   JSON over UDS    ┌────────────────────┐
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│  mium-cli          │ ─────────────────▶ │  Master (running)  │
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│  iam:reset-password│                    │   AuthManager      │
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>└────────────────────┘                    │   .adminResetPwd() │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>└────────────────────┘                    │ .adminResetPassword│
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>         ▲                                │                    │
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>         │ stdout: new password           │  saveToDb()        │
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>         │ (one-time)                     │  cluster sync push │
@@ -1857,9 +1885,9 @@ hardened production deployment), set:</p>
 <ol>
 <li><code>--socket /path/to/admin.sock</code> command-line flag</li>
 <li><code>MIUM_ADMIN_SOCKET</code> environment variable</li>
-<li><code>mium.admin.socket.path</code> in <code>conf/mium.properties</code></li>
-<li><code>&lt;mium.base.data.dir&gt;/admin.sock</code> (the default that matches the master)</li>
+<li>the built-in default <code>data/admin.sock</code> (relative to the CLI's working directory)</li>
 </ol>
+<p>The <code>mium.admin.socket.path</code> / <code>mium.iam.audit.dir</code> properties above configure the <strong>master</strong> side (where the socket is created and where the audit log is written); the CLI itself does not read <code>conf/mium.properties</code>. So if you relocate the socket via <code>mium.admin.socket.path</code>, pass the same path to the CLI with <code>--socket</code> (or <code>MIUM_ADMIN_SOCKET</code>).</p>
 <h2 id="security-model">Security model</h2>
 <p><strong>1. The socket is OS-gated.</strong>
 At startup the master creates <code>data/admin.sock</code> with mode <code>600</code> (owner

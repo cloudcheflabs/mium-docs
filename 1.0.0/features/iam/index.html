@@ -1371,6 +1371,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backup-restore/" class="md-nav__link">
         
   
@@ -1706,12 +1734,15 @@
 <p>Mium includes a built-in IAM system that provides authentication, authorization, and access control for the platform. The model is intentionally close to AWS IAM so operators familiar with that vocabulary can land quickly.</p>
 <h2 id="authentication">Authentication</h2>
 <ul>
-<li><strong>Username + password</strong> — basic authentication on <code>/admin/auth/login</code>. Passwords are hashed; an admin-forced password change can be required on first login.</li>
-<li><strong>JWT bearer tokens</strong> — HMAC-SHA256 signed access tokens used on all API requests. TTL configurable via <code>mium.jwt.ttl.seconds</code>. Refresh available via <code>/admin/auth/refresh</code>.</li>
-<li><strong>Access keys</strong> — AWS-style <code>(accessKeyId, secretAccessKey)</code> pairs for programmatic / SDK access, with optional expiry.</li>
+<li><strong>Username + password</strong> — basic authentication on <code>/auth/login</code>. Passwords are hashed; an admin-forced password change can be required on first login. HTTP <code>Basic</code> auth (username:password) is also accepted on any route.</li>
+<li><strong>JWT bearer tokens</strong> — HMAC-SHA256 signed access tokens (<code>Authorization: Bearer &lt;jwt&gt;</code>) used on all API requests. TTL configurable via <code>mium.jwt.ttl.seconds</code>. Refresh available via <code>/auth/refresh</code>.</li>
+<li><strong>Access keys</strong> — AWS-style <code>(accessKeyId, secretAccessKey)</code> pairs for programmatic / SDK access, with optional expiry. Each key also mints an <code>MTOK…</code> shorthand token usable as <code>Authorization: Token &lt;mtok&gt;</code>; the raw <code>AKIA…</code>/secret can also be presented via HTTP <code>Basic</code>.</li>
 <li><strong>STS</strong> — short-lived credentials issued via <code>assume-role</code>-style endpoints for delegated, time-bounded access.</li>
 </ul>
-<p>All routes except <code>/health</code> and <code>/admin/auth/login</code> require authentication.</p>
+<p>All routes except the public probes <code>/health</code>, <code>/ready</code>, and the login route <code>/auth/login</code> require authentication.</p>
+<blockquote>
+<p>Endpoint paths below are shown for the default (empty) <code>mium.admin.context.path</code>. If you set a context path (e.g. <code>/admin</code>), it is prepended to every route.</p>
+</blockquote>
 <h2 id="identities-and-hierarchy">Identities and Hierarchy</h2>
 <p>The IAM model carries:</p>
 <ul>
@@ -1723,20 +1754,22 @@
 <h2 id="policy-based-access-control">Policy-Based Access Control</h2>
 <p>Mium uses AWS-style JSON policies with deny-by-default semantics:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;statements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="nt">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ALLOW&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SYSTEM:CHAT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;SYSTEM:USE_CONNECTION&quot;</span><span class="p">],</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">&quot;resources&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p">},</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DENY&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SYSTEM:MANAGE_IAM&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;SYSTEM:MANAGE_KMS&quot;</span><span class="p">],</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="nt">&quot;resources&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p">]</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">}</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;statements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SYSTEM:CHAT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;SYSTEM:USE_CONNECTION&quot;</span><span class="p">],</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">      </span><span class="nt">&quot;resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="nt">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Deny&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SYSTEM:MANAGE_IAM&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;SYSTEM:MANAGE_KMS&quot;</span><span class="p">],</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="nt">&quot;resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">}</span>
 </code></pre></div>
+<p>The statement fields are <code>effect</code>, <code>action</code>, and <code>resource</code> — <strong>singular</strong> <code>action</code>/<code>resource</code> (each may be a single string or an array), matching the <code>IamPolicy.Statement</code> model. <code>effect</code> is compared case-insensitively (<code>Allow</code>/<code>Deny</code>/<code>ALLOW</code>/<code>DENY</code> all work). An optional <code>sid</code> and <code>condition</code> are also accepted.</p>
 <ul>
 <li>Policies can be attached to users or groups (group policies cascade to members).</li>
 <li>Explicit DENY overrides any ALLOW.</li>
@@ -1770,12 +1803,21 @@
 </tr>
 <tr>
 <td>Admin</td>
-<td><code>SYSTEM:MANAGE_IAM</code>, <code>SYSTEM:MANAGE_KMS</code>, <code>SYSTEM:MANAGE_COMPANY</code>, <code>SYSTEM:MANAGE_ORG</code></td>
+<td><code>SYSTEM:MANAGE_IAM</code>, <code>SYSTEM:MANAGE_KMS</code>, <code>SYSTEM:MANAGE_COMPANY</code>, <code>SYSTEM:MANAGE_ORG</code>, <code>SYSTEM:MANAGE_BACKUP</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="management">Management</h2>
-<p>Users, groups, policies, companies, and organizations are managed through the Admin UI (Settings → Administration → IAM) or the REST API under <code>/admin/api/iam/*</code>. The UI exposes user / group / policy CRUD, group memberships, policy attachment, and access-key issuance / download.</p>
+<p>Users, groups, and policies are managed through the Admin UI (Settings → Administration → IAM) or the REST API under <code>/api/iam/*</code>. The UI exposes user / group / policy CRUD, group memberships, policy attachment, and access-key issuance / download. Companies and organizations are the top-level model but are currently <strong>read-only over REST</strong> — only <code>GET /api/iam/companies</code> and <code>GET /api/iam/orgs</code> are exposed; there are no create/update/delete company/org endpoints.</p>
+<p>Representative endpoints (default context path):</p>
+<ul>
+<li><strong>Auth</strong> — <code>POST /auth/login</code>, <code>POST /auth/refresh</code>, <code>POST /auth/change-password</code>, <code>GET /auth/whoami</code></li>
+<li><strong>Users/groups/policies</strong> — <code>/api/iam/users</code>, <code>/api/iam/groups</code>, <code>/api/iam/policies</code>, <code>/api/iam/add-user-to-group</code>, <code>/api/iam/remove-user-from-group</code>, <code>/api/iam/attach-group-policy</code>, <code>/api/iam/detach-group-policy</code></li>
+<li><strong>Self-service</strong> — <code>PUT /api/iam/users/me</code> (own profile)</li>
+<li><strong>Access keys</strong> — <code>/api/iam/keys</code>, <code>GET /api/iam/download-key</code> (CSV)</li>
+<li><strong>Companies/orgs (read-only)</strong> — <code>GET /api/iam/companies</code>, <code>GET /api/iam/orgs</code></li>
+<li><strong>STS</strong> — <code>GET/POST/DELETE /api/sts/sessions</code>, <code>POST /api/sts/assume-role</code>, <code>POST /api/sts/sessions/clear</code>, <code>GET /api/sts/sessions/download</code></li>
+</ul>
 
 
 

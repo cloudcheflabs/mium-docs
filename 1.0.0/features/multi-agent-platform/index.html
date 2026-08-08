@@ -1399,6 +1399,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backup-restore/" class="md-nav__link">
         
   
@@ -1769,11 +1797,24 @@
 </tr>
 <tr>
 <td><code>generate_code</code></td>
-<td>Produce Ontul SDK source (Java BATCH / STREAMING / CLASS, Python) the user can copy</td>
+<td>Produce Ontul SDK source (<code>jobType</code> = <code>BATCH</code> / <code>STREAMING</code> / <code>CLASS</code> / <code>PYTHON</code>) the user can copy</td>
+</tr>
+<tr>
+<td><code>list_catalogs</code> / <code>register_catalog</code> / <code>unregister_catalog</code></td>
+<td>Manage Ontul catalogs</td>
+</tr>
+<tr>
+<td><code>ontul_admin</code></td>
+<td>Generic passthrough to the Ontul Admin REST API</td>
+</tr>
+<tr>
+<td><code>mium_admin</code></td>
+<td>Manage the user's own connections (<code>list_connections</code> / <code>create_connection</code> / <code>delete_connection</code>)</td>
 </tr>
 </tbody>
 </table>
 <p>See <a href="../job-lifecycle/">Job Lifecycle</a> for the job-related actions in detail.</p>
+<p>Today Mium runs a <strong>single iterative agent loop</strong> (<code>AgentLoop</code>), not multiple cooperating agents. The <code>Agent</code> SPI is a placeholder for planner/executor/specialist multi-agent orchestration, which is on the roadmap rather than shipped.</p>
 <h3 id="tools">Tools</h3>
 <p>Every external system is a Tool — a pluggable component the LLM can invoke. Each tool provides metadata and a SQL/API reference that gets injected into the LLM system prompt so the model knows what is available and how to use it.</p>
 <p>The shipped tool today is <strong>Ontul</strong> (Cloud Chef Labs SQL engine). The Tool SPI is open — additional tools register without modifying the agent loop. See <a href="../tool-integration/">Tool Integration</a>.</p>
@@ -1781,9 +1822,9 @@
 <p>Each user manages their own connections to external systems. Credentials are stored encrypted in the ConnectionStore and are never shared between users. When the LLM invokes a tool, Mium retrieves the calling user's credentials for that tool — the tool's own access control decides what data the user can touch.</p>
 <h2 id="how-it-works">How It Works</h2>
 <ol>
-<li>User sends a message via the Chat UI or <code>/admin/api/chat</code>.</li>
+<li>User sends a message via the Chat UI or <code>/api/chat</code>.</li>
 <li>The agent loop builds a system prompt that includes the available tool descriptions and the user's rolling chat context.</li>
-<li>The loop calls the user's configured LLM (Anthropic Claude or Ollama) and parses the strict-JSON response.</li>
+<li>The loop calls the user's configured LLM (currently Anthropic Claude — the chat loop requires a <code>tool=anthropic</code> connection) and parses the strict-JSON response.</li>
 <li>If the action requires a tool call, Mium dispatches it — locally on the master or offloaded to a Worker via <code>EXECUTE_AGENT</code> / <code>EXECUTE_TOOL</code> — using the user's encrypted credentials.</li>
 <li>Tool results feed back to the LLM (when more iterations are needed) or directly to the user.</li>
 <li>The conversation is persisted in the MemoryStore so the next turn has the full context.</li>

@@ -1269,6 +1269,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nic-fail-safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NIC Silent-Fail Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backup-restore/" class="md-nav__link">
         
   
@@ -1384,6 +1412,28 @@
     <span class="md-ellipsis">
       
         Chat (default home)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze workspace
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dev-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dev workspace
       
     </span>
   </a>
@@ -1731,7 +1781,7 @@
 
 
 <h1 id="admin-ui">Admin UI</h1>
-<p>Mium ships a built-in React web application for chatting with LLMs, managing per-user settings, and administering the cluster. The UI is served by the master at <code>/admin/</code>.</p>
+<p>Mium ships a built-in React web application for chatting with LLMs, managing per-user settings, and administering the cluster. By default the UI is served by the master at the <strong>root path <code>/</code></strong>, with the REST API under <code>/api/*</code> and auth under <code>/auth/*</code>. The whole surface is re-prefixed only when <code>mium.admin.context.path</code> is set (e.g. to <code>/admin</code>, in which case the Vite bundle must be rebuilt with <code>VITE_BASE_PATH=/admin</code>).</p>
 <h2 id="technology-stack">Technology Stack</h2>
 <ul>
 <li>React 18 with TypeScript</li>
@@ -1748,11 +1798,16 @@
 <li>Create, rename, and delete chat sessions; resume any past conversation with full context.</li>
 </ul>
 <p>Routes: <code>/</code>, <code>/c/:sessionId</code>. The Settings entry point lives in the user footer at the bottom-left of the chat sidebar.</p>
+<h3 id="analyze-workspace">Analyze workspace</h3>
+<p>A data-analysis workspace with a catalog tree browser (backed by <code>/api/catalog/connections</code>, <code>/api/catalog/tables</code>, <code>/api/catalog/columns</code>) alongside the chat panel. Routes: <code>/analyze</code>, <code>/analyze/c/:sessionId</code>.</p>
+<h3 id="dev-workspace">Dev workspace</h3>
+<p>A notebook-style workspace for generating and running Ontul jobs and remote Java/Python code cells, backed by the <code>/api/jobs/*</code> REST surface (<code>submit</code>, <code>list</code>, <code>status</code>, <code>logs</code>, <code>kill</code>, <code>codegen</code>, <code>codegen-fix</code>). Routes: <code>/dev</code>, <code>/dev/c/:sessionId</code>. See <a href="../job-lifecycle/">Job Lifecycle</a>.</p>
 <h3 id="settings-your-account">Settings — Your Account</h3>
 <ul>
 <li><strong>Profile</strong> — display name, contact, locale.</li>
 <li><strong>LLM Backends</strong> — register Anthropic Claude or Ollama connections.</li>
 <li><strong>Tool Connections</strong> — register Ontul (Arrow Flight access keys) and S3-compatible (ShannonStore / MinIO / AWS S3) connections.</li>
+<li><strong>Storage</strong> — view and wipe your own stored data (memory / prompt / embedding), backed by <code>DELETE /api/storage/me</code>.</li>
 <li><strong>Password</strong> — change your password.</li>
 </ul>
 <h3 id="settings-administration-admin-only">Settings — Administration (admin-only)</h3>
@@ -1760,24 +1815,29 @@
 <li><strong>Dashboard</strong> — cluster metrics and health (CPU, heap, thread count per node) plus worker status, charted with Recharts.</li>
 <li><strong>Topology</strong> — live registry of active Masters and Workers with health flags.</li>
 <li><strong>IAM</strong> — users, groups, policies, companies, organizations; visual policy editor; access-key issuance.</li>
-<li><strong>Security &amp; KMS</strong> — list and rotate envelope-encryption keys.</li>
-<li><strong>Temp File Storage</strong> — switch the server-side export ciphertext backend between local filesystem and S3-compatible object storage; "Test connection" probe.</li>
+<li><strong>Security &amp; KMS</strong> — list, create, and rotate envelope-encryption keys.</li>
+<li><strong>Temp File Storage</strong> — configure the S3-compatible object store used for server-side export ciphertext (endpoint, region, bucket, path-style, ConnectionStore id); "Test connection" probe (<code>/api/settings/tempfile/test</code>).</li>
+<li><strong>Embedding</strong> — configure the embedding backend/models (<code>/api/settings/embedding</code>).</li>
 </ul>
 <h2 id="rest-api">REST API</h2>
-<p>Every operation in the UI is also reachable on the Admin HTTP server (default port 8090). Endpoints are mounted under <code>/admin/api/*</code>:</p>
+<p>Every operation in the UI is also reachable on the Admin HTTP server (default port 8090). By default endpoints are mounted under <code>/api/*</code> with auth under <code>/auth/*</code> (a <code>/admin</code> prefix applies only when <code>mium.admin.context.path</code> is set):</p>
 <ul>
-<li><strong>Auth</strong> — <code>/admin/auth/login</code>, <code>/admin/auth/refresh</code>, <code>/admin/auth/change-password</code>, <code>/admin/auth/whoami</code></li>
-<li><strong>IAM</strong> — <code>/admin/api/iam/users</code>, <code>/admin/api/iam/groups</code>, <code>/admin/api/iam/policies</code>, <code>/admin/api/iam/companies</code>, <code>/admin/api/iam/orgs</code>, <code>/admin/api/iam/keys</code></li>
-<li><strong>STS</strong> — <code>/admin/api/sts/sessions</code>, <code>/admin/api/sts/assume-role</code></li>
-<li><strong>Connections</strong> — <code>/admin/api/connections</code></li>
-<li><strong>KMS</strong> — <code>/admin/api/kms/list</code>, <code>/admin/api/kms/status/{keyId}</code>, <code>/admin/api/kms/rotate/{keyId}</code></li>
-<li><strong>Chat</strong> — <code>/admin/api/chat</code>, <code>/admin/api/chat/sessions</code></li>
-<li><strong>Server-side Export</strong> — <code>/admin/api/export</code></li>
-<li><strong>Temp File Settings</strong> — <code>/admin/api/settings/tempfile</code></li>
-<li><strong>Monitoring</strong> — <code>/admin/api/nodes/masters</code>, <code>/admin/api/nodes/workers</code>, <code>/admin/api/monitoring/metrics</code>, <code>/admin/api/logs/tail</code></li>
+<li><strong>Auth</strong> — <code>/auth/login</code>, <code>/auth/refresh</code>, <code>/auth/change-password</code>, <code>/auth/whoami</code></li>
+<li><strong>IAM</strong> — <code>/api/iam/users</code>, <code>/api/iam/users/me</code>, <code>/api/iam/groups</code>, <code>/api/iam/policies</code>, <code>/api/iam/add-user-to-group</code>, <code>/api/iam/remove-user-from-group</code>, <code>/api/iam/attach-group-policy</code>, <code>/api/iam/detach-group-policy</code>, <code>/api/iam/keys</code>, <code>/api/iam/download-key</code>, <code>/api/iam/companies</code> (read-only), <code>/api/iam/orgs</code> (read-only)</li>
+<li><strong>STS</strong> — <code>/api/sts/sessions</code>, <code>/api/sts/assume-role</code>, <code>/api/sts/sessions/clear</code>, <code>/api/sts/sessions/download</code></li>
+<li><strong>Connections</strong> — <code>/api/connections</code></li>
+<li><strong>KMS</strong> — <code>/api/kms/list</code>, <code>/api/kms/status/{keyId}</code>, <code>/api/kms/create</code>, <code>/api/kms/rotate/{keyId}</code></li>
+<li><strong>Chat</strong> — <code>/api/chat</code>, <code>/api/chat/sessions</code>, <code>/api/chat/sessions/all</code>, <code>/api/chat/sessions/messages</code>, <code>/api/chat/sessions/rename</code></li>
+<li><strong>Catalog</strong> — <code>/api/catalog/connections</code>, <code>/api/catalog/tables</code>, <code>/api/catalog/columns</code></li>
+<li><strong>Jobs</strong> — <code>/api/jobs/submit</code>, <code>/api/jobs/status</code>, <code>/api/jobs/logs</code>, <code>/api/jobs/list</code>, <code>/api/jobs/kill</code>, <code>/api/jobs/codegen</code>, <code>/api/jobs/codegen-fix</code></li>
+<li><strong>Server-side Export</strong> — <code>/api/export</code>, <code>/api/export/download</code></li>
+<li><strong>Storage</strong> — <code>/api/storage/me</code>, <code>/api/storage/purge</code></li>
+<li><strong>Settings</strong> — <code>/api/settings/tempfile</code>, <code>/api/settings/tempfile/test</code>, <code>/api/settings/embedding</code></li>
+<li><strong>Backup</strong> — <code>/api/backup/config</code>, <code>/api/backup/run</code>, <code>/api/backup/history</code>, <code>/api/backup/list</code>, <code>/api/backup/restore</code></li>
+<li><strong>Monitoring</strong> — <code>/api/nodes/masters</code>, <code>/api/nodes/workers</code>, <code>/api/leader</code>, <code>/api/monitoring/metrics</code>, <code>/api/logs/tail</code></li>
 </ul>
 <h2 id="metrics-observability">Metrics &amp; Observability</h2>
-<p>Mium collects per-node JVM metrics (CPU, heap, threads) and aggregates them centrally for the Dashboard. Workers report metrics to the Master via the internal NIO protocol. Logs from any node are tailable in real time, no SSH required.</p>
+<p>Mium collects per-node JVM metrics (CPU, heap, threads) and aggregates them centrally for the Dashboard. The Master <strong>polls</strong> each node's JVM metrics over the internal NIO protocol (a <code>METRICS_REQ</code> pull), rather than nodes pushing. Logs from any node are tailable in real time, no SSH required.</p>
 
 
 
