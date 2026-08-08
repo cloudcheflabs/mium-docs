@@ -50,6 +50,7 @@ nav:
       - "Admin Password Recovery": features/admin-password-recovery.md
       - "Encryption & KMS": features/encryption.md
       - "High Availability": features/high-availability.md
+      - "NIC Silent-Fail Safety": features/nic-fail-safety.md
       - "Backup & Restore": features/backup-restore.md
       - "Admin UI": features/admin-ui.md
 
