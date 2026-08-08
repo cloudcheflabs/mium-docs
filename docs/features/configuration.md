@@ -171,4 +171,5 @@ These keys are not listed in the shipped `mium.properties` but are honoured when
 | `mium.memory.compaction.maxPerRun` | `5` | Max number of sessions compacted per housekeeping tick, to bound LLM cost per sweep. |
 | `mium.admin.socket.enabled` | `true` | Enables the local Unix-domain admin recovery socket used by `bin/mium-cli.sh iam:reset-password`. See [Admin Password Recovery](admin-password-recovery.md). |
 | `mium.admin.socket.path` | `${mium.base.data.dir}/admin.sock` | Filesystem path of the admin recovery socket. |
+| `mium.admin.socket.marker.file` | `master.socket` | Name of the file under `<mium.home>/bin` where the master writes the socket path it actually bound to. `bin/mium-cli.sh` prefers that published path over re-deriving one from this file, since `mium.base.data.dir` can be overridden with `-D` at launch. Removed on shutdown. |
 | `mium.iam.audit.dir` | `${mium.base.data.dir}/iam-audit` | Directory for the append-only IAM audit log (records admin password resets). |

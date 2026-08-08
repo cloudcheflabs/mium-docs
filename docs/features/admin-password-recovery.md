@@ -37,8 +37,9 @@ rotation.
 
 | Property | Value |
 |---|---|
-| **Socket path** | `data/admin.sock` (mode `600`) |
+| **Socket path** | `${mium.base.data.dir}/admin.sock` by default, mode `600` — the live value is published to `bin/master.socket` |
 | **Authentication** | OS file permission — same user as the master process |
+| **Socket path marker** | `bin/master.socket` — written when the socket binds, removed on shutdown |
 | **Network surface** | none — Unix domain socket only |
 | **Downtime** | none — applied in-process on the live master |
 | **Cluster sync** | automatic — leader fans the new IAM state out to followers and workers |
@@ -73,23 +74,110 @@ bin/mium-cli.sh iam:reset-password --user some-user --new-password 'NewPass123'
 
 ## Configuration
 
-The recovery socket is enabled by default. To disable it (for example, in a
-hardened production deployment), set:
+The recovery socket is enabled by default. Every key below lives in
+`conf/mium.properties` and is read at master startup:
 
 ```properties
 # conf/mium.properties
-mium.admin.socket.enabled = false
-mium.admin.socket.path    = ${mium.base.data.dir}/admin.sock
-mium.iam.audit.dir        = ${mium.base.data.dir}/iam-audit
+# Set false to remove the local recovery path entirely.
+mium.admin.socket.enabled      = true
+mium.admin.socket.path         = ${mium.base.data.dir}/admin.sock
+# Name of the file under <mium.home>/bin that receives the socket path the
+# master actually bound to (see "How the CLI finds the socket" below).
+mium.admin.socket.marker.file  = master.socket
+# Append-only audit trail of socket operations.
+mium.iam.audit.dir = ${mium.base.data.dir}/iam-audit
 ```
 
-The CLI resolves the socket path in this order:
+The socket follows `mium.base.data.dir`. If you launch the master with
+`-Dmium.base.data.dir=/var/lib/mium` the socket moves to
+`/var/lib/mium/admin.sock` — you do not have to restate it.
 
-1. `--socket /path/to/admin.sock` command-line flag
-2. `MIUM_ADMIN_SOCKET` environment variable
-3. the built-in default `data/admin.sock` (relative to the CLI's working directory)
+### How the CLI finds the socket
 
-The `mium.admin.socket.path` / `mium.iam.audit.dir` properties above configure the **master** side (where the socket is created and where the audit log is written); the CLI itself does not read `conf/mium.properties`. So if you relocate the socket via `mium.admin.socket.path`, pass the same path to the CLI with `--socket` (or `MIUM_ADMIN_SOCKET`).
+Re-deriving the socket path from `conf/mium.properties` is not reliable on its own:
+`mium.base.data.dir` can be overridden with `-D` at launch or edited after
+startup, and the file does not record which value the live process used. So the
+master **publishes the path it actually bound to** into
+`<install dir>/bin/master.socket` when the socket comes up, and removes that file on
+shutdown. `bin/mium-cli.sh` prefers it.
+
+Full resolution order, highest priority first:
+
+1. `--socket /path/to/admin.sock` — read by the Java CLI, always wins.
+2. `$MIUM_ADMIN_SOCKET` — if already exported in the caller's shell.
+3. `<install dir>/bin/master.socket` — the path published by the running master.
+   Used only when the file exists *and* the path in it is a live socket.
+4. `mium.admin.socket.path` from `conf/mium.properties`, with
+   `${mium.base.data.dir}` expanded. A value that still contains a
+   `${...}` placeholder is rejected rather than used literally.
+5. `<install dir>/data/admin.sock`, then `/data/admin.sock`.
+
+Step 3 is what makes a moved data dir work: with the socket at
+`/data/admin.sock` and the properties file still saying `./data`, only the marker
+knows where to connect.
+
+To rename the marker, change one key — both ends read it:
+
+```bash
+# conf/mium.properties
+mium.admin.socket.marker.file = mium-recovery.socket
+```
+
+Restart the master; it publishes `bin/mium-recovery.socket`, and the CLI
+picks the new name up from the same properties file.
+
+### The master key is for the master, not the CLI
+
+`MIUM_MASTER_KEY` must be exported for the master process. The start script does not pre-check it, but KMS is enabled by default and the master cannot unseal its keystore without the key, so startup fails during KMS initialisation.
+The variable name itself is configurable — `mium.kms.master.key.env` in
+`conf/mium.properties` names the variable the master reads:
+
+```bash
+export MIUM_MASTER_KEY='replace-with-a-32-char-or-longer-secret'
+bin/start-master.sh
+```
+
+`bin/mium-cli.sh` does **not** need it. The CLI only opens the Unix socket and
+hands the request to the running master, which already holds the unsealed key,
+so this works with the variable unset:
+
+```bash
+unset MIUM_MASTER_KEY
+bin/mium-cli.sh ping
+# pong
+```
+
+If a CLI invocation complains about the key rather than the socket, you are
+running a start script, not the CLI.
+
+### Worked examples
+
+```bash
+# 1. On the host, as the same OS user that runs the master:
+cd /opt/mium
+bin/mium-cli.sh ping
+bin/mium-cli.sh iam:reset-password
+
+# 2. The master runs as a service account and you are root:
+sudo -u mium /opt/mium/bin/mium-cli.sh iam:reset-password
+
+# 3. Inside a container:
+docker exec -it mium-master-1 /app/bin/mium-cli.sh iam:reset-password
+
+# 4. Data dir was relocated at launch — no extra flags needed, the CLI
+#    reads the published marker:
+cat /opt/mium/bin/master.socket
+# /var/lib/mium/admin.sock
+bin/mium-cli.sh ping
+
+# 5. Socket in a non-standard place and no marker (the master is stopped,
+#    or you are on a host where the marker was cleaned up):
+bin/mium-cli.sh --socket /var/lib/mium/admin.sock iam:reset-password
+
+# 6. Non-interactive automation, password from stdin so it never reaches argv:
+echo 'S0me!Strong!Pass' | bin/mium-cli.sh iam:reset-password --new-password -
+```
 
 ## Security model
 
