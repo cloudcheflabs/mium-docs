@@ -4,7 +4,7 @@ Mium is the **AI Agent Platform for Ontul** — a Java-native, on-prem-first mul
 
 - **Ontul-Native Analytics**: Mium is purpose-built as the AI agent layer for Ontul. Users ask questions in natural language, and Mium's agent orchestrates SQL queries against Ontul to deliver analytical insights — aggregations, trend analysis, filtering, joins, and more.
 - **Agent Orchestration**: A single iterative agent loop over a pluggable LLM backend that understands Ontul's schema and SQL dialect, automatically generating optimized queries for the user's analytical intent. Planner/executor/specialist multi-agent patterns are on the roadmap (the `Agent` SPI is a placeholder for them today).
-- **CCL Stack Integration**: IAM, KMS, and connection credentials live in embedded RocksDB on each Master. Chat history, prompt library, and embeddings live in NeorunBase. Server-rendered export files are stored in any S3-compatible object store (ShannonStore, MinIO, AWS S3, etc.).
+- **CCL Stack Integration**: IAM, KMS, and connection credentials live in embedded RocksDB on each Master. Chat history, prompt library, embeddings, verified answers, instructions and benchmarks live in NeorunBase. Server-rendered export files are stored in any S3-compatible object store (ShannonStore, MinIO, AWS S3, etc.).
 
 ## Mium Architecture
 
@@ -22,6 +22,7 @@ The Master is the central coordination node — handling user sessions, administ
 - **MemoryStore**: Per-user persistent chat history stored in NeorunBase (`mium_chat_session` / `mium_chat_message` tables).
 - **PromptStore**: Per-user saved-prompt library stored in NeorunBase (`mium_prompt` table).
 - **EmbeddingStore**: Vector store for embedding-based retrieval stored in NeorunBase using `VECTOR(N)` columns.
+- **VerifiedQueryStore / InstructionStore / BenchmarkStore**: What a workspace learns as it is used — the question/SQL pairs analysts have verified, the plain-language house rules added to every prompt, and the benchmark suite that measures whether either helped. All in NeorunBase, resolved on the Master and carried to Workers on the `EXECUTE_AGENT` request, since Workers hold no NeorunBase connection.
 - **KMS (MiumKmsProvider)**: Built-in envelope encryption service with versioned Key Encryption Keys (KEKs). PBKDF2-SHA256 master key derivation with 200K iterations.
 - **AgentLoop**: Multi-action dispatch over a strict-JSON protocol. Actions: `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`, `list_catalogs`, `register_catalog`, `unregister_catalog`, `ontul_admin`, and `mium_admin` (which nests connection ops `list_connections` / `create_connection` / `delete_connection`).
 - **Admin Endpoints**: Auth, IAM CRUD, connection management, KMS key management, chat session management, server-side export dispatch, temp-file S3 settings, monitoring.
@@ -49,7 +50,7 @@ Mium uses Apache ZooKeeper (via Curator) for:
 - **Service Discovery**: Masters and Workers register as ephemeral nodes under `/mium/masters/<nodeId>` and `/mium/workers/<nodeId>`, enabling automatic detection of node joins and failures.
 - **Leader Election**: Curator LeaderLatch elects a primary Master. On leader failure, a new leader is automatically elected and reloads persisted state from RocksDB.
 - **Cluster Readiness**: The leader sets a `leader-ready` flag in ZK after seeding KMS keys. Non-leader Masters and Workers watch for this flag, then pull KMS + IAM + ConnectionStore from the leader. Each node marks itself `ready=true` in ZK after all three stores are synced. The leader polls ZK and accepts user requests only when every registered node is ready. If any node becomes unready, the leader stops accepting requests until the cluster is whole again.
-- **State Replication**: The leader Master replicates IAM, KMS, and ConnectionStore to follower Masters and Workers via NIO sync messages. Memory, Prompt, and Embedding data live in NeorunBase and do not require Mium-side replication.
+- **State Replication**: The leader Master replicates IAM, KMS, and ConnectionStore to follower Masters and Workers via NIO sync messages. Memory, Prompt, Embedding, verified-answer, instruction and benchmark data live in NeorunBase and do not require Mium-side replication.
 
 ### LLM Backend Abstraction
 
@@ -77,9 +78,12 @@ Mium's primary tool is **Ontul SQL** — enabling LLM-driven data analysis again
 | MemoryStore | NeorunBase | Per-user chat sessions and messages |
 | PromptStore | NeorunBase | Per-user saved prompt library |
 | EmbeddingStore | NeorunBase (VECTOR) | Vector store for embedding-based retrieval |
+| VerifiedQueryStore | NeorunBase | Analyst-verified question/SQL pairs |
+| InstructionStore | NeorunBase | Workspace and per-connection house rules |
+| BenchmarkStore | NeorunBase | Benchmark cases and scored runs |
 | TempFileStore | S3-compatible | Encrypted ciphertext of server-rendered exports |
 
-IAM, KMS, and ConnectionStore live on embedded RocksDB because they bootstrap the cluster itself — they cannot depend on an external database that hasn't started yet. Memory, Prompt, Embedding, and TempFile stores use shared infrastructure (NeorunBase and S3-compatible storage), keeping Masters and Workers stateless for those data types.
+IAM, KMS, and ConnectionStore live on embedded RocksDB because they bootstrap the cluster itself — they cannot depend on an external database that hasn't started yet. Memory, Prompt, Embedding, verified-answer, instruction, benchmark and TempFile stores use shared infrastructure (NeorunBase and S3-compatible storage), keeping Masters and Workers stateless for those data types.
 
 ### External Dependencies
 
@@ -87,7 +91,7 @@ IAM, KMS, and ConnectionStore live on embedded RocksDB because they bootstrap th
 |------------|----------|---------|
 | Ontul | Yes | The data engine Mium exists to serve. Without Ontul, Mium has nothing to query. |
 | ZooKeeper | Yes | Leader election, service discovery, cluster readiness |
-| NeorunBase | Yes | Memory, Prompt, Embedding storage |
+| NeorunBase | Yes | Memory, Prompt, Embedding, verified-answer, instruction and benchmark storage |
 | S3-compatible storage | Yes | Server-rendered export file storage (ShannonStore, MinIO, AWS S3, etc.) |
 
 ### Client Interfaces

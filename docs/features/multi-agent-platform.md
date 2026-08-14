@@ -45,18 +45,28 @@ Each user manages their own connections to external systems. Credentials are sto
 ## How It Works
 
 1. User sends a message via the Chat UI or `/api/chat`.
-2. The agent loop builds a system prompt that includes the available tool descriptions and the user's rolling chat context.
-3. The loop calls the user's configured LLM (currently Anthropic Claude — the chat loop requires a `tool=anthropic` connection) and parses the strict-JSON response.
-4. If the action requires a tool call, Mium dispatches it — locally on the master or offloaded to a Worker via `EXECUTE_AGENT` / `EXECUTE_TOOL` — using the user's encrypted credentials.
-5. Tool results feed back to the LLM (when more iterations are needed) or directly to the user.
-6. The conversation is persisted in the MemoryStore so the next turn has the full context.
+2. Before dispatching, the master resolves two things the agent loop cannot reach
+   on its own — both live on NeorunBase, which only the master connects to: an
+   analyst-verified statement for this exact question, if one exists, and the
+   workspace's house rules. Both travel to the worker on the `EXECUTE_AGENT`
+   request. See [Verified Answers](verified-answers.md) and
+   [Instructions](instructions.md).
+3. The agent loop builds a system prompt from Ontul's semantic layer — the
+   metrics, dimensions, join paths and ontology relevant to this question, with
+   certified definitions first — followed by the house rules, the available tool
+   descriptions, the raw table listing, and the user's rolling chat context. See
+   [Grounded Answers](grounded-answers.md).
+4. The loop calls the user's configured LLM (currently Anthropic Claude — the chat loop requires a `tool=anthropic` connection) and parses the strict-JSON response. A verified statement, when one was resolved, replaces the generated SQL at dispatch.
+5. If the action requires a tool call, Mium dispatches it — locally on the master or offloaded to a Worker via `EXECUTE_AGENT` / `EXECUTE_TOOL` — using the user's encrypted credentials. Transient failures are retried once; authorization, parse and not-found errors are not.
+6. Tool results feed back to the LLM (when more iterations are needed) or directly to the user, with the answer's provenance resolved from the SQL that actually ran.
+7. The conversation is persisted in the MemoryStore so the next turn has the full context.
 
 ## Deployment Model
 
 Mium is the AI agent for Ontul, deployed as part of the CCL stack:
 
 - IAM, KMS, and ConnectionStore live in embedded RocksDB on each Master (bootstrap deps).
-- Memory, Prompt, and Embedding stores live in **NeorunBase** (shared CCL-stack database).
+- Memory, Prompt, Embedding, verified-answer, instruction and benchmark stores live in **NeorunBase** (shared CCL-stack database).
 - Server-rendered export files live in any **S3-compatible** object store (ShannonStore, MinIO, AWS S3, etc.).
 - ZooKeeper handles leader election and service discovery.
 - Users bring their own LLM API keys via the ConnectionStore. No data leaves your network unless you point the LLM connection at a hosted provider.

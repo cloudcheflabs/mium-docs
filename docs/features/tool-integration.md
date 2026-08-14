@@ -17,6 +17,12 @@ The `Tool` interface defines how external systems are exposed to the LLM:
 Mium ships with one built-in tool: **Ontul**, the Cloud Chef Labs SQL engine. The agent connects via Arrow Flight SQL using the user's access-key credentials and supports:
 
 - SQL queries against any registered Ontul catalog
+- **The semantic layer** — semantic views and their metrics, dimensions and join
+  paths; metric search that resolves plain English ("revenue") to a metric name;
+  retrievers; and the ontology's object and link types. Read over Ontul's REST API
+  under the user's own Ontul credentials, and injected into the system prompt
+  ahead of the raw tables. This is what the model is aimed at; see
+  [Grounded Answers](grounded-answers.md)
 - Schema browsing (`SHOW CATALOGS`, `SHOW SCHEMAS`, `SHOW TABLES`, `DESCRIBE`)
 - Catalog management — `list_catalogs`, `register_catalog`, `unregister_catalog`, plus a generic `ontul_admin` passthrough to the Ontul Admin REST API
 - Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see [Job Lifecycle](job-lifecycle.md)). Job types are the `OntulJobType` enum values `BATCH`, `STREAMING`, `CLASS`, `PYTHON`
@@ -33,7 +39,9 @@ Mium ships with one built-in tool: **Ontul**, the Cloud Chef Labs SQL engine. Th
 
 ## How a Tool Call Flows
 
-1. When a chat session starts, the agent loop assembles the system prompt by collecting `sqlReference()` from the tools available to the user.
+1. When a chat session starts, the agent loop assembles the system prompt from
+   Ontul's semantic definitions relevant to the question plus `sqlReference()`
+   from the tools available to the user.
 2. The LLM sees the tool descriptions and emits a strict-JSON action that names the SQL or job operation it wants to run.
 3. The agent loop dispatches the call. For `query` actions, it executes against the connected Ontul cluster directly; for job actions it calls the matching Ontul Admin REST endpoint.
 4. The agent loop can offload entire LLM iterations to a Worker via `EXECUTE_AGENT` for parallelism, or dispatch only the tool call via `EXECUTE_TOOL`. Worker execution falls back to the master if no Worker is ready. Note the `EXECUTE_TOOL` worker path handles only `query` / `listTables` / `describeTable`; job-lifecycle actions always run on the master through the Ontul Admin REST client.

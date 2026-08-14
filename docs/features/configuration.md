@@ -156,6 +156,21 @@ When a master is a follower, write routes are reverse-proxied to the current lea
 | `mium.admin.proxy.connect.timeout.ms` | `2000` | Connect timeout in milliseconds for the follower→leader proxy. Short by design — master nodes share a LAN. |
 | `mium.admin.proxy.request.timeout.ms` | `10000` | Request timeout in milliseconds for the follower→leader proxy. Covers the slowest synchronous IAM / Connection admin call. |
 
+## Learning from Use
+
+Three stores let answers improve as a workspace uses Mium — the verified
+question/SQL library, the plain-language house rules, and the benchmark suite
+that says whether either helped. All three persist on NeorunBase beside the
+memory store. See [Verified Answers](verified-answers.md),
+[Instructions](instructions.md) and [Benchmarks](benchmarks.md).
+
+| Property | Default | Description |
+|---|---|---|
+| `mium.instructions.max.chars` | `4000` | Ceiling, in characters, on the house rules sent to the model. Instructions share the prompt budget with Ontul's semantic layer, so this bounds how far they can crowd out the definitions they qualify. Text past the limit is dropped with a line saying so, cut on a line boundary where possible — a half-written rule is worse than a missing one, because the model still tries to follow it. Read once at startup: the value shapes stored text as well as prompt text. |
+| `mium.verified.list.max` | `200` | How many rows one listing of the verified library returns. This bounds the analyst's review queue, not an export. |
+| `mium.benchmark.history.max` | `50` | How many past benchmark runs the history endpoint returns. Runs are retained regardless; this only bounds what the screen asks for. |
+| `mium.benchmark.numeric.tolerance` | `1e-9` | Relative tolerance when a benchmark compares two numbers. Two correct sums of the same doubles disagree in the last digit purely from grouping order, and failing on that would make the suite noise. Much larger values start hiding real disagreements — a wrong filter moves a total by orders of magnitude more than this. For values below 1 the tolerance is applied absolutely, since a relative one degenerates into demanding exact equality near zero. |
+
 ## Optional Properties
 
 These keys are not listed in the shipped `mium.properties` but are honoured when set:

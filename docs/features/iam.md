@@ -59,6 +59,15 @@ The shipped action constants cover all platform operations:
 | Chat / Agent | `SYSTEM:CHAT`, `SYSTEM:USE_TOOL`, `SYSTEM:MANAGE_AGENT` |
 | Connections | `SYSTEM:USE_CONNECTION`, `SYSTEM:READ_CONNECTION`, `SYSTEM:WRITE_CONNECTION` |
 | Memory / Prompt | `SYSTEM:READ_MEMORY`, `SYSTEM:WRITE_MEMORY`, `SYSTEM:READ_PROMPT`, `SYSTEM:WRITE_PROMPT` |
+
+`SYSTEM:WRITE_PROMPT` also gates the shared assets that shape everybody's answers:
+verifying a question/SQL pair (`mium:prompt:verified`), editing the house rules
+(`mium:prompt:instructions`), and managing or running the benchmark suite
+(`mium:prompt:benchmark`). Reporting a wrong answer and reading any of the three
+stay open to every authenticated user — the person who notices a wrong number is
+rarely the one who can correct it, and requiring permission to complain loses the
+signal.
+
 | LLM | `SYSTEM:MANAGE_LLM_BACKEND` |
 | Admin | `SYSTEM:MANAGE_IAM`, `SYSTEM:MANAGE_KMS`, `SYSTEM:MANAGE_COMPANY`, `SYSTEM:MANAGE_ORG`, `SYSTEM:MANAGE_BACKUP` |
 

@@ -12,13 +12,16 @@ Mium splits its persistent state across stores backed by three CCL-stack technol
 | MemoryStore | NeorunBase | Per-user chat sessions and messages |
 | PromptStore | NeorunBase | Per-user saved prompt library |
 | EmbeddingStore | NeorunBase (VECTOR) | Vector embeddings for retrieval |
+| VerifiedQueryStore | NeorunBase | Analyst-verified question/SQL pairs and the reports awaiting review |
+| InstructionStore | NeorunBase | Plain-language house rules, workspace-wide and per connection |
+| BenchmarkStore | NeorunBase | Benchmark cases and the history of scored runs |
 | TempFileStore | S3-compatible | Encrypted ciphertext of server-rendered exports |
 
 ## Why This Split
 
 **IAM / KMS / ConnectionStore → RocksDB**: These stores bootstrap the cluster itself. The leader must seed KMS keys and create the admin user before it can connect to anything external. Embedding them in RocksDB means the cluster starts with zero external dependencies beyond ZooKeeper.
 
-**MemoryStore / PromptStore / EmbeddingStore → NeorunBase**: Chat history, prompts, and embeddings are application-level data shared across all Mium nodes. Storing them in NeorunBase means every Master and Worker reads and writes directly — no Mium-side snapshot replication, no leader bottleneck for writes. NeorunBase handles durability and consistency natively.
+**MemoryStore / PromptStore / EmbeddingStore / VerifiedQueryStore / InstructionStore / BenchmarkStore → NeorunBase**: Chat history, prompts, embeddings and everything the workspace learns as it is used are application-level data shared across all Mium nodes. Storing them in NeorunBase means every Master and Worker reads and writes directly — no Mium-side snapshot replication, no leader bottleneck for writes. NeorunBase handles durability and consistency natively.
 
 **TempFileStore → S3-compatible storage**: Server-rendered export files (XLSX / PDF / PPTX) are produced by Workers and downloaded by users via the Master. S3 is the natural shared medium — the Worker PUTs the encrypted file, the Master GETs and streams it. No file needs to live on a single node's local disk.
 
@@ -31,7 +34,24 @@ mium.neorunbase.password  = ...
 mium.neorunbase.schema    = mium
 ```
 
-Tables (`mium_chat_session`, `mium_chat_message`, `mium_prompt`, `mium_embedding`) are auto-created on startup. `mium_chat_session` carries a `workspace VARCHAR(32) DEFAULT 'chat'` column so a session belongs to a workspace (`chat` / `analyze` / `dev`). Secondary indexes are deliberately **not** created (NeorunBase secondary-index population is not relied on); the stores use full scans instead.
+Tables (`mium_chat_session`, `mium_chat_message`, `mium_prompt`, `mium_embedding`,
+`mium_verified_query`, `mium_instructions`, `mium_benchmark_case`,
+`mium_benchmark_run`) are auto-created on startup. `CREATE TABLE IF NOT EXISTS`
+leaves an existing table untouched, so a release that adds a column issues an
+explicit `ALTER TABLE ... ADD COLUMN` alongside it and tolerates the duplicate-column
+error on clusters that already have it. `mium_chat_session` carries a `workspace VARCHAR(32) DEFAULT 'chat'` column so a session belongs to a workspace (`chat` / `analyze` / `dev`). Secondary indexes are deliberately **not** created (NeorunBase secondary-index population is not relied on); the stores use full scans instead.
+
+### Working within NeorunBase's SQL surface
+
+Two limitations shape how these stores are written, and both are worth knowing
+before adding another:
+
+- A bound parameter in `LIMIT` is rejected, so listing bounds are clamped to an
+  `int` in Java and inlined into the statement. They never come from a request as
+  text.
+- An arithmetic assignment such as `SET use_count = use_count + 1` parses and
+  reports success while writing nothing — only literal values are kept from a
+  `SET` clause. Counters are therefore maintained read-then-write.
 
 ## S3 Configuration
 
