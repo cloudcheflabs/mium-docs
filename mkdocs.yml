@@ -37,6 +37,10 @@ nav:
   - "Features":
       - "Configuration": features/configuration.md
       - "Multi-Agent AI Platform": features/multi-agent-platform.md
+      - "Grounded Answers": features/grounded-answers.md
+      - "Verified Answers": features/verified-answers.md
+      - "Instructions": features/instructions.md
+      - "Benchmarks": features/benchmarks.md
       - "LLM Backend": features/llm-backend.md
       - "Tool Integration": features/tool-integration.md
       - "Job Lifecycle": features/job-lifecycle.md

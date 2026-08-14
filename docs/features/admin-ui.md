@@ -23,11 +23,45 @@ Routes: `/`, `/c/:sessionId`. The Settings entry point lives in the user footer 
 
 ### Analyze workspace
 
-A data-analysis workspace with a catalog tree browser (backed by `/api/catalog/connections`, `/api/catalog/tables`, `/api/catalog/columns`) alongside the chat panel. Routes: `/analyze`, `/analyze/c/:sessionId`.
+The workspace for asking questions of data. Routes: `/analyze`,
+`/analyze/c/:sessionId`.
+
+It is **answer-first**: the assistant's conclusion is the primary output, with a
+trust bar beneath it saying which semantic views and metrics the answer used and
+whether Ontul certifies them (see [Grounded Answers](grounded-answers.md)). The
+SQL is one click away and stays editable and runnable — an analyst who wants to
+take over should not have to leave the page — but it is the receipt, not the
+product. A single-value result is rendered as a headline figure rather than a
+one-cell table.
+
+Alongside the answer:
+
+- **Definition browser** on the left, open by default: semantic views, metrics,
+  entities, relationships and retrievers, read from `/api/semantic/*`. A user who
+  cannot see what is defined has to guess what the data covers.
+- **Starter questions**, generated from the certified definitions, so every
+  opening suggestion has an answer waiting rather than pointing at a raw table
+  the model is told not to use.
+- **Follow-ups**, derived from the columns that actually came back, so no
+  suggestion leads to a dead end.
+- **Was this right?** beneath every answer — one click to report a wrong answer,
+  and for curators, one click to verify a correct one. See
+  [Verified Answers](verified-answers.md).
+
+The raw catalog tree (`/api/catalog/connections`, `/api/catalog/tables`,
+`/api/catalog/columns`) remains available for browsing physical tables.
 
 ### Dev workspace
 
-A notebook-style workspace for generating and running Ontul jobs and remote Java/Python code cells, backed by the `/api/jobs/*` REST surface (`submit`, `list`, `status`, `logs`, `kill`, `codegen`, `codegen-fix`). Routes: `/dev`, `/dev/c/:sessionId`. See [Job Lifecycle](job-lifecycle.md).
+A notebook-style workspace for generating and running Ontul jobs and remote
+Java/Python code cells, backed by the `/api/jobs/*` REST surface (`submit`,
+`list`, `status`, `logs`, `kill`, `codegen`, `codegen-fix`). Routes: `/dev`,
+`/dev/c/:sessionId`. See [Job Lifecycle](job-lifecycle.md).
+
+Each prompt is echoed as an **Asked** block above its result, so a session reads
+as a transcript rather than replacing itself; every past question can be copied
+or reused with one click, and the prompt box sits below the results where the
+next question is written.
 
 ### Settings — Your Account
 
@@ -45,6 +79,14 @@ A notebook-style workspace for generating and running Ontul jobs and remote Java
 - **Security & KMS** — list, create, and rotate envelope-encryption keys.
 - **Temp File Storage** — configure the S3-compatible object store used for server-side export ciphertext (endpoint, region, bucket, path-style, ConnectionStore id); "Test connection" probe (`/api/settings/tempfile/test`).
 - **Embedding** — configure the embedding backend/models (`/api/settings/embedding`).
+- **Verified Answers** — the review queue for reported answers and the library of
+  verified question/SQL pairs. See [Verified Answers](verified-answers.md).
+- **Instructions** — plain-language house rules added to every prompt, workspace-wide
+  and per connection. See [Instructions](instructions.md).
+- **Benchmarks** — questions with a known-correct answer, run on demand and scored,
+  with the history of past runs. See [Benchmarks](benchmarks.md).
+- **Backup & Restore** — configure and run backups, browse and restore snapshots
+  (`/api/backup/*`). See [Backup & Restore](backup-restore.md).
 
 ## REST API
 
@@ -61,6 +103,10 @@ Every operation in the UI is also reachable on the Admin HTTP server (default po
 - **Server-side Export** — `/api/export`, `/api/export/download`
 - **Storage** — `/api/storage/me`, `/api/storage/purge`
 - **Settings** — `/api/settings/tempfile`, `/api/settings/tempfile/test`, `/api/settings/embedding`
+- **Semantic layer** — `/api/semantic/views`, `/api/semantic/views/detail`, `/api/semantic/metrics/search`, `/api/semantic/object-types`, `/api/semantic/link-types`, `/api/semantic/retrievers` (read-through to Ontul under the user's credentials)
+- **Verified answers** — `/api/verified/report`, `/api/verified/verify`, `/api/verified`, `DELETE /api/verified`
+- **Instructions** — `/api/instructions`, `/api/instructions/all`, `PUT /api/instructions`
+- **Benchmarks** — `/api/benchmarks`, `/api/benchmarks/run`, `/api/benchmarks/runs`
 - **Backup** — `/api/backup/config`, `/api/backup/run`, `/api/backup/history`, `/api/backup/list`, `/api/backup/restore`
 - **Monitoring** — `/api/nodes/masters`, `/api/nodes/workers`, `/api/leader`, `/api/monitoring/metrics`, `/api/logs/tail`
 
