@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/operations/troubleshooting/">
+        <link rel="canonical" href="https://cloudcheflabs.github.io/mium-docs/1.0.0/features/benchmarks/">
       
       
-        <link rel="prev" href="../retention/">
+        <link rel="prev" href="../instructions/">
       
       
-        <link rel="next" href="../../security/hardening/">
+        <link rel="next" href="../llm-backend/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Troubleshooting - Mium</title>
+        <title>Benchmarks - Mium</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#troubleshooting" class="md-skip">
+        <a href="#benchmarks" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Troubleshooting
+              Benchmarks
             
           </span>
         </div>
@@ -293,11 +293,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../features/configuration/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../configuration/" class="md-tabs__link">
           
   
   
@@ -313,13 +315,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../monitoring/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../operations/monitoring/" class="md-tabs__link">
           
   
   
@@ -761,26 +761,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -798,7 +803,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -816,7 +821,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/configuration/" class="md-nav__link">
+      <a href="../configuration/" class="md-nav__link">
         
   
   
@@ -844,7 +849,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/multi-agent-platform/" class="md-nav__link">
+      <a href="../multi-agent-platform/" class="md-nav__link">
         
   
   
@@ -872,7 +877,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/grounded-answers/" class="md-nav__link">
+      <a href="../grounded-answers/" class="md-nav__link">
         
   
   
@@ -900,7 +905,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/verified-answers/" class="md-nav__link">
+      <a href="../verified-answers/" class="md-nav__link">
         
   
   
@@ -928,7 +933,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/instructions/" class="md-nav__link">
+      <a href="../instructions/" class="md-nav__link">
         
   
   
@@ -953,10 +958,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../features/benchmarks/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -972,6 +1004,114 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A case
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the suite
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-answers-are-compared" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How answers are compared
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-a-failure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading a failure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        History
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Storage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rest-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REST API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -984,7 +1124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/llm-backend/" class="md-nav__link">
+      <a href="../llm-backend/" class="md-nav__link">
         
   
   
@@ -1012,7 +1152,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/tool-integration/" class="md-nav__link">
+      <a href="../tool-integration/" class="md-nav__link">
         
   
   
@@ -1040,7 +1180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/job-lifecycle/" class="md-nav__link">
+      <a href="../job-lifecycle/" class="md-nav__link">
         
   
   
@@ -1068,7 +1208,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/connection-management/" class="md-nav__link">
+      <a href="../connection-management/" class="md-nav__link">
         
   
   
@@ -1096,7 +1236,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/chat-memory/" class="md-nav__link">
+      <a href="../chat-memory/" class="md-nav__link">
         
   
   
@@ -1124,7 +1264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/prompt-library/" class="md-nav__link">
+      <a href="../prompt-library/" class="md-nav__link">
         
   
   
@@ -1152,7 +1292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/storage-backends/" class="md-nav__link">
+      <a href="../storage-backends/" class="md-nav__link">
         
   
   
@@ -1180,7 +1320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/temp-file-storage/" class="md-nav__link">
+      <a href="../temp-file-storage/" class="md-nav__link">
         
   
   
@@ -1208,7 +1348,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/server-side-export/" class="md-nav__link">
+      <a href="../server-side-export/" class="md-nav__link">
         
   
   
@@ -1236,7 +1376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/worker-python-runtime/" class="md-nav__link">
+      <a href="../worker-python-runtime/" class="md-nav__link">
         
   
   
@@ -1264,7 +1404,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/iam/" class="md-nav__link">
+      <a href="../iam/" class="md-nav__link">
         
   
   
@@ -1292,7 +1432,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/admin-password-recovery/" class="md-nav__link">
+      <a href="../admin-password-recovery/" class="md-nav__link">
         
   
   
@@ -1320,7 +1460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/encryption/" class="md-nav__link">
+      <a href="../encryption/" class="md-nav__link">
         
   
   
@@ -1348,7 +1488,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/high-availability/" class="md-nav__link">
+      <a href="../high-availability/" class="md-nav__link">
         
   
   
@@ -1376,7 +1516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/nic-fail-safety/" class="md-nav__link">
+      <a href="../nic-fail-safety/" class="md-nav__link">
         
   
   
@@ -1384,154 +1524,6 @@
     
   
     NIC Silent-Fail Safety
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../features/backup-restore/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Backup & Restore
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../features/admin-ui/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Admin UI
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operations
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Operations
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../monitoring/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Monitoring & Observability
   
 
     
@@ -1580,7 +1572,150 @@
   
   
     <li class="md-nav__item">
-      <a href="../retention/" class="md-nav__link">
+      <a href="../admin-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring & Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/backup-restore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backup & Restore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/retention/" class="md-nav__link">
         
   
   
@@ -1605,37 +1740,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Troubleshooting
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../operations/troubleshooting/" class="md-nav__link">
         
   
   
@@ -1651,103 +1759,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ready-returns-503-cluster-not-ready" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        /ready Returns 503 — "Cluster Not Ready"
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#chat-returns-503-no-worker-ready" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Chat Returns 503 — "No Worker Ready"
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#export-returns-503" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Export Returns 503
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#login-fails-invalid-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Login Fails — "Invalid Credentials"
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#embedding-calls-hang-or-oom-on-the-worker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Embedding Calls Hang or OOM on the Worker
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#other-useful-diagnostics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Other Useful Diagnostics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#where-to-look-in-logs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Where to Look in Logs
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1864,152 +1875,208 @@
 
 
 
-<h1 id="troubleshooting">Troubleshooting</h1>
-<p>The five operational issues that account for most Mium support tickets, with the diagnostic that resolves each one in seconds.</p>
-<h2 id="ready-returns-503-cluster-not-ready"><code>/ready</code> Returns 503 — "Cluster Not Ready"</h2>
-<p>The single most common operational issue. <code>/health</code> is <code>200</code>, the JVM is up, but the load balancer is still rejecting traffic.</p>
-<p><strong>Cause.</strong> The leader Master accepts requests only when <strong>every</strong> registered Master and Worker has synced KMS / IAM / ConnectionStore from the leader and reported <code>ready=true</code> in ZooKeeper. Any node that registered but never reached ready holds the cluster offline.</p>
-<p><strong>Diagnose.</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Hit the leader directly</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://leader:8090/api/nodes/masters
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://leader:8090/api/nodes/workers
-</code></pre></div>
-<p>Each entry has a <code>ready</code> flag. If any flag is false, that's the holdout.</p>
-<p>For the holdout node, check its log for one of:</p>
-<ul>
-<li><code>MIUM_MASTER_KEY mismatch</code> — the master key on this node does not derive the same KEK as the leader. Fix: align the env var across all nodes.</li>
-<li><code>Failed to pull KMS_SYNC</code> — network blocked between this node and the leader on <code>mium.master.internal.port</code> (default <code>19099</code>). Fix: open the firewall.</li>
-<li><code>Schema migration failed</code> — NeorunBase is reachable but the user lacks DDL privileges. Fix: grant the <code>mium.neorunbase.username</code> permission to create tables in <code>mium.neorunbase.schema</code>.</li>
-</ul>
-<p><strong>Recover.</strong> Once the underlying cause is fixed, restart the holdout. The leader re-validates cluster readiness automatically; no leader restart is needed.</p>
-<h2 id="chat-returns-503-no-worker-ready">Chat Returns 503 — "No Worker Ready"</h2>
-<p>The chat endpoint accepts the request but returns <code>503 Service Unavailable</code> immediately.</p>
-<p><strong>Cause.</strong> Every Worker is either unregistered, marked unready in ZooKeeper, or unreachable on its NIO port. The Master will not run LLM calls, tool calls, or exports locally — that work belongs on the Worker tier.</p>
-<p><strong>Diagnose.</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://master:8090/api/nodes/workers
-</code></pre></div>
-<p>If the list is empty:</p>
-<ul>
-<li>A Worker has crashed and not restarted — check <code>bin/worker.pid</code> exists and the PID is still running.</li>
-<li>Workers were never started — <code>bin/start-worker.sh</code> was not run.</li>
-<li>ZooKeeper is unreachable from Worker hosts — workers cannot register without it.</li>
-</ul>
-<p>If Workers are listed but <code>ready=false</code>, follow the same checks as the cluster-not-ready section above.</p>
-<h2 id="export-returns-503">Export Returns 503</h2>
-<p>The chat works, the LLM responds, but <code>Excel 로 만들어줘</code> returns <code>503</code> instead of a download link.</p>
-<p><strong>Causes, in order of frequency.</strong></p>
-<ol>
-<li><strong>No Worker ready</strong> — same as above. Exports require a Worker.</li>
-<li><strong>Python interpreter missing on Worker</strong> — <code>python3</code> is not on PATH. Set <code>MIUM_PYTHON_EXE</code> to the absolute path.</li>
-<li><strong>Bundled wheel ABI mismatch</strong> — <code>lib/python/</code> was built against Python 3.11 but the Worker is running Python 3.10. Fix: install a matching <code>python3</code>, or override <code>MIUM_PYTHON_EXE</code>.</li>
-<li><strong>S3 bucket unreachable</strong> — the Worker can render but cannot upload. The Worker log shows the S3 error.</li>
-<li><strong>S3 connection in <code>mium.tempfile.s3.connection</code> is missing or unauthorized</strong> — admin needs to register the s3 connection with the right access key.</li>
-</ol>
-<p><strong>Diagnose Python directly on the Worker host:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">$MIUM_HOME</span>/bin/python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import openpyxl, reportlab, pptx; print(&#39;ok&#39;)&quot;</span>
-</code></pre></div>
-<h2 id="login-fails-invalid-credentials">Login Fails — "Invalid Credentials"</h2>
-<p>The bootstrap admin works on a fresh install but fails after a config change.</p>
-<p><strong>Cause.</strong> The bootstrap admin (<code>mium.iam.admin.user</code> / <code>mium.iam.admin.password</code>) is created <strong>only when the IAM RocksDB is empty</strong>. Once any user has been seeded, changing those properties has no effect — the original credentials still apply. If the original password has been forgotten and not rotated through the UI, login is broken until you either:</p>
-<ul>
-<li>Reset the admin's password via another admin account.</li>
-<li>Restore the IAM RocksDB from backup.</li>
-<li>(Last resort, destructive) Stop the cluster, delete <code>data/iam/</code>, restart — re-seeds the bootstrap admin from <code>mium.properties</code>. This <strong>wipes every user, group, policy, and access key</strong>.</li>
-</ul>
-<p>For non-bootstrap users, password reset is at Settings → Profile → Password (or <code>POST /auth/change-password</code>).</p>
-<h2 id="embedding-calls-hang-or-oom-on-the-worker">Embedding Calls Hang or OOM on the Worker</h2>
-<p>Chat works but features that need embeddings (memory recall, prompt search, code-generation few-shot) stall or the Worker process gets killed.</p>
-<p><strong>Cause.</strong> Embedding inference loads <code>bge-m3</code> (~2 GB) and / or <code>clip-ViT-B-32</code> (~600 MB) into the Worker's Python heap. With Worker <code>-Xmx</code> plus model weights, total RSS approaches 8 GB. Hosts under-provisioned for that get killed by the OOM killer.</p>
-<p><strong>Diagnose.</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Are the daemons alive?</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://master:8090/api/logs/tail?nodeId<span class="o">=</span>worker-19098
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Look for: &quot;embedding daemon ready: model=BAAI/bge-m3 dim=1024&quot;</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Or:       &quot;Killed&quot; — that&#39;s the OOM killer.</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Check Worker memory headroom</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>ps<span class="w"> </span>-eo<span class="w"> </span>pid,rss,vsz,comm<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>python3
-</code></pre></div>
-<p><strong>Fix.</strong> Either size up the Worker host, or use the lighter model:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Settings → Embedding → switch to all-MiniLM-L6-v2 (~90 MB)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="na">mium.embedding.dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">384</span>
-</code></pre></div>
-<p>The model swap is a hot swap — no restart needed. The first call after the swap pays the model-load cost (~5 s).</p>
-<p>For the full embedding architecture, see <a href="../../features/worker-python-runtime/">Worker Python Runtime</a>.</p>
-<h2 id="other-useful-diagnostics">Other Useful Diagnostics</h2>
+<h1 id="benchmarks">Benchmarks</h1>
+<p>Grounding the model in Ontul's definitions, storing what analysts verify, letting
+them write down the fiscal calendar — each of those is an argument that answers
+get better. None of them is evidence.</p>
+<p>Benchmarks are the evidence: questions with a known-correct answer, run on
+demand, scored, and kept so today's score can be compared with last month's. A
+benchmark a change breaks is worth more than a plausible explanation of why the
+change should have helped.</p>
+<h2 id="a-case">A case</h2>
+<p>Each case is a question a user would type, paired with <strong>the SQL an analyst says
+answers it</strong>.</p>
 <table>
 <thead>
 <tr>
-<th>Symptom</th>
-<th>First check</th>
+<th>Field</th>
+<th>Example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Leader churns more than once an hour</td>
-<td><code>mium.zk.session.timeout.ms</code> and ZK ensemble health</td>
+<td>Question</td>
+<td><code>revenue and order count by order status</code></td>
 </tr>
 <tr>
-<td>Followers never catch up after a leader restart</td>
-<td>NIO port <code>mium.master.internal.port</code> blocked between Masters</td>
+<td>Reference statement</td>
+<td><code>SELECT o_orderstatus, total_revenue, order_count FROM ice.examples.order_sales</code></td>
 </tr>
 <tr>
-<td>Export download is <code>404</code></td>
-<td>The 10-day retention sweep already deleted the file. Re-render.</td>
+<td>Connection</td>
+<td>the data connection to run against</td>
 </tr>
 <tr>
-<td><code>Schema "mium" does not exist</code></td>
-<td>NeorunBase connection has wrong schema name in <code>mium.neorunbase.schema</code></td>
-</tr>
-<tr>
-<td>Logs filling disk</td>
-<td>Logback rotates daily; check <code>conf/logback.xml</code> for retention; mount <code>logs/</code> on a sized volume</td>
-</tr>
-<tr>
-<td>Admin UI shows <code>Cannot GET /</code></td>
-<td><code>mium.admin.context.path</code> set but the UI bundle was built without a matching <code>VITE_BASE_PATH</code></td>
+<td>Note</td>
+<td>what this case is meant to catch</td>
 </tr>
 </tbody>
 </table>
-<h2 id="where-to-look-in-logs">Where to Look in Logs</h2>
+<p>The truth is stored as SQL, not as a number. The suite runs against a warehouse
+that is still being written to, and a hard-coded total starts failing for reasons
+that have nothing to do with the assistant. Running the reference statement at
+comparison time asks the question actually worth asking: <em>does the assistant's
+answer agree with the statement an analyst vouches for, right now?</em></p>
+<p>A verified answer makes an excellent first case — it is already a question with
+an agreed-upon statement.</p>
+<h2 id="running-the-suite">Running the suite</h2>
+<p><strong>Settings → Benchmarks</strong>, then <em>Run</em>. The screen leads with the score, how it
+moved since the previous run, and the failures — a benchmark you have to dig
+through is one nobody runs twice. Each failure shows why it failed and the
+statement the assistant produced.</p>
+<p>Every case is answered through <strong>the same path a user's question takes</strong>: worker
+dispatch, the verified library, the house rules, all of it. Calling the model
+directly would be simpler and would measure a product nobody uses — the parts
+most likely to regress are exactly the ones a shortcut skips.</p>
+<p>Running requires the <code>WRITE_PROMPT</code> action, since a run consumes LLM calls
+against every case.</p>
+<h2 id="how-answers-are-compared">How answers are compared</h2>
+<p>The comparator has to be fair in both directions. Too strict and every run is red
+for reasons no user would notice, and a suite that is always red gets ignored.
+Too lenient and it certifies wrong answers, which is worse than having no
+benchmark at all.</p>
 <table>
 <thead>
 <tr>
-<th>Subsystem</th>
-<th>Tag in log line</th>
+<th>Difference</th>
+<th>Verdict</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Leader election</td>
-<td><code>LeaderLatch</code>, <code>Curator</code></td>
+<td>Column named <code>revenue</code> instead of <code>total_revenue</code></td>
+<td>Agrees — names are presentation</td>
 </tr>
 <tr>
-<td>Master ↔ Master sync</td>
-<td><code>KmsSync</code>, <code>IamSync</code>, <code>ConnectionSync</code></td>
+<td>An extra column in the answer</td>
+<td>Fails — that answered a different question</td>
 </tr>
 <tr>
-<td>Master ↔ Worker dispatch</td>
-<td><code>WorkerToolDispatcher</code>, <code>WorkerEmbedDispatcher</code>, <code>ExecuteAgentHandler</code></td>
+<td>Rows in a different order</td>
+<td>Agrees, unless the reference statement ends in <code>ORDER BY</code></td>
 </tr>
 <tr>
-<td>Agent loop</td>
-<td><code>AgentLoop</code>, <code>LlmBackend</code></td>
+<td><code>204756995.37761158</code> vs <code>204756995.37761152</code></td>
+<td>Agrees — summation order, not a wrong answer</td>
 </tr>
 <tr>
-<td>Export render</td>
-<td><code>PythonExporter</code>, <code>PythonProcessRunner</code></td>
+<td><code>100.0</code> vs <code>101.0</code></td>
+<td>Fails — the classic wrong-filter symptom</td>
 </tr>
 <tr>
-<td>Embedding daemon</td>
-<td><code>EmbeddingDaemon</code>, <code>EmbeddingTool</code></td>
+<td><code>42</code> vs <code>"42"</code></td>
+<td>Agrees</td>
 </tr>
 <tr>
-<td>HTTP request</td>
-<td><code>AdminHttpServer</code>, <code>&lt;Endpoint&gt;</code></td>
+<td><code>Shipped</code> vs <code>shipped</code></td>
+<td>Agrees</td>
+</tr>
+<tr>
+<td><code>0.0</code> vs <code>null</code></td>
+<td>Fails — an absent value is not zero</td>
 </tr>
 </tbody>
 </table>
-<p>Every Worker also reports its own logs back through <code>GET /api/logs/tail</code> — operators do not need SSH on the Worker host to chase a problem.</p>
+<p>Row order counts only when the reference statement makes an ordering claim.
+"Top 5 by revenue" is a claim about order; "revenue by status" is not. An
+<code>ORDER BY</code> inside a subquery shapes the computation rather than the result and is
+not treated as a claim.</p>
+<p>Numeric comparison uses the relative tolerance
+<code>mium.benchmark.numeric.tolerance</code> (default <code>1e-9</code>), applied absolutely for
+values below 1 where a relative tolerance would degenerate into demanding exact
+equality.</p>
+<h2 id="reading-a-failure">Reading a failure</h2>
+<p>A case can fail for reasons that are not the assistant's fault, and the verdict
+says which:</p>
+<table>
+<thead>
+<tr>
+<th>Reason</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>row 2, column 2: expected …, got …</code></td>
+<td>A real disagreement — the interesting case</td>
+</tr>
+<tr>
+<td><code>expected 3 row(s), got 5</code></td>
+<td>The answer covered a different set</td>
+</tr>
+<tr>
+<td><code>the reference statement could not run: …</code></td>
+<td>The <strong>case</strong> is broken, not the assistant</td>
+</tr>
+<tr>
+<td><code>the assistant returned no result to compare</code></td>
+<td>No statement came back — usually an upstream timeout</td>
+</tr>
+<tr>
+<td><code>no data connection is configured for this case</code></td>
+<td>Setup, not accuracy</td>
+</tr>
+</tbody>
+</table>
+<p>The distinction matters: without it, an afternoon gets spent debugging the model
+when the reference SQL was the thing that stopped parsing.</p>
+<h2 id="history">History</h2>
+<p>Every run is retained with its per-case verdicts, so the history answers the
+question a single score cannot: is this better than last month, and which case
+started failing when. The history endpoint returns
+<code>mium.benchmark.history.max</code> runs (default 50); retention itself is unbounded.</p>
+<h2 id="storage">Storage</h2>
+<p>Two NeorunBase tables:</p>
+<ul>
+<li><code>mium.mium_benchmark_case</code> — the suite</li>
+<li><code>mium.mium_benchmark_run</code> — one row per run, with the per-case verdicts stored
+  as JSON. A run is read as a whole, so splitting the verdicts across rows would
+  buy nothing.</li>
+</ul>
+<h2 id="rest-api">REST API</h2>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /api/benchmarks</code></td>
+<td>any authenticated user</td>
+<td>The cases</td>
+</tr>
+<tr>
+<td><code>POST /api/benchmarks</code></td>
+<td><code>WRITE_PROMPT</code></td>
+<td>Add or replace a case</td>
+</tr>
+<tr>
+<td><code>DELETE /api/benchmarks</code></td>
+<td><code>WRITE_PROMPT</code></td>
+<td>Remove a case by id</td>
+</tr>
+<tr>
+<td><code>POST /api/benchmarks/run</code></td>
+<td><code>WRITE_PROMPT</code></td>
+<td>Run every case; returns the score and verdicts</td>
+</tr>
+<tr>
+<td><code>GET /api/benchmarks/runs</code></td>
+<td>any authenticated user</td>
+<td>Run history, newest first</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../grounded-answers/">Grounded Answers</a> — what the score is measuring</li>
+<li><a href="../verified-answers/">Verified Answers</a> — a good source of cases</li>
+<li><a href="../instructions/">Instructions</a> — conventions that change what "correct" means</li>
+<li><a href="../configuration/">Configuration</a> — tolerance and history bounds</li>
+</ul>
 
 
 

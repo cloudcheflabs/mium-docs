@@ -877,6 +877,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../grounded-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grounded Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verified-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verified Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instructions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instructions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../llm-backend/" class="md-nav__link">
         
   
@@ -1772,6 +1884,12 @@
 <p>Mium ships with one built-in tool: <strong>Ontul</strong>, the Cloud Chef Labs SQL engine. The agent connects via Arrow Flight SQL using the user's access-key credentials and supports:</p>
 <ul>
 <li>SQL queries against any registered Ontul catalog</li>
+<li><strong>The semantic layer</strong> — semantic views and their metrics, dimensions and join
+  paths; metric search that resolves plain English ("revenue") to a metric name;
+  retrievers; and the ontology's object and link types. Read over Ontul's REST API
+  under the user's own Ontul credentials, and injected into the system prompt
+  ahead of the raw tables. This is what the model is aimed at; see
+  <a href="../grounded-answers/">Grounded Answers</a></li>
 <li>Schema browsing (<code>SHOW CATALOGS</code>, <code>SHOW SCHEMAS</code>, <code>SHOW TABLES</code>, <code>DESCRIBE</code>)</li>
 <li>Catalog management — <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, plus a generic <code>ontul_admin</code> passthrough to the Ontul Admin REST API</li>
 <li>Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see <a href="../job-lifecycle/">Job Lifecycle</a>). Job types are the <code>OntulJobType</code> enum values <code>BATCH</code>, <code>STREAMING</code>, <code>CLASS</code>, <code>PYTHON</code></li>
@@ -1787,7 +1905,9 @@
 </ul>
 <h2 id="how-a-tool-call-flows">How a Tool Call Flows</h2>
 <ol>
-<li>When a chat session starts, the agent loop assembles the system prompt by collecting <code>sqlReference()</code> from the tools available to the user.</li>
+<li>When a chat session starts, the agent loop assembles the system prompt from
+   Ontul's semantic definitions relevant to the question plus <code>sqlReference()</code>
+   from the tools available to the user.</li>
 <li>The LLM sees the tool descriptions and emits a strict-JSON action that names the SQL or job operation it wants to run.</li>
 <li>The agent loop dispatches the call. For <code>query</code> actions, it executes against the connected Ontul cluster directly; for job actions it calls the matching Ontul Admin REST endpoint.</li>
 <li>The agent loop can offload entire LLM iterations to a Worker via <code>EXECUTE_AGENT</code> for parallelism, or dispatch only the tool call via <code>EXECUTE_TOOL</code>. Worker execution falls back to the master if no Worker is ready. Note the <code>EXECUTE_TOOL</code> worker path handles only <code>query</code> / <code>listTables</code> / <code>describeTable</code>; job-lifecycle actions always run on the master through the Ontul Admin REST client.</li>

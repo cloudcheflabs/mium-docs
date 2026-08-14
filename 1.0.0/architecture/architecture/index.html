@@ -1051,6 +1051,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../../features/grounded-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grounded Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/verified-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verified Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/instructions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instructions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../features/llm-backend/" class="md-nav__link">
         
   
@@ -1807,7 +1919,7 @@
 <ul>
 <li><strong>Ontul-Native Analytics</strong>: Mium is purpose-built as the AI agent layer for Ontul. Users ask questions in natural language, and Mium's agent orchestrates SQL queries against Ontul to deliver analytical insights — aggregations, trend analysis, filtering, joins, and more.</li>
 <li><strong>Agent Orchestration</strong>: A single iterative agent loop over a pluggable LLM backend that understands Ontul's schema and SQL dialect, automatically generating optimized queries for the user's analytical intent. Planner/executor/specialist multi-agent patterns are on the roadmap (the <code>Agent</code> SPI is a placeholder for them today).</li>
-<li><strong>CCL Stack Integration</strong>: IAM, KMS, and connection credentials live in embedded RocksDB on each Master. Chat history, prompt library, and embeddings live in NeorunBase. Server-rendered export files are stored in any S3-compatible object store (ShannonStore, MinIO, AWS S3, etc.).</li>
+<li><strong>CCL Stack Integration</strong>: IAM, KMS, and connection credentials live in embedded RocksDB on each Master. Chat history, prompt library, embeddings, verified answers, instructions and benchmarks live in NeorunBase. Server-rendered export files are stored in any S3-compatible object store (ShannonStore, MinIO, AWS S3, etc.).</li>
 </ul>
 <h2 id="mium-architecture">Mium Architecture</h2>
 <p><img alt="Mium Architecture" src="../../images/architecture/mium-architecture.png" /></p>
@@ -1821,6 +1933,7 @@
 <li><strong>MemoryStore</strong>: Per-user persistent chat history stored in NeorunBase (<code>mium_chat_session</code> / <code>mium_chat_message</code> tables).</li>
 <li><strong>PromptStore</strong>: Per-user saved-prompt library stored in NeorunBase (<code>mium_prompt</code> table).</li>
 <li><strong>EmbeddingStore</strong>: Vector store for embedding-based retrieval stored in NeorunBase using <code>VECTOR(N)</code> columns.</li>
+<li><strong>VerifiedQueryStore / InstructionStore / BenchmarkStore</strong>: What a workspace learns as it is used — the question/SQL pairs analysts have verified, the plain-language house rules added to every prompt, and the benchmark suite that measures whether either helped. All in NeorunBase, resolved on the Master and carried to Workers on the <code>EXECUTE_AGENT</code> request, since Workers hold no NeorunBase connection.</li>
 <li><strong>KMS (MiumKmsProvider)</strong>: Built-in envelope encryption service with versioned Key Encryption Keys (KEKs). PBKDF2-SHA256 master key derivation with 200K iterations.</li>
 <li><strong>AgentLoop</strong>: Multi-action dispatch over a strict-JSON protocol. Actions: <code>query</code>, <code>submit_batch</code>, <code>submit_streaming</code>, <code>job_status</code>, <code>job_logs</code>, <code>kill_job</code>, <code>list_jobs</code>, <code>list_history</code>, <code>generate_code</code>, <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, <code>ontul_admin</code>, and <code>mium_admin</code> (which nests connection ops <code>list_connections</code> / <code>create_connection</code> / <code>delete_connection</code>).</li>
 <li><strong>Admin Endpoints</strong>: Auth, IAM CRUD, connection management, KMS key management, chat session management, server-side export dispatch, temp-file S3 settings, monitoring.</li>
@@ -1844,7 +1957,7 @@
 <li><strong>Service Discovery</strong>: Masters and Workers register as ephemeral nodes under <code>/mium/masters/&lt;nodeId&gt;</code> and <code>/mium/workers/&lt;nodeId&gt;</code>, enabling automatic detection of node joins and failures.</li>
 <li><strong>Leader Election</strong>: Curator LeaderLatch elects a primary Master. On leader failure, a new leader is automatically elected and reloads persisted state from RocksDB.</li>
 <li><strong>Cluster Readiness</strong>: The leader sets a <code>leader-ready</code> flag in ZK after seeding KMS keys. Non-leader Masters and Workers watch for this flag, then pull KMS + IAM + ConnectionStore from the leader. Each node marks itself <code>ready=true</code> in ZK after all three stores are synced. The leader polls ZK and accepts user requests only when every registered node is ready. If any node becomes unready, the leader stops accepting requests until the cluster is whole again.</li>
-<li><strong>State Replication</strong>: The leader Master replicates IAM, KMS, and ConnectionStore to follower Masters and Workers via NIO sync messages. Memory, Prompt, and Embedding data live in NeorunBase and do not require Mium-side replication.</li>
+<li><strong>State Replication</strong>: The leader Master replicates IAM, KMS, and ConnectionStore to follower Masters and Workers via NIO sync messages. Memory, Prompt, Embedding, verified-answer, instruction and benchmark data live in NeorunBase and do not require Mium-side replication.</li>
 </ul>
 <h3 id="llm-backend-abstraction">LLM Backend Abstraction</h3>
 <p>Mium decouples from any single LLM vendor through a pluggable <code>LlmBackend</code> interface:</p>
@@ -1901,13 +2014,28 @@
 <td>Vector store for embedding-based retrieval</td>
 </tr>
 <tr>
+<td>VerifiedQueryStore</td>
+<td>NeorunBase</td>
+<td>Analyst-verified question/SQL pairs</td>
+</tr>
+<tr>
+<td>InstructionStore</td>
+<td>NeorunBase</td>
+<td>Workspace and per-connection house rules</td>
+</tr>
+<tr>
+<td>BenchmarkStore</td>
+<td>NeorunBase</td>
+<td>Benchmark cases and scored runs</td>
+</tr>
+<tr>
 <td>TempFileStore</td>
 <td>S3-compatible</td>
 <td>Encrypted ciphertext of server-rendered exports</td>
 </tr>
 </tbody>
 </table>
-<p>IAM, KMS, and ConnectionStore live on embedded RocksDB because they bootstrap the cluster itself — they cannot depend on an external database that hasn't started yet. Memory, Prompt, Embedding, and TempFile stores use shared infrastructure (NeorunBase and S3-compatible storage), keeping Masters and Workers stateless for those data types.</p>
+<p>IAM, KMS, and ConnectionStore live on embedded RocksDB because they bootstrap the cluster itself — they cannot depend on an external database that hasn't started yet. Memory, Prompt, Embedding, verified-answer, instruction, benchmark and TempFile stores use shared infrastructure (NeorunBase and S3-compatible storage), keeping Masters and Workers stateless for those data types.</p>
 <h3 id="external-dependencies">External Dependencies</h3>
 <table>
 <thead>
@@ -1931,7 +2059,7 @@
 <tr>
 <td>NeorunBase</td>
 <td>Yes</td>
-<td>Memory, Prompt, Embedding storage</td>
+<td>Memory, Prompt, Embedding, verified-answer, instruction and benchmark storage</td>
 </tr>
 <tr>
 <td>S3-compatible storage</td>

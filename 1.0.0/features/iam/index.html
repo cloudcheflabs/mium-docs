@@ -877,6 +877,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../grounded-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grounded Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verified-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verified Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instructions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instructions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../llm-backend/" class="md-nav__link">
         
   
@@ -1797,16 +1909,17 @@
 <td>Memory / Prompt</td>
 <td><code>SYSTEM:READ_MEMORY</code>, <code>SYSTEM:WRITE_MEMORY</code>, <code>SYSTEM:READ_PROMPT</code>, <code>SYSTEM:WRITE_PROMPT</code></td>
 </tr>
-<tr>
-<td>LLM</td>
-<td><code>SYSTEM:MANAGE_LLM_BACKEND</code></td>
-</tr>
-<tr>
-<td>Admin</td>
-<td><code>SYSTEM:MANAGE_IAM</code>, <code>SYSTEM:MANAGE_KMS</code>, <code>SYSTEM:MANAGE_COMPANY</code>, <code>SYSTEM:MANAGE_ORG</code>, <code>SYSTEM:MANAGE_BACKUP</code></td>
-</tr>
 </tbody>
 </table>
+<p><code>SYSTEM:WRITE_PROMPT</code> also gates the shared assets that shape everybody's answers:
+verifying a question/SQL pair (<code>mium:prompt:verified</code>), editing the house rules
+(<code>mium:prompt:instructions</code>), and managing or running the benchmark suite
+(<code>mium:prompt:benchmark</code>). Reporting a wrong answer and reading any of the three
+stay open to every authenticated user — the person who notices a wrong number is
+rarely the one who can correct it, and requiring permission to complain loses the
+signal.</p>
+<p>| LLM | <code>SYSTEM:MANAGE_LLM_BACKEND</code> |
+| Admin | <code>SYSTEM:MANAGE_IAM</code>, <code>SYSTEM:MANAGE_KMS</code>, <code>SYSTEM:MANAGE_COMPANY</code>, <code>SYSTEM:MANAGE_ORG</code>, <code>SYSTEM:MANAGE_BACKUP</code> |</p>
 <h2 id="management">Management</h2>
 <p>Users, groups, and policies are managed through the Admin UI (Settings → Administration → IAM) or the REST API under <code>/api/iam/*</code>. The UI exposes user / group / policy CRUD, group memberships, policy attachment, and access-key issuance / download. Companies and organizations are the top-level model but are currently <strong>read-only over REST</strong> — only <code>GET /api/iam/companies</code> and <code>GET /api/iam/orgs</code> are exposed; there are no create/update/delete company/org endpoints.</p>
 <p>Representative endpoints (default context path):</p>

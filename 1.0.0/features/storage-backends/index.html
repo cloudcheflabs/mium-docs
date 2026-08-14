@@ -877,6 +877,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../grounded-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grounded Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verified-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verified Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instructions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instructions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../llm-backend/" class="md-nav__link">
         
   
@@ -1134,6 +1246,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="NeorunBase Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#working-within-neorunbases-sql-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Working within NeorunBase's SQL surface
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1784,6 +1913,21 @@
 <td>Vector embeddings for retrieval</td>
 </tr>
 <tr>
+<td>VerifiedQueryStore</td>
+<td>NeorunBase</td>
+<td>Analyst-verified question/SQL pairs and the reports awaiting review</td>
+</tr>
+<tr>
+<td>InstructionStore</td>
+<td>NeorunBase</td>
+<td>Plain-language house rules, workspace-wide and per connection</td>
+</tr>
+<tr>
+<td>BenchmarkStore</td>
+<td>NeorunBase</td>
+<td>Benchmark cases and the history of scored runs</td>
+</tr>
+<tr>
 <td>TempFileStore</td>
 <td>S3-compatible</td>
 <td>Encrypted ciphertext of server-rendered exports</td>
@@ -1792,7 +1936,7 @@
 </table>
 <h2 id="why-this-split">Why This Split</h2>
 <p><strong>IAM / KMS / ConnectionStore → RocksDB</strong>: These stores bootstrap the cluster itself. The leader must seed KMS keys and create the admin user before it can connect to anything external. Embedding them in RocksDB means the cluster starts with zero external dependencies beyond ZooKeeper.</p>
-<p><strong>MemoryStore / PromptStore / EmbeddingStore → NeorunBase</strong>: Chat history, prompts, and embeddings are application-level data shared across all Mium nodes. Storing them in NeorunBase means every Master and Worker reads and writes directly — no Mium-side snapshot replication, no leader bottleneck for writes. NeorunBase handles durability and consistency natively.</p>
+<p><strong>MemoryStore / PromptStore / EmbeddingStore / VerifiedQueryStore / InstructionStore / BenchmarkStore → NeorunBase</strong>: Chat history, prompts, embeddings and everything the workspace learns as it is used are application-level data shared across all Mium nodes. Storing them in NeorunBase means every Master and Worker reads and writes directly — no Mium-side snapshot replication, no leader bottleneck for writes. NeorunBase handles durability and consistency natively.</p>
 <p><strong>TempFileStore → S3-compatible storage</strong>: Server-rendered export files (XLSX / PDF / PPTX) are produced by Workers and downloaded by users via the Master. S3 is the natural shared medium — the Worker PUTs the encrypted file, the Master GETs and streams it. No file needs to live on a single node's local disk.</p>
 <h2 id="neorunbase-configuration">NeorunBase Configuration</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="na">mium.neorunbase.jdbc.url</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">jdbc:postgresql://&lt;host&gt;:5432/neorunbase?preferQueryMode=simple</span>
@@ -1800,7 +1944,23 @@
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="na">mium.neorunbase.password</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">...</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="na">mium.neorunbase.schema</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
 </code></pre></div>
-<p>Tables (<code>mium_chat_session</code>, <code>mium_chat_message</code>, <code>mium_prompt</code>, <code>mium_embedding</code>) are auto-created on startup. <code>mium_chat_session</code> carries a <code>workspace VARCHAR(32) DEFAULT 'chat'</code> column so a session belongs to a workspace (<code>chat</code> / <code>analyze</code> / <code>dev</code>). Secondary indexes are deliberately <strong>not</strong> created (NeorunBase secondary-index population is not relied on); the stores use full scans instead.</p>
+<p>Tables (<code>mium_chat_session</code>, <code>mium_chat_message</code>, <code>mium_prompt</code>, <code>mium_embedding</code>,
+<code>mium_verified_query</code>, <code>mium_instructions</code>, <code>mium_benchmark_case</code>,
+<code>mium_benchmark_run</code>) are auto-created on startup. <code>CREATE TABLE IF NOT EXISTS</code>
+leaves an existing table untouched, so a release that adds a column issues an
+explicit <code>ALTER TABLE ... ADD COLUMN</code> alongside it and tolerates the duplicate-column
+error on clusters that already have it. <code>mium_chat_session</code> carries a <code>workspace VARCHAR(32) DEFAULT 'chat'</code> column so a session belongs to a workspace (<code>chat</code> / <code>analyze</code> / <code>dev</code>). Secondary indexes are deliberately <strong>not</strong> created (NeorunBase secondary-index population is not relied on); the stores use full scans instead.</p>
+<h3 id="working-within-neorunbases-sql-surface">Working within NeorunBase's SQL surface</h3>
+<p>Two limitations shape how these stores are written, and both are worth knowing
+before adding another:</p>
+<ul>
+<li>A bound parameter in <code>LIMIT</code> is rejected, so listing bounds are clamped to an
+  <code>int</code> in Java and inlined into the statement. They never come from a request as
+  text.</li>
+<li>An arithmetic assignment such as <code>SET use_count = use_count + 1</code> parses and
+  reports success while writing nothing — only literal values are kept from a
+  <code>SET</code> clause. Counters are therefore maintained read-then-write.</li>
+</ul>
 <h2 id="s3-configuration">S3 Configuration</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="na">mium.tempfile.s3.connection</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">s3-default       # ConnectionStore id (tool=s3, authType=access_key)</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="na">mium.tempfile.s3.endpoint</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">http://localhost:8000</span>

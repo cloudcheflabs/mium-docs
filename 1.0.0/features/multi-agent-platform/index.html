@@ -14,7 +14,7 @@
         <link rel="prev" href="../configuration/">
       
       
-        <link rel="next" href="../llm-backend/">
+        <link rel="next" href="../grounded-answers/">
       
       
         
@@ -1007,6 +1007,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../grounded-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grounded Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verified-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verified Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instructions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instructions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../llm-backend/" class="md-nav__link">
         
   
@@ -1823,17 +1935,27 @@
 <h2 id="how-it-works">How It Works</h2>
 <ol>
 <li>User sends a message via the Chat UI or <code>/api/chat</code>.</li>
-<li>The agent loop builds a system prompt that includes the available tool descriptions and the user's rolling chat context.</li>
-<li>The loop calls the user's configured LLM (currently Anthropic Claude — the chat loop requires a <code>tool=anthropic</code> connection) and parses the strict-JSON response.</li>
-<li>If the action requires a tool call, Mium dispatches it — locally on the master or offloaded to a Worker via <code>EXECUTE_AGENT</code> / <code>EXECUTE_TOOL</code> — using the user's encrypted credentials.</li>
-<li>Tool results feed back to the LLM (when more iterations are needed) or directly to the user.</li>
+<li>Before dispatching, the master resolves two things the agent loop cannot reach
+   on its own — both live on NeorunBase, which only the master connects to: an
+   analyst-verified statement for this exact question, if one exists, and the
+   workspace's house rules. Both travel to the worker on the <code>EXECUTE_AGENT</code>
+   request. See <a href="../verified-answers/">Verified Answers</a> and
+   <a href="../instructions/">Instructions</a>.</li>
+<li>The agent loop builds a system prompt from Ontul's semantic layer — the
+   metrics, dimensions, join paths and ontology relevant to this question, with
+   certified definitions first — followed by the house rules, the available tool
+   descriptions, the raw table listing, and the user's rolling chat context. See
+   <a href="../grounded-answers/">Grounded Answers</a>.</li>
+<li>The loop calls the user's configured LLM (currently Anthropic Claude — the chat loop requires a <code>tool=anthropic</code> connection) and parses the strict-JSON response. A verified statement, when one was resolved, replaces the generated SQL at dispatch.</li>
+<li>If the action requires a tool call, Mium dispatches it — locally on the master or offloaded to a Worker via <code>EXECUTE_AGENT</code> / <code>EXECUTE_TOOL</code> — using the user's encrypted credentials. Transient failures are retried once; authorization, parse and not-found errors are not.</li>
+<li>Tool results feed back to the LLM (when more iterations are needed) or directly to the user, with the answer's provenance resolved from the SQL that actually ran.</li>
 <li>The conversation is persisted in the MemoryStore so the next turn has the full context.</li>
 </ol>
 <h2 id="deployment-model">Deployment Model</h2>
 <p>Mium is the AI agent for Ontul, deployed as part of the CCL stack:</p>
 <ul>
 <li>IAM, KMS, and ConnectionStore live in embedded RocksDB on each Master (bootstrap deps).</li>
-<li>Memory, Prompt, and Embedding stores live in <strong>NeorunBase</strong> (shared CCL-stack database).</li>
+<li>Memory, Prompt, Embedding, verified-answer, instruction and benchmark stores live in <strong>NeorunBase</strong> (shared CCL-stack database).</li>
 <li>Server-rendered export files live in any <strong>S3-compatible</strong> object store (ShannonStore, MinIO, AWS S3, etc.).</li>
 <li>ZooKeeper handles leader election and service discovery.</li>
 <li>Users bring their own LLM API keys via the ConnectionStore. No data leaves your network unless you point the LLM connection at a hosted provider.</li>

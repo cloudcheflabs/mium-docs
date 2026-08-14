@@ -1057,6 +1057,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#learning-from-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning from Use
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#optional-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1091,6 +1102,118 @@
     
   
     Multi-Agent AI Platform
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grounded-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grounded Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verified-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verified Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instructions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instructions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
   
 
     
@@ -2297,6 +2420,43 @@
 <td><code>mium.admin.proxy.request.timeout.ms</code></td>
 <td><code>10000</code></td>
 <td>Request timeout in milliseconds for the follower→leader proxy. Covers the slowest synchronous IAM / Connection admin call.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="learning-from-use">Learning from Use</h2>
+<p>Three stores let answers improve as a workspace uses Mium — the verified
+question/SQL library, the plain-language house rules, and the benchmark suite
+that says whether either helped. All three persist on NeorunBase beside the
+memory store. See <a href="../verified-answers/">Verified Answers</a>,
+<a href="../instructions/">Instructions</a> and <a href="../benchmarks/">Benchmarks</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.instructions.max.chars</code></td>
+<td><code>4000</code></td>
+<td>Ceiling, in characters, on the house rules sent to the model. Instructions share the prompt budget with Ontul's semantic layer, so this bounds how far they can crowd out the definitions they qualify. Text past the limit is dropped with a line saying so, cut on a line boundary where possible — a half-written rule is worse than a missing one, because the model still tries to follow it. Read once at startup: the value shapes stored text as well as prompt text.</td>
+</tr>
+<tr>
+<td><code>mium.verified.list.max</code></td>
+<td><code>200</code></td>
+<td>How many rows one listing of the verified library returns. This bounds the analyst's review queue, not an export.</td>
+</tr>
+<tr>
+<td><code>mium.benchmark.history.max</code></td>
+<td><code>50</code></td>
+<td>How many past benchmark runs the history endpoint returns. Runs are retained regardless; this only bounds what the screen asks for.</td>
+</tr>
+<tr>
+<td><code>mium.benchmark.numeric.tolerance</code></td>
+<td><code>1e-9</code></td>
+<td>Relative tolerance when a benchmark compares two numbers. Two correct sums of the same doubles disagree in the last digit purely from grouping order, and failing on that would make the suite noise. Much larger values start hiding real disagreements — a wrong filter moves a total by orders of magnitude more than this. For values below 1 the tolerance is applied absolutely, since a relative one degenerates into demanding exact equality near zero.</td>
 </tr>
 </tbody>
 </table>

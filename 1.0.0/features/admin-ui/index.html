@@ -877,6 +877,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../grounded-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grounded Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verified-answers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verified Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instructions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instructions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../llm-backend/" class="md-nav__link">
         
   
@@ -1799,9 +1911,40 @@
 </ul>
 <p>Routes: <code>/</code>, <code>/c/:sessionId</code>. The Settings entry point lives in the user footer at the bottom-left of the chat sidebar.</p>
 <h3 id="analyze-workspace">Analyze workspace</h3>
-<p>A data-analysis workspace with a catalog tree browser (backed by <code>/api/catalog/connections</code>, <code>/api/catalog/tables</code>, <code>/api/catalog/columns</code>) alongside the chat panel. Routes: <code>/analyze</code>, <code>/analyze/c/:sessionId</code>.</p>
+<p>The workspace for asking questions of data. Routes: <code>/analyze</code>,
+<code>/analyze/c/:sessionId</code>.</p>
+<p>It is <strong>answer-first</strong>: the assistant's conclusion is the primary output, with a
+trust bar beneath it saying which semantic views and metrics the answer used and
+whether Ontul certifies them (see <a href="../grounded-answers/">Grounded Answers</a>). The
+SQL is one click away and stays editable and runnable — an analyst who wants to
+take over should not have to leave the page — but it is the receipt, not the
+product. A single-value result is rendered as a headline figure rather than a
+one-cell table.</p>
+<p>Alongside the answer:</p>
+<ul>
+<li><strong>Definition browser</strong> on the left, open by default: semantic views, metrics,
+  entities, relationships and retrievers, read from <code>/api/semantic/*</code>. A user who
+  cannot see what is defined has to guess what the data covers.</li>
+<li><strong>Starter questions</strong>, generated from the certified definitions, so every
+  opening suggestion has an answer waiting rather than pointing at a raw table
+  the model is told not to use.</li>
+<li><strong>Follow-ups</strong>, derived from the columns that actually came back, so no
+  suggestion leads to a dead end.</li>
+<li><strong>Was this right?</strong> beneath every answer — one click to report a wrong answer,
+  and for curators, one click to verify a correct one. See
+  <a href="../verified-answers/">Verified Answers</a>.</li>
+</ul>
+<p>The raw catalog tree (<code>/api/catalog/connections</code>, <code>/api/catalog/tables</code>,
+<code>/api/catalog/columns</code>) remains available for browsing physical tables.</p>
 <h3 id="dev-workspace">Dev workspace</h3>
-<p>A notebook-style workspace for generating and running Ontul jobs and remote Java/Python code cells, backed by the <code>/api/jobs/*</code> REST surface (<code>submit</code>, <code>list</code>, <code>status</code>, <code>logs</code>, <code>kill</code>, <code>codegen</code>, <code>codegen-fix</code>). Routes: <code>/dev</code>, <code>/dev/c/:sessionId</code>. See <a href="../job-lifecycle/">Job Lifecycle</a>.</p>
+<p>A notebook-style workspace for generating and running Ontul jobs and remote
+Java/Python code cells, backed by the <code>/api/jobs/*</code> REST surface (<code>submit</code>,
+<code>list</code>, <code>status</code>, <code>logs</code>, <code>kill</code>, <code>codegen</code>, <code>codegen-fix</code>). Routes: <code>/dev</code>,
+<code>/dev/c/:sessionId</code>. See <a href="../job-lifecycle/">Job Lifecycle</a>.</p>
+<p>Each prompt is echoed as an <strong>Asked</strong> block above its result, so a session reads
+as a transcript rather than replacing itself; every past question can be copied
+or reused with one click, and the prompt box sits below the results where the
+next question is written.</p>
 <h3 id="settings-your-account">Settings — Your Account</h3>
 <ul>
 <li><strong>Profile</strong> — display name, contact, locale.</li>
@@ -1818,6 +1961,14 @@
 <li><strong>Security &amp; KMS</strong> — list, create, and rotate envelope-encryption keys.</li>
 <li><strong>Temp File Storage</strong> — configure the S3-compatible object store used for server-side export ciphertext (endpoint, region, bucket, path-style, ConnectionStore id); "Test connection" probe (<code>/api/settings/tempfile/test</code>).</li>
 <li><strong>Embedding</strong> — configure the embedding backend/models (<code>/api/settings/embedding</code>).</li>
+<li><strong>Verified Answers</strong> — the review queue for reported answers and the library of
+  verified question/SQL pairs. See <a href="../verified-answers/">Verified Answers</a>.</li>
+<li><strong>Instructions</strong> — plain-language house rules added to every prompt, workspace-wide
+  and per connection. See <a href="../instructions/">Instructions</a>.</li>
+<li><strong>Benchmarks</strong> — questions with a known-correct answer, run on demand and scored,
+  with the history of past runs. See <a href="../benchmarks/">Benchmarks</a>.</li>
+<li><strong>Backup &amp; Restore</strong> — configure and run backups, browse and restore snapshots
+  (<code>/api/backup/*</code>). See <a href="../backup-restore/">Backup &amp; Restore</a>.</li>
 </ul>
 <h2 id="rest-api">REST API</h2>
 <p>Every operation in the UI is also reachable on the Admin HTTP server (default port 8090). By default endpoints are mounted under <code>/api/*</code> with auth under <code>/auth/*</code> (a <code>/admin</code> prefix applies only when <code>mium.admin.context.path</code> is set):</p>
@@ -1833,6 +1984,10 @@
 <li><strong>Server-side Export</strong> — <code>/api/export</code>, <code>/api/export/download</code></li>
 <li><strong>Storage</strong> — <code>/api/storage/me</code>, <code>/api/storage/purge</code></li>
 <li><strong>Settings</strong> — <code>/api/settings/tempfile</code>, <code>/api/settings/tempfile/test</code>, <code>/api/settings/embedding</code></li>
+<li><strong>Semantic layer</strong> — <code>/api/semantic/views</code>, <code>/api/semantic/views/detail</code>, <code>/api/semantic/metrics/search</code>, <code>/api/semantic/object-types</code>, <code>/api/semantic/link-types</code>, <code>/api/semantic/retrievers</code> (read-through to Ontul under the user's credentials)</li>
+<li><strong>Verified answers</strong> — <code>/api/verified/report</code>, <code>/api/verified/verify</code>, <code>/api/verified</code>, <code>DELETE /api/verified</code></li>
+<li><strong>Instructions</strong> — <code>/api/instructions</code>, <code>/api/instructions/all</code>, <code>PUT /api/instructions</code></li>
+<li><strong>Benchmarks</strong> — <code>/api/benchmarks</code>, <code>/api/benchmarks/run</code>, <code>/api/benchmarks/runs</code></li>
 <li><strong>Backup</strong> — <code>/api/backup/config</code>, <code>/api/backup/run</code>, <code>/api/backup/history</code>, <code>/api/backup/list</code>, <code>/api/backup/restore</code></li>
 <li><strong>Monitoring</strong> — <code>/api/nodes/masters</code>, <code>/api/nodes/workers</code>, <code>/api/leader</code>, <code>/api/monitoring/metrics</code>, <code>/api/logs/tail</code></li>
 </ul>
