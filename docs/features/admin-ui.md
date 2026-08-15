@@ -27,8 +27,10 @@ The workspace for asking questions of data. Routes: `/analyze`,
 `/analyze/c/:sessionId`.
 
 It is **answer-first**: the assistant's conclusion is the primary output, with a
-trust bar beneath it saying which semantic views and metrics the answer used and
-whether Ontul certifies them (see [Grounded Answers](grounded-answers.md)). The
+trust bar beneath it saying which semantic views, ontology entities and metrics
+the answer used and whether Ontul certifies them — with *Certification out of
+date* and Ontul's own reason when a definition has changed since it was signed
+off (see [Grounded Answers](grounded-answers.md)). The
 SQL is one click away and stays editable and runnable — an analyst who wants to
 take over should not have to leave the page — but it is the receipt, not the
 product. A single-value result is rendered as a headline figure rather than a

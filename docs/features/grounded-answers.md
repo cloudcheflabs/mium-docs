@@ -49,21 +49,60 @@ semantic search, graph traversal or ranking. The prompt tells the model to call
 one by name with its declared arguments rather than trying to express the
 question as analytic SQL.
 
-**Ontology** — typed business entities and their relationships. The physical
-column is shown first and the ontology property name second:
+**Ontology** — typed business entities and their relationships, each carrying
+Ontul's certification verdict. The physical column is shown first and the
+ontology property name second:
 
 ```
-ice.examples.customers
+ontology.sales.Customer  -> ice.examples.customers  [CERTIFIED]
   properties:
     - c_name  (ontology property: name): the customer's registered name  [PII]
   relationships:
-    - Customer places Order  (join on c_custkey = o_custkey)  one-to-many
+    - Customer places Order  (join on c_custkey = o_custkey)  one-to-many  [CERTIFIED]
 ```
 
 Both details are load-bearing. Property names exist only in the ontology API, so
 a model shown `name` will write `SELECT name` and get a "column not found"
 error; and relationships carry their join keys so two entities are related the
 way the ontology says, not the way the model guesses.
+
+## Certification: what Mium reads, and what it ignores
+
+Every Ontul definition carries two status fields, and only one of them is safe to
+build a trust indicator on.
+
+| Field | What it is |
+|---|---|
+| `status` | What a person declared: `DRAFT`, `CERTIFIED` or `DEPRECATED` |
+| `effectiveStatus` | What Ontul derives, and the only field Mium reads |
+
+`effectiveStatus` answers the question `status` cannot: *is that declaration
+still true?* When a definition is certified, Ontul records a fingerprint of what
+it meant at that moment — read source, property-to-column mapping, primary key,
+join keys, SQL template. If any of that changes afterwards, the derived status
+becomes `STALE` while the declared one stays `CERTIFIED`. Editing a description,
+a title, a synonym or a tag does not break the signature: a certification that
+evaporated whenever someone improved the documentation would teach everybody to
+stop improving the documentation.
+
+The derived status also rolls up. An object type is never more trusted than the
+read source behind it, a link type never more than either end it joins, an action
+type never more than the object type it writes to. A `CERTIFIED` entity sitting on
+a draft view is, in effect, draft — and Ontul says so, so Mium does no graph
+walking of its own.
+
+| Value | How Mium treats it |
+|---|---|
+| `CERTIFIED` | Signed, unchanged since, and its dependencies are certified too |
+| `STALE` | **Not** certified. Signed once, and the definition has changed since |
+| `DRAFT` | Not certified — never was, or demoted by something it depends on |
+| `DEPRECATED` | Not certified, and retired |
+
+When a verdict is not `CERTIFIED`, Ontul supplies a `certificationNote` saying
+why, naming the dependency where the fault lies. Mium carries that note through
+to the tooltip: *"the definition changed after it was certified"* and *"endpoint
+ontology.sales.Order is DEPRECATED"* call for completely different responses, and
+only the server knows which applies.
 
 ## Provenance
 
@@ -72,14 +111,27 @@ ran rather than from what the model claimed to do. `SemanticProvenanceResolver`
 matches the executed statement against the registry on identifier boundaries and
 reports:
 
-- whether the answer is **grounded** — it referenced a semantic view at all
-- whether those views are **certified** by Ontul
-- which views and metrics were used
+- whether the answer is **grounded** — it referenced a governed asset at all
+- the **worst `effectiveStatus`** among the assets it used, which is what the
+  answer as a whole is worth
+- which semantic views, ontology entities and metrics were used
+- for anything that fell short, Ontul's reason
 
-The UI renders this beside the answer, including the unflattering verdict: an
-answer written against raw tables says *Not from a certified definition*, in the
-same place and with the same prominence as a certified one. A trust signal that
-cannot fail is decoration.
+Certification is an *all-of* claim. A join across a certified view and a draft
+one is a draft answer; reporting it as certified because one half qualifies would
+let the ungoverned half borrow the other's credibility, which is the confusion
+this indicator exists to prevent.
+
+Ontology entities are matched through their **read source**, because a statement
+says `FROM ice.examples.customers` and never `FROM ontology.sales.Customer`. Link
+types are matched separately rather than inferred from their endpoints — a link
+is its own definition with its own signature and can be less trusted than either
+end — and are only attributed when both ends and both join columns appear.
+
+The UI renders all of this beside the answer, including the unflattering verdict:
+an answer written against raw tables says *Not from a certified definition*, and
+a stale one says *Certification out of date*, naming the definition and, on
+hover, Ontul's reason. A trust signal that cannot fail is decoration.
 
 The re-ranking outcome is reported the same way — *Re-ranked* when Ontul's
 second-stage model ran, and *Ranking not re-scored* with the reason when it did

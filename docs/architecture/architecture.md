@@ -8,8 +8,6 @@ Mium is the **AI Agent Platform for Ontul** — a Java-native, on-prem-first mul
 
 ## Mium Architecture
 
-![Mium Architecture](../images/architecture/mium-architecture.png)
-
 Mium consists of two main deployable components: **Master** and **Worker**.
 
 ### Master
@@ -38,6 +36,84 @@ The Worker is the execution node that handles LLM calls, tool execution, and ser
 - **Metrics Reporting**: Reports CPU, heap, and thread count metrics to the Master via the NIO protocol.
 - **Log Tailing**: Streams real-time logs to the Admin UI for observability.
 - **Service Registration**: Registers as an ephemeral ZooKeeper node — automatic detection of joins and failures.
+
+### What happens when a user asks a question
+
+The most useful thing to understand about Mium is the path one question takes,
+because nearly every component appears on it.
+
+**1. The Master receives the turn** (`POST /api/chat`) and persists the user's
+message before anything else, so a failure downstream never loses what was asked.
+
+**2. The Master resolves what only it can reach.** Two lookups happen here rather
+than in the agent loop, because the loop runs on Workers and Workers hold no
+NeorunBase connection:
+
+- *A verified statement.* The question is normalised — lowercased, punctuation
+  collapsed — and looked up in the verified library. On a hit, an analyst has
+  already confirmed the answer to this exact question, and their statement will
+  replace whatever the model produces.
+- *The house rules.* The workspace-wide instructions plus any belonging to the
+  user's data connection, composed into one block.
+
+Both travel to the Worker on the `EXECUTE_AGENT` request. The local-fallback path
+receives them too, so a single-node deployment answers the way a fleet does.
+
+**3. The Worker assembles the system prompt.** In order:
+
+1. The response protocol — a single strict-JSON object naming one action.
+2. **Ontul's semantic layer**, selected by relevance to this question:
+   semantic views with their metrics and dimensions, metrics resolved from the
+   user's own words through Ontul's metric search, retrievers offered for
+   questions shaped like similarity or graph traversal, and the ontology's
+   entities and relationships. Each carries Ontul's derived `effectiveStatus`,
+   and certified definitions sort first.
+3. **The house rules**, placed immediately after the definitions they qualify,
+   and explicitly marked as guidance that can never widen access or redefine a
+   certified metric.
+4. The raw table listing, for anything no definition covers.
+5. The rolling chat history.
+
+Anything dropped for size is announced in the prompt rather than silently cut — a
+model that believes it has seen the whole catalogue will invent the rest.
+
+**4. The model replies with one JSON action**, and the loop dispatches it. For a
+`query`, the statement runs against Ontul over Arrow Flight SQL under the asking
+user's own credentials. Transient failures — a reset connection, no live
+upstream, a `502` — are retried once; authorization, parse and not-found errors
+are not, because the second attempt fails identically and only costs the user
+time. Failures that do surface are translated into a sentence the user can act
+on, never a stack trace.
+
+**5. The Master attributes the answer.** Provenance is resolved from the SQL that
+actually ran, not from what was offered to the model: the statement is matched
+against the semantic registry and the ontology's read sources, and the answer
+carries which definitions it used and the worst `effectiveStatus` among them. An
+answer written against raw tables reports itself as ungrounded.
+
+**6. The turn is persisted** to the MemoryStore, and the payload — rows, columns,
+suggested visualisation, provenance, and the verifier's name if the statement
+came from the library — goes back to the browser.
+
+### Ordering and trust
+
+Two rules run through the whole design and are worth stating on their own.
+
+**Ontul owns what the data means.** Mium keeps no semantic layer. Metrics, join
+paths, certification and access control are Ontul's, read over its REST API under
+the user's own credentials. This is an accuracy argument, not a purity one: a
+small on-prem model asked to assemble a star-schema query will sometimes get it
+wrong and return a plausible number, whereas the same model asked to pick two
+names from a curated list is reliable — and the aggregate and the join are then
+written by an engine that cannot get them wrong.
+
+**An answer is only as trustworthy as the least trustworthy thing it rests on.**
+Certification is claimed only when *every* definition an answer used reports
+`effectiveStatus = CERTIFIED`. A join across a certified view and a draft one is a
+draft answer; reporting otherwise would let the ungoverned half borrow the other's
+credibility. Mium reads Ontul's derived verdict and never the declared `status`,
+so a definition edited after it was signed off is reported as stale rather than
+certified.
 
 ### Communication Architecture
 
@@ -104,7 +180,7 @@ IAM, KMS, and ConnectionStore live on embedded RocksDB because they bootstrap th
 ### Key Design Principles
 
 1. **Ontul-First** — Mium exists to serve Ontul. Every feature — natural-language SQL, job lifecycle, code generation — is built around Ontul as the data engine. Ontul is a hard dependency, not an optional tool.
-2. **Sovereign AI** — All state lives on your infrastructure. Users bring their own LLM API keys. No data leaves your network unless you point the LLM connection at a hosted provider.
+2. **Runs on your infrastructure** — All state lives on your own systems. Users bring their own LLM API keys. No data leaves your network unless you point the LLM connection at a hosted provider.
 3. **LLM-agnostic** — Pluggable backend interface with strict JSON protocol. Switch LLM providers without changing application code.
 4. **Worker-centric compute** — LLM calls, tool execution, and file rendering all run on Workers. Masters coordinate but don't do heavy lifting.
 5. **Cluster-wide readiness** — The leader accepts requests only when every node has synced its state. If a node drops, the leader re-validates before resuming.

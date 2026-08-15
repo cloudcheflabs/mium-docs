@@ -21,8 +21,14 @@ Mium ships with one built-in tool: **Ontul**, the Cloud Chef Labs SQL engine. Th
   paths; metric search that resolves plain English ("revenue") to a metric name;
   retrievers; and the ontology's object and link types. Read over Ontul's REST API
   under the user's own Ontul credentials, and injected into the system prompt
-  ahead of the raw tables. This is what the model is aimed at; see
-  [Grounded Answers](grounded-answers.md)
+  ahead of the raw tables. Every read carries Ontul's derived `effectiveStatus`,
+  which is what Mium's trust indicator is built on. This is what the model is
+  aimed at; see [Grounded Answers](grounded-answers.md)
+- **Certification** — `POST .../{fqn}/certify` and `.../decertify` on each
+  definition kind. Registration deliberately ignores `status`, `certifiedBy` and
+  `certifiedAt`, so a client cannot certify its own work or sign in someone
+  else's name. `tests/seed-ontology.sh` registers and then certifies for exactly
+  this reason
 - Schema browsing (`SHOW CATALOGS`, `SHOW SCHEMAS`, `SHOW TABLES`, `DESCRIBE`)
 - Catalog management — `list_catalogs`, `register_catalog`, `unregister_catalog`, plus a generic `ontul_admin` passthrough to the Ontul Admin REST API
 - Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see [Job Lifecycle](job-lifecycle.md)). Job types are the `OntulJobType` enum values `BATCH`, `STREAMING`, `CLASS`, `PYTHON`

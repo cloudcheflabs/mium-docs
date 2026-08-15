@@ -9,7 +9,7 @@ Organisations running Ontul need a way to let non-SQL users query and operate on
 - A **credential vault** (ConnectionStore) where each user keeps their own tool credentials, encrypted at rest.
 - A **Tool SPI** that exposes any system with an API to the LLM.
 - An **agent loop** that orchestrates a strict-JSON action protocol covering data queries, long-running jobs, and code generation.
-- A **sovereign deployment** model — IAM, KMS, connections, chat memory, and prompt library all live on your infrastructure.
+- A **self-hosted deployment** model — IAM, KMS, connections, chat memory, the prompt library and everything the workspace learns all live on your own infrastructure.
 
 ## Core Concepts
 
