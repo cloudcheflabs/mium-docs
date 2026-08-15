@@ -1888,8 +1888,14 @@
   paths; metric search that resolves plain English ("revenue") to a metric name;
   retrievers; and the ontology's object and link types. Read over Ontul's REST API
   under the user's own Ontul credentials, and injected into the system prompt
-  ahead of the raw tables. This is what the model is aimed at; see
-  <a href="../grounded-answers/">Grounded Answers</a></li>
+  ahead of the raw tables. Every read carries Ontul's derived <code>effectiveStatus</code>,
+  which is what Mium's trust indicator is built on. This is what the model is
+  aimed at; see <a href="../grounded-answers/">Grounded Answers</a></li>
+<li><strong>Certification</strong> — <code>POST .../{fqn}/certify</code> and <code>.../decertify</code> on each
+  definition kind. Registration deliberately ignores <code>status</code>, <code>certifiedBy</code> and
+  <code>certifiedAt</code>, so a client cannot certify its own work or sign in someone
+  else's name. <code>tests/seed-ontology.sh</code> registers and then certifies for exactly
+  this reason</li>
 <li>Schema browsing (<code>SHOW CATALOGS</code>, <code>SHOW SCHEMAS</code>, <code>SHOW TABLES</code>, <code>DESCRIBE</code>)</li>
 <li>Catalog management — <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, plus a generic <code>ontul_admin</code> passthrough to the Ontul Admin REST API</li>
 <li>Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see <a href="../job-lifecycle/">Job Lifecycle</a>). Job types are the <code>OntulJobType</code> enum values <code>BATCH</code>, <code>STREAMING</code>, <code>CLASS</code>, <code>PYTHON</code></li>
