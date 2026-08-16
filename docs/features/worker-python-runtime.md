@@ -134,9 +134,21 @@ Embedding daemons need a heavier Python environment than the export scripts — 
 pip3 install sentence-transformers torch transformers Pillow
 ```
 
-The `mium.python.exe` system property (or `MIUM_PYTHON_EXE` env) lets you point the runner at a virtualenv or pyenv interpreter that already has these.
+Two settings point the daemons at that environment, and they are **not** the ones the export path uses:
 
-The `MIUM_HF_HOME` env can pin the HuggingFace cache directory — useful when model weights are pre-staged for air-gapped installs.
+| Setting | Applies to | Purpose |
+|---|---|---|
+| `mium.embedding.python` | Embedding daemons | Interpreter to exec. Point it at the venv holding the libraries above. |
+| `mium.embedding.hf.home` | Embedding daemons | `HF_HOME` for the daemon process — the HuggingFace cache. Pin it to a mounted volume so a restart does not re-download the weights, or to a pre-staged directory for air-gapped installs. |
+| `-Dmium.python.exe` / `MIUM_PYTHON_EXE` | Export scripts only | Interpreter `PythonProcessRunner` execs for XLSX / PDF / PPTX rendering. Setting this does **not** move the embedding daemons. |
+
+### Model size is an operational choice
+
+The daemon loads whatever model the settings name, and those weights have to fit in the Worker's memory alongside everything else it is doing. `BAAI/bge-m3` is ~2.2 GB and produces 1024-d vectors; `sentence-transformers/all-MiniLM-L6-v2` is ~90 MB and produces 384-d. On a memory-tight host the large model is OOM-killed while it loads, and every embed request then fails with `exited with code 137` — the model is fine, the host is not. Pick the model to fit the box, and remember `mium.embedding.dim` has to match it.
+
+### Interactive Python jobs
+
+The Develop workspace's `REMOTE_PYTHON` mode runs user-written Python as a Worker subprocess, drawing on the same interpreter. Beyond the Ontul SDK's `pyarrow`, the shipped container also carries `matplotlib`: the Dev workspace offers "draw it as a matplotlib bar chart" as a suggested prompt, and generated code that dies on `ModuleNotFoundError` reads as the product being broken rather than the runtime being short a library. A cell can declare further requirements of its own — this is only the floor.
 
 ## Both Paths in One Place
 

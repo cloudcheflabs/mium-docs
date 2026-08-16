@@ -22,7 +22,7 @@ The Master is the central coordination node — handling user sessions, administ
 - **EmbeddingStore**: Vector store for embedding-based retrieval stored in NeorunBase using `VECTOR(N)` columns.
 - **VerifiedQueryStore / InstructionStore / BenchmarkStore**: What a workspace learns as it is used — the question/SQL pairs analysts have verified, the plain-language house rules added to every prompt, and the benchmark suite that measures whether either helped. All in NeorunBase, resolved on the Master and carried to Workers on the `EXECUTE_AGENT` request, since Workers hold no NeorunBase connection.
 - **KMS (MiumKmsProvider)**: Built-in envelope encryption service with versioned Key Encryption Keys (KEKs). PBKDF2-SHA256 master key derivation with 200K iterations.
-- **AgentLoop**: Multi-action dispatch over a strict-JSON protocol. Actions: `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`, `list_catalogs`, `register_catalog`, `unregister_catalog`, `ontul_admin`, and `mium_admin` (which nests connection ops `list_connections` / `create_connection` / `delete_connection`).
+- **AgentLoop**: Multi-action dispatch over a strict-JSON protocol. Actions: `answer`, `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`, `list_catalogs`, `register_catalog`, `unregister_catalog`, `ontul_admin`, and `mium_admin` (which nests connection ops `list_connections` / `create_connection` / `delete_connection`).
 - **Admin Endpoints**: Auth, IAM CRUD, connection management, KMS key management, chat session management, server-side export dispatch, temp-file S3 settings, monitoring.
 
 ### Worker

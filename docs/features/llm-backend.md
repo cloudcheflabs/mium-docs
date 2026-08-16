@@ -17,7 +17,7 @@ Backends are one-shot / **non-streaming**: each `chat` call returns a complete r
 
 ## Strict JSON Protocol
 
-Mium does not use vendor-specific tool APIs (Anthropic `tool_use` or OpenAI function-calling). The agent loop instead instructs the LLM to respond with a strict JSON object describing the next action — `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`, `list_catalogs`, `register_catalog`, `unregister_catalog`, `ontul_admin`, or `mium_admin` (see [Job Lifecycle](job-lifecycle.md)). This keeps the agent loop and the tool layer portable across providers; switching providers is a matter of registering a different connection.
+Mium does not use vendor-specific tool APIs (Anthropic `tool_use` or OpenAI function-calling). The agent loop instead instructs the LLM to respond with a strict JSON object describing the next action — `answer`, `query`, `submit_batch`, `submit_streaming`, `job_status`, `job_logs`, `kill_job`, `list_jobs`, `list_history`, `generate_code`, `list_catalogs`, `register_catalog`, `unregister_catalog`, `ontul_admin`, or `mium_admin` (see [Job Lifecycle](job-lifecycle.md)). This keeps the agent loop and the tool layer portable across providers; switching providers is a matter of registering a different connection.
 
 ## Embeddings
 

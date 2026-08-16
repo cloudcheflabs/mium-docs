@@ -77,7 +77,74 @@ mium.kms.rocksdb.path = ${mium.base.data.dir}/kms
 | `mium.neorunbase.username` | `admin` | NeorunBase username. |
 | `mium.neorunbase.password` | (empty) | NeorunBase password. |
 | `mium.neorunbase.schema` | `mium` | Schema in which Mium auto-creates `mium_chat_session`, `mium_chat_message`, `mium_prompt`, `mium_embedding`. |
-| `mium.embedding.dim` | `768` | Vector column dimension for the EmbeddingStore. Must match the embedding model in use. |
+| `mium.embedding.dim` | `1024` | Vector column dimension for the EmbeddingStore. Must match the embedding model in use — bge-m3 is 1024, all-MiniLM-L6-v2 is 384, CLIP is 512. Changing it requires `mium.mium_embedding` to be dropped and rebuilt, because the column is typed `VECTOR(N)`. |
+
+## Embedding (Semantic Recall)
+
+Off by default: the Python daemons hold several GB of RAM, and most deployments have not sized worker nodes for that. The SPI is a no-op until it is turned on. The model can also be changed at runtime from **Settings → Embedding**, which overrides these bootstrap values.
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.embedding.enabled` | `false` | Wire `NeorunBaseEmbeddingStore` + `WorkerEmbeddingBackend` into `EmbeddingResources`. |
+| `mium.embedding.clip.enabled` | `false` | Also wire a CLIP backend for image embedding. Independent of the text backend, so a text-only deployment does not pay CLIP's memory cost. Requires `mium.embedding.enabled=true`. |
+| `mium.embedding.python` | `python3` | Interpreter the Worker execs for the daemons. Point at a venv (`/opt/mium/embed-venv/bin/python`) when the system Python is not the one carrying the libraries. |
+| `mium.embedding.hf.home` | (empty) | `HF_HOME` for the daemons — the HuggingFace cache directory. Point it at a mounted volume so a container restart does not re-download the weights (bge-m3 is ~2.2 GB, CLIP ~600 MB). Empty = the daemon's default `~/.cache/huggingface`. |
+
+## Agent Loop
+
+A turn is a small investigation, not a single translation: asked whether a Kafka connector is registered, the honest sequence is to list the connections, look, and only then answer. These two knobs bound how far the agent may go before handing control back.
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.agent.max.iterations` | `8` | Maximum steps in one turn. Each step is one LLM call plus one tool dispatch, and each sees the previous result. Four is usually enough (look up, narrow, act, report); the rest is room for the turns that check their work. |
+| `mium.agent.loop.timeout.ms` | `120000` | Wall-clock ceiling for the whole turn across all steps. A runaway loop is worse than an incomplete answer, but the bound has to leave room for the steps above. |
+
+## Develop Schema Context
+
+How much raw schema the Develop code router is shown. Analyze is answered from the semantic layer alone; Develop cannot be, because the table a job is built against is usually the new one with no view over it yet. See [Job Lifecycle](../features/job-lifecycle.md).
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.dev.schema.tables.max` | `120` | Table names listed. One round trip covers all of them, so this is a context budget rather than a latency one. |
+| `mium.dev.schema.describe.max` | `6` | Tables whose columns are filled in — only those the prompt actually names, because each is its own `DESCRIBE` round trip against the cluster. |
+
+## LLM / Embedding HTTP
+
+Defaults `LlmBackendFactory` hands every backend (Anthropic, Ollama, Ollama-embed, …). A per-call `LlmRequest.timeoutMs` still wins when set.
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.llm.http.connect.timeout.ms` | `10000` | TCP connect timeout to the LLM endpoint. |
+| `mium.llm.http.request.timeout.ms` | `60000` | Per-request timeout for a chat completion. |
+| `mium.llm.embedding.request.timeout.ms` | `60000` | Separate timeout for embedding calls, which are batchy and not driven by `LlmRequest`. |
+
+## Master-to-Master Admin Proxy
+
+A non-leader master forwards write-side admin calls to the current leader. The connect timeout is short by design — master nodes share a LAN; the request timeout covers the slowest synchronous IAM / Connection admin call.
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.admin.proxy.connect.timeout.ms` | `2000` | Connect timeout to the leader. |
+| `mium.admin.proxy.request.timeout.ms` | `10000` | Request timeout for the proxied call. |
+
+## Local Admin Socket (Password Recovery)
+
+A Unix domain socket the master binds for local administrative recovery — see [Admin Password Recovery](../features/admin-password-recovery.md). The socket file's mode-600 permission is the **only** authentication: any process able to connect already shares the master process's filesystem identity.
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.admin.socket.enabled` | `true` | Bind the socket. Set `false` to remove the local recovery path entirely. |
+| `mium.admin.socket.path` | `${mium.base.data.dir}/admin.sock` | Where the socket is bound. Must be on a local filesystem that supports Unix domain sockets — not NFS. Recreated on every master start. |
+| `mium.admin.socket.marker.file` | `master.socket` | File, under the data dir, into which the master records the path it actually bound. Re-deriving that path from this file is unreliable: `mium.base.data.dir` can be overridden with `-D` at launch, and nothing else records which value the live process used. Removed on shutdown. |
+
+## Governance Surfaces
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.instructions.max.chars` | `4000` | Cap on the workspace instruction text injected into every prompt. Text past the limit is dropped with a line saying so, rather than ending mid-rule — a half-written rule is worse than a missing one, because the model still tries to follow it. |
+| `mium.verified.list.max` | `200` | Verified pairs returned in one listing. This is the analyst's review queue, not an export. |
+| `mium.benchmark.history.max` | `50` | Past benchmark runs shown in the history. Runs are retained regardless; this only bounds what the screen asks for. |
+| `mium.benchmark.numeric.tolerance` | `1e-9` | Relative tolerance when comparing a benchmark's numeric answer to its expected value. Two engines summing the same column in a different grouping order disagree in the last bits, and failing on that would make the suite noise. Much larger starts hiding real disagreements — a wrong filter moves a total by orders of magnitude more than this. |
 
 ## Retention
 

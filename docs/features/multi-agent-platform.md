@@ -19,6 +19,7 @@ Mium's agent loop turns each user message into one or more LLM calls plus the to
 
 | Action | Purpose |
 |--------|---------|
+| `answer` | Reply from what the conversation already established, running nothing. For a question about results already on screen — "why is the sink two rows short of the source?", "what does that status mean?" — where inventing a query to justify the answer would be worse than giving it. The whole answer goes in `explanation`. |
 | `query` | Ad-hoc SQL against the connected tool, optionally with a chart hint (`bar`, `line`, `pie`, `table`, …) and an export format hint |
 | `submit_batch` / `submit_streaming` | Submit a long-running Ontul job |
 | `job_status` / `job_logs` / `kill_job` | Operate on a running or finished job by id |
@@ -29,6 +30,8 @@ Mium's agent loop turns each user message into one or more LLM calls plus the to
 | `mium_admin` | Manage the user's own connections (`list_connections` / `create_connection` / `delete_connection`) |
 
 See [Job Lifecycle](job-lifecycle.md) for the job-related actions in detail.
+
+If the model answers in prose and drops the JSON envelope, the loop asks once for the correct shape. When prose comes back a second time, it is taken as an `answer` rather than failed — a complete explanation in the wrong wrapper is still the answer the user asked for, and reporting it as "unparseable response" showed people the right words inside a red error box. An empty reply is still an error, because there is nothing to show.
 
 Today Mium runs a **single iterative agent loop** (`AgentLoop`), not multiple cooperating agents. The `Agent` SPI is a placeholder for planner/executor/specialist multi-agent orchestration, which is on the roadmap rather than shipped.
 
