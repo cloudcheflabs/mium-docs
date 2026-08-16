@@ -46,6 +46,7 @@ nav:
       - "Configuration": features/configuration.md
       - "Multi-Agent AI Platform": features/multi-agent-platform.md
       - "Grounded Answers": features/grounded-answers.md
+      - "Search: Vector, Text, Graph, Images": features/search.md
       - "Verified Answers": features/verified-answers.md
       - "Instructions": features/instructions.md
       - "Benchmarks": features/benchmarks.md

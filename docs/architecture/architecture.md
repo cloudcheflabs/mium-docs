@@ -95,6 +95,35 @@ answer written against raw tables reports itself as ungrounded.
 suggested visualisation, provenance, and the verifier's name if the statement
 came from the library — goes back to the browser.
 
+### A turn is an investigation, not a translation
+
+One prompt is not one call. Asked whether a Kafka connector is registered, the
+honest sequence is to list the connections, look, and only then answer - and the
+same is true of building a job against a table whose columns nobody has read.
+
+Each step is one LLM call plus one tool dispatch, and each sees the result of the
+last. The model ends the turn by setting `followUp:false` on the step that
+actually answers. Bounded by `mium.agent.max.iterations` (8) and
+`mium.agent.loop.timeout.ms` (120s), because an unbounded loop is worse than an
+incomplete answer.
+
+Two behaviours follow from this that are worth knowing:
+
+**It checks the schema instead of surfacing a SQL error.** A statement that fails
+on a missing column or table costs one more step - describe what it referenced,
+then either rewrite against the real names or say plainly that the question
+cannot be answered from them. Once per turn, and only for failures a schema can
+fix: retrying a permission denial reads as evasion, and a syntax error fails
+identically the second time.
+
+**The steps are visible.** Every answer carries what was done before it, rendered
+collapsed above the answer - what was looked up, and what came back. A user who
+sees only the final sentence cannot tell a checked answer from a guess.
+
+A tool result returns to the model as an *observation*, not as an assistant
+message: it is the environment answering, and a conversation that ends on an
+assistant turn is rejected outright by current models.
+
 ### Ordering and trust
 
 Two rules run through the whole design and are worth stating on their own.
