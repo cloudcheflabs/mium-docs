@@ -581,6 +581,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#a-turn-is-an-investigation-not-a-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A turn is an investigation, not a translation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ordering-and-trust" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1081,6 +1092,34 @@
     
   
     Grounded Answers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search: Vector, Text, Graph, Images
   
 
     
@@ -1956,7 +1995,7 @@
 <li><strong>EmbeddingStore</strong>: Vector store for embedding-based retrieval stored in NeorunBase using <code>VECTOR(N)</code> columns.</li>
 <li><strong>VerifiedQueryStore / InstructionStore / BenchmarkStore</strong>: What a workspace learns as it is used — the question/SQL pairs analysts have verified, the plain-language house rules added to every prompt, and the benchmark suite that measures whether either helped. All in NeorunBase, resolved on the Master and carried to Workers on the <code>EXECUTE_AGENT</code> request, since Workers hold no NeorunBase connection.</li>
 <li><strong>KMS (MiumKmsProvider)</strong>: Built-in envelope encryption service with versioned Key Encryption Keys (KEKs). PBKDF2-SHA256 master key derivation with 200K iterations.</li>
-<li><strong>AgentLoop</strong>: Multi-action dispatch over a strict-JSON protocol. Actions: <code>query</code>, <code>submit_batch</code>, <code>submit_streaming</code>, <code>job_status</code>, <code>job_logs</code>, <code>kill_job</code>, <code>list_jobs</code>, <code>list_history</code>, <code>generate_code</code>, <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, <code>ontul_admin</code>, and <code>mium_admin</code> (which nests connection ops <code>list_connections</code> / <code>create_connection</code> / <code>delete_connection</code>).</li>
+<li><strong>AgentLoop</strong>: Multi-action dispatch over a strict-JSON protocol. Actions: <code>answer</code>, <code>query</code>, <code>submit_batch</code>, <code>submit_streaming</code>, <code>job_status</code>, <code>job_logs</code>, <code>kill_job</code>, <code>list_jobs</code>, <code>list_history</code>, <code>generate_code</code>, <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, <code>ontul_admin</code>, and <code>mium_admin</code> (which nests connection ops <code>list_connections</code> / <code>create_connection</code> / <code>delete_connection</code>).</li>
 <li><strong>Admin Endpoints</strong>: Auth, IAM CRUD, connection management, KMS key management, chat session management, server-side export dispatch, temp-file S3 settings, monitoring.</li>
 </ul>
 <h3 id="worker">Worker</h3>
@@ -2020,6 +2059,28 @@ answer written against raw tables reports itself as ungrounded.</p>
 <p><strong>6. The turn is persisted</strong> to the MemoryStore, and the payload — rows, columns,
 suggested visualisation, provenance, and the verifier's name if the statement
 came from the library — goes back to the browser.</p>
+<h3 id="a-turn-is-an-investigation-not-a-translation">A turn is an investigation, not a translation</h3>
+<p>One prompt is not one call. Asked whether a Kafka connector is registered, the
+honest sequence is to list the connections, look, and only then answer - and the
+same is true of building a job against a table whose columns nobody has read.</p>
+<p>Each step is one LLM call plus one tool dispatch, and each sees the result of the
+last. The model ends the turn by setting <code>followUp:false</code> on the step that
+actually answers. Bounded by <code>mium.agent.max.iterations</code> (8) and
+<code>mium.agent.loop.timeout.ms</code> (120s), because an unbounded loop is worse than an
+incomplete answer.</p>
+<p>Two behaviours follow from this that are worth knowing:</p>
+<p><strong>It checks the schema instead of surfacing a SQL error.</strong> A statement that fails
+on a missing column or table costs one more step - describe what it referenced,
+then either rewrite against the real names or say plainly that the question
+cannot be answered from them. Once per turn, and only for failures a schema can
+fix: retrying a permission denial reads as evasion, and a syntax error fails
+identically the second time.</p>
+<p><strong>The steps are visible.</strong> Every answer carries what was done before it, rendered
+collapsed above the answer - what was looked up, and what came back. A user who
+sees only the final sentence cannot tell a checked answer from a guess.</p>
+<p>A tool result returns to the model as an <em>observation</em>, not as an assistant
+message: it is the environment answering, and a conversation that ends on an
+assistant turn is rejected outright by current models.</p>
 <h3 id="ordering-and-trust">Ordering and trust</h3>
 <p>Two rules run through the whole design and are worth stating on their own.</p>
 <p><strong>Ontul owns what the data means.</strong> Mium keeps no semantic layer. Metrics, join

@@ -905,6 +905,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search: Vector, Text, Graph, Images
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../verified-answers/" class="md-nav__link">
         
   
@@ -1145,6 +1173,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="REST Jobs API (Dev workspace)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-code-generator-is-shown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Code Generator Is Shown
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1950,6 +1995,36 @@
 </tbody>
 </table>
 <p><code>POST /api/jobs/submit</code> accepts a <code>Mode</code>: <code>QUERY</code>, <code>BATCH</code>, <code>STREAMING</code>, <code>REMOTE_JAVA</code>, <code>REMOTE_PYTHON</code>, <code>CLUSTER_JAVA</code>, <code>CLUSTER_PYTHON</code>. The <code>REMOTE_*</code> modes run user-supplied Java/Python as a <strong>Mium-side subprocess</strong> via <code>RemoteJobRunner</code> (job ids prefixed <code>mium-remote-</code>), independent of Ontul cluster jobs; <code>CLUSTER_*</code> and <code>BATCH</code>/<code>STREAMING</code>/<code>QUERY</code> go to the Ontul cluster.</p>
+<h3 id="what-the-code-generator-is-shown">What the Code Generator Is Shown</h3>
+<p><code>/api/jobs/codegen</code> and <code>/api/jobs/codegen-fix</code> are grounded in <strong>two</strong> layers, not one:</p>
+<ol>
+<li><strong>Ontul's semantic layer</strong> — the certified views, metrics, ontology entities and retrievers the calling user is allowed to see, selected for relevance to the prompt. When a governed definition covers the data, that is the better target: the engine expands the metric and writes the aggregate.</li>
+<li><strong>The raw tables underneath it</strong> — fully-qualified names for every table in the user's catalogs, with columns filled in for the tables the prompt actually names.</li>
+</ol>
+<p>The second layer is specific to Develop. The Analyze workspace deliberately stops at the semantic layer, so a table nobody has defined is invisible there and governance stays the path of least resistance. A job is the opposite situation: the table an engineer is asked to move data out of is usually the new one, with no view over it yet — with the semantic block alone the router refuses valid work ("<code>pg.public.payments</code> is not in the provided schema list") for a table sitting in the Dev catalog tree.</p>
+<p>A table the job <strong>reads</strong> must appear in that listing. A table it <strong>writes</strong> need not exist — <code>Sink.table(...)</code> creates it, so asking for a new output table is the normal case rather than something to ask a clarifying question about.</p>
+<p>Two knobs bound the cost, in <code>mium.properties</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.dev.schema.tables.max</code></td>
+<td><code>120</code></td>
+<td>Table names listed. One round trip covers all of them, so this is a context budget.</td>
+</tr>
+<tr>
+<td><code>mium.dev.schema.describe.max</code></td>
+<td><code>6</code></td>
+<td>Tables whose columns are filled in — only those the prompt names, because each is its own <code>DESCRIBE</code> round trip.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="per-user-credentials">Per-User Credentials</h2>
 <p>All job actions go through the user's Ontul connection in the ConnectionStore (<code>tool=ontul</code>). The Ontul cluster decides what the calling principal is allowed to do — Mium does not federate IAM with Ontul, so authorization comes from Ontul's own access-control layer.</p>
 

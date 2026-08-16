@@ -905,6 +905,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search: Vector, Text, Graph, Images
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../verified-answers/" class="md-nav__link">
         
   
@@ -1846,7 +1874,7 @@
 <p>Although the factory can build both backends, the chat <strong>agent loop</strong> currently resolves an <code>anthropic</code> connection only (<code>AgentLoop.run</code> requires a <code>tool=anthropic</code> connection and errors otherwise). <code>OllamaLlmBackend</code> exists but is not yet selectable as the chat LLM. Ollama's shipped, active role is embeddings (below).</p>
 </div>
 <h2 id="strict-json-protocol">Strict JSON Protocol</h2>
-<p>Mium does not use vendor-specific tool APIs (Anthropic <code>tool_use</code> or OpenAI function-calling). The agent loop instead instructs the LLM to respond with a strict JSON object describing the next action — <code>query</code>, <code>submit_batch</code>, <code>submit_streaming</code>, <code>job_status</code>, <code>job_logs</code>, <code>kill_job</code>, <code>list_jobs</code>, <code>list_history</code>, <code>generate_code</code>, <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, <code>ontul_admin</code>, or <code>mium_admin</code> (see <a href="../job-lifecycle/">Job Lifecycle</a>). This keeps the agent loop and the tool layer portable across providers; switching providers is a matter of registering a different connection.</p>
+<p>Mium does not use vendor-specific tool APIs (Anthropic <code>tool_use</code> or OpenAI function-calling). The agent loop instead instructs the LLM to respond with a strict JSON object describing the next action — <code>answer</code>, <code>query</code>, <code>submit_batch</code>, <code>submit_streaming</code>, <code>job_status</code>, <code>job_logs</code>, <code>kill_job</code>, <code>list_jobs</code>, <code>list_history</code>, <code>generate_code</code>, <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, <code>ontul_admin</code>, or <code>mium_admin</code> (see <a href="../job-lifecycle/">Job Lifecycle</a>). This keeps the agent loop and the tool layer portable across providers; switching providers is a matter of registering a different connection.</p>
 <h2 id="embeddings">Embeddings</h2>
 <p>For retrieval-augmented features (e.g. few-shot pools used by code generation, and cross-session semantic recall), Mium uses an embedding backend separate from the chat backend. The shipped implementations are <code>OllamaEmbeddingBackend</code> (default model <code>nomic-embed-text</code>, 768 dim) and <code>WorkerEmbeddingBackend</code>, which drives the Worker's Python embedding daemons (<code>bge-m3</code> text / CLIP image). Vector storage is handled by the <a href="../storage-backends/">Storage Backends</a> layer.</p>
 <h2 id="configuration">Configuration</h2>

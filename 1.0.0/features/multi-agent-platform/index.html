@@ -1035,6 +1035,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search: Vector, Text, Graph, Images
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../verified-answers/" class="md-nav__link">
         
   
@@ -1892,6 +1920,10 @@
 </thead>
 <tbody>
 <tr>
+<td><code>answer</code></td>
+<td>Reply from what the conversation already established, running nothing. For a question about results already on screen — "why is the sink two rows short of the source?", "what does that status mean?" — where inventing a query to justify the answer would be worse than giving it. The whole answer goes in <code>explanation</code>.</td>
+</tr>
+<tr>
 <td><code>query</code></td>
 <td>Ad-hoc SQL against the connected tool, optionally with a chart hint (<code>bar</code>, <code>line</code>, <code>pie</code>, <code>table</code>, …) and an export format hint</td>
 </tr>
@@ -1926,6 +1958,7 @@
 </tbody>
 </table>
 <p>See <a href="../job-lifecycle/">Job Lifecycle</a> for the job-related actions in detail.</p>
+<p>If the model answers in prose and drops the JSON envelope, the loop asks once for the correct shape. When prose comes back a second time, it is taken as an <code>answer</code> rather than failed — a complete explanation in the wrong wrapper is still the answer the user asked for, and reporting it as "unparseable response" showed people the right words inside a red error box. An empty reply is still an error, because there is nothing to show.</p>
 <p>Today Mium runs a <strong>single iterative agent loop</strong> (<code>AgentLoop</code>), not multiple cooperating agents. The <code>Agent</code> SPI is a placeholder for planner/executor/specialist multi-agent orchestration, which is on the roadmap rather than shipped.</p>
 <h3 id="tools">Tools</h3>
 <p>Every external system is a Tool — a pluggable component the LLM can invoke. Each tool provides metadata and a SQL/API reference that gets injected into the LLM system prompt so the model knows what is available and how to use it.</p>

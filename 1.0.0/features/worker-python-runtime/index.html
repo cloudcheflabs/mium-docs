@@ -905,6 +905,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search: Vector, Text, Graph, Images
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../verified-answers/" class="md-nav__link">
         
   
@@ -1444,6 +1472,28 @@
     <span class="md-ellipsis">
       
         Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#model-size-is-an-operational-choice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model size is an operational choice
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-python-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive Python jobs
       
     </span>
   </a>
@@ -2095,8 +2145,37 @@
 <p>Embedding daemons need a heavier Python environment than the export scripts — <code>sentence-transformers</code>, <code>torch</code>, <code>transformers</code>, plus their CUDA / MPS bindings if you want GPU acceleration. These are <strong>not</strong> bundled in <code>lib/python/</code> because their wheel size and platform variability would balloon the distribution. Operators install them once on the Worker host:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip3<span class="w"> </span>install<span class="w"> </span>sentence-transformers<span class="w"> </span>torch<span class="w"> </span>transformers<span class="w"> </span>Pillow
 </code></pre></div>
-<p>The <code>mium.python.exe</code> system property (or <code>MIUM_PYTHON_EXE</code> env) lets you point the runner at a virtualenv or pyenv interpreter that already has these.</p>
-<p>The <code>MIUM_HF_HOME</code> env can pin the HuggingFace cache directory — useful when model weights are pre-staged for air-gapped installs.</p>
+<p>Two settings point the daemons at that environment, and they are <strong>not</strong> the ones the export path uses:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Applies to</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.embedding.python</code></td>
+<td>Embedding daemons</td>
+<td>Interpreter to exec. Point it at the venv holding the libraries above.</td>
+</tr>
+<tr>
+<td><code>mium.embedding.hf.home</code></td>
+<td>Embedding daemons</td>
+<td><code>HF_HOME</code> for the daemon process — the HuggingFace cache. Pin it to a mounted volume so a restart does not re-download the weights, or to a pre-staged directory for air-gapped installs.</td>
+</tr>
+<tr>
+<td><code>-Dmium.python.exe</code> / <code>MIUM_PYTHON_EXE</code></td>
+<td>Export scripts only</td>
+<td>Interpreter <code>PythonProcessRunner</code> execs for XLSX / PDF / PPTX rendering. Setting this does <strong>not</strong> move the embedding daemons.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="model-size-is-an-operational-choice">Model size is an operational choice</h3>
+<p>The daemon loads whatever model the settings name, and those weights have to fit in the Worker's memory alongside everything else it is doing. <code>BAAI/bge-m3</code> is ~2.2 GB and produces 1024-d vectors; <code>sentence-transformers/all-MiniLM-L6-v2</code> is ~90 MB and produces 384-d. On a memory-tight host the large model is OOM-killed while it loads, and every embed request then fails with <code>exited with code 137</code> — the model is fine, the host is not. Pick the model to fit the box, and remember <code>mium.embedding.dim</code> has to match it.</p>
+<h3 id="interactive-python-jobs">Interactive Python jobs</h3>
+<p>The Develop workspace's <code>REMOTE_PYTHON</code> mode runs user-written Python as a Worker subprocess, drawing on the same interpreter. Beyond the Ontul SDK's <code>pyarrow</code>, the shipped container also carries <code>matplotlib</code>: the Dev workspace offers "draw it as a matplotlib bar chart" as a suggested prompt, and generated code that dies on <code>ModuleNotFoundError</code> reads as the product being broken rather than the runtime being short a library. A cell can declare further requirements of its own — this is only the floor.</p>
 <h2 id="both-paths-in-one-place">Both Paths in One Place</h2>
 <table>
 <thead>
