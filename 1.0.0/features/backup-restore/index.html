@@ -14,7 +14,7 @@
         <link rel="prev" href="../nic-fail-safety/">
       
       
-        <link rel="next" href="../admin-ui/">
+        <link rel="next" href="../cluster-maintenance/">
       
       
         
@@ -1573,6 +1573,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../cluster-maintenance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cluster Maintenance Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../admin-ui/" class="md-nav__link">
         
   
@@ -1926,6 +1954,15 @@
 <h2 id="restore">Restore</h2>
 <p>The available-backups list shows every backup id present at the configured prefix, newest first. <strong>Restore</strong> is destructive — it overwrites the live KMS, IAM, and Connection stores with whichever snapshot the chosen backup id points to (possibly an older backup id, per the incremental layout). The admin UI confirms before proceeding.</p>
 <p>Restore is leader-only and gated by the <code>SYSTEM:MANAGE_BACKUP</code> IAM action; followers receive the broadcast state through the existing sync protocols.</p>
+<div class="admonition tip">
+<p class="admonition-title">Open a maintenance window around a restore</p>
+<p>A restore overwrites the live stores, but nothing stops traffic while it runs: an agent turn can
+persist a chat memory the restore is about to discard, and the retention sweep can delete, by TTL,
+the memory the restore has just brought back. Neither is distinguishable afterwards from the
+restore having failed.</p>
+<p>Open a <a href="../cluster-maintenance/">maintenance window</a> first. It refuses writes and pauses the sweep
+while leaving reads and settings available, so you can inspect the result before reopening.</p>
+</div>
 <h2 id="rest-endpoints">REST Endpoints</h2>
 <table>
 <thead>

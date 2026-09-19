@@ -1578,6 +1578,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../cluster-maintenance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cluster Maintenance Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../admin-ui/" class="md-nav__link">
         
   
@@ -1914,7 +1942,9 @@
 </ul>
 <p>Writes are leader-only; followers transparently proxy via <code>LeaderRouter</code>.</p>
 <h2 id="retention-and-compaction">Retention and Compaction</h2>
-<p>Long-running chats are kept manageable by the leader's retention sweep:</p>
+<p>Long-running chats are kept manageable by the leader's retention sweep. The sweep is <strong>paused while
+the cluster is in <a href="../cluster-maintenance/">maintenance mode</a></strong> — it is the one background loop that
+deletes data, and during a restore it would remove exactly what the restore just recovered:</p>
 <ul>
 <li><strong>TTL sweep</strong> — sessions older than <code>mium.memory.ttl.days</code> are dropped (<code>0</code> = disabled).</li>
 <li><strong>Per-user session cap</strong> — each user's oldest sessions are evicted beyond <code>mium.memory.user.maxSessions</code> (<code>0</code> = unlimited).</li>

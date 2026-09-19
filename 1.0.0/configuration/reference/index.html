@@ -1732,6 +1732,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../features/cluster-maintenance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cluster Maintenance Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../features/admin-ui/" class="md-nav__link">
         
   
@@ -2515,7 +2543,12 @@
 <tr>
 <td><code>mium.retention.sweep.interval.seconds</code></td>
 <td><code>3600</code></td>
-<td>How often the leader runs the retention sweep.</td>
+<td>How often the leader runs the retention sweep. Paused entirely while the cluster is in <a href="../../features/cluster-maintenance/">maintenance mode</a>, so the sweep cannot delete data a restore has just brought back.</td>
+</tr>
+<tr>
+<td><code>mium.cluster.maintenance.retry.after.seconds</code></td>
+<td><code>30</code></td>
+<td>How long a client is told to wait (<code>Retry-After</code>, seconds) before retrying a write that a maintenance window refused. The window itself is a runtime switch stored in the <code>mium_settings</code> table, not a property &mdash; toggle it from <strong>Nodes</strong> in the Admin UI or <code>POST /api/admin/maintenance</code>.</td>
 </tr>
 </tbody>
 </table>
