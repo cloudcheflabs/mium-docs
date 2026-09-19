@@ -159,7 +159,8 @@ All TTLs default to `0` = sweep disabled. Operators opt in with explicit non-zer
 | `mium.prompt.user.maxPrompts` | `0` | Max saved prompts per user. `0` = unlimited. |
 | `mium.memory.session.maxTurns` | `200` | Hard cap on turns per chat session before `MemoryCompactor` summarises older turns. |
 | `mium.prompt.body.maxBytes` | `65536` | Max prompt body size at write time (64 KiB). |
-| `mium.retention.sweep.interval.seconds` | `3600` | How often the leader runs the retention sweep. |
+| `mium.retention.sweep.interval.seconds` | `3600` | How often the leader runs the retention sweep. Paused entirely while the cluster is in [maintenance mode](../features/cluster-maintenance.md), so the sweep cannot delete data a restore has just brought back. |
+| `mium.cluster.maintenance.retry.after.seconds` | `30` | How long a client is told to wait (`Retry-After`, seconds) before retrying a write that a maintenance window refused. The window itself is a runtime switch stored in the `mium_settings` table, not a property &mdash; toggle it from **Nodes** in the Admin UI or `POST /api/admin/maintenance`. |
 
 ## Server-Side Export (S3 Temp Files)
 

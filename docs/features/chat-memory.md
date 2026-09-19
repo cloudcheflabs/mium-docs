@@ -43,7 +43,9 @@ Writes are leader-only; followers transparently proxy via `LeaderRouter`.
 
 ## Retention and Compaction
 
-Long-running chats are kept manageable by the leader's retention sweep:
+Long-running chats are kept manageable by the leader's retention sweep. The sweep is **paused while
+the cluster is in [maintenance mode](cluster-maintenance.md)** — it is the one background loop that
+deletes data, and during a restore it would remove exactly what the restore just recovered:
 
 - **TTL sweep** — sessions older than `mium.memory.ttl.days` are dropped (`0` = disabled).
 - **Per-user session cap** — each user's oldest sessions are evicted beyond `mium.memory.user.maxSessions` (`0` = unlimited).

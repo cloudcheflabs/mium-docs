@@ -45,6 +45,15 @@ The available-backups list shows every backup id present at the configured prefi
 
 Restore is leader-only and gated by the `SYSTEM:MANAGE_BACKUP` IAM action; followers receive the broadcast state through the existing sync protocols.
 
+!!! tip "Open a maintenance window around a restore"
+    A restore overwrites the live stores, but nothing stops traffic while it runs: an agent turn can
+    persist a chat memory the restore is about to discard, and the retention sweep can delete, by TTL,
+    the memory the restore has just brought back. Neither is distinguishable afterwards from the
+    restore having failed.
+
+    Open a [maintenance window](cluster-maintenance.md) first. It refuses writes and pauses the sweep
+    while leaving reads and settings available, so you can inspect the result before reopening.
+
 ## REST Endpoints
 
 | Method | Path | Purpose |
