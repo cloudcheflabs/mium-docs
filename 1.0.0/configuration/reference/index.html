@@ -959,6 +959,78 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#authentication-password-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication — Password Storage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#single-sign-on-oidc-saml-ldap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single Sign-On (OIDC / SAML / LDAP)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Single Sign-On (OIDC / SAML / LDAP)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#identity-mapping-all-three-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity mapping (all three providers)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#openid-connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpenID Connect
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saml-20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SAML 2.0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ldap-active-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LDAP / Active Directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#retention" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1572,6 +1644,34 @@
     
   
     IAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/sso/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Single Sign-On (OIDC/SAML/LDAP)
   
 
     
@@ -2491,6 +2591,238 @@
 <td><code>mium.benchmark.numeric.tolerance</code></td>
 <td><code>1e-9</code></td>
 <td>Relative tolerance when comparing a benchmark's numeric answer to its expected value. Two engines summing the same column in a different grouping order disagree in the last bits, and failing on that would make the suite noise. Much larger starts hiding real disagreements — a wrong filter moves a total by orders of magnitude more than this.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="authentication-password-storage">Authentication — Password Storage</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.auth.password.hash.iterations</code></td>
+<td><code>200000</code></td>
+<td>PBKDF2-HMAC-SHA256 iterations used when a local password is written. Mium has always hashed passwords with a per-user salt, so this is a cost knob rather than a migration. The count travels with each stored hash, so raising it does <strong>not</strong> invalidate existing passwords.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="single-sign-on-oidc-saml-ldap">Single Sign-On (OIDC / SAML / LDAP)</h2>
+<p>Every setting below can also be managed from the console under <strong>Settings → Single
+Sign-On</strong>, which stores it in the <code>mium_settings</code> row and applies it on every node
+without a restart. <strong>Stored settings win over the properties file</strong>: the file brings
+a cluster up, and the console is how it is changed afterwards — if the file won, a
+console change would be reverted by the next restart, silently. See
+<a href="../../features/sso/">Single Sign-On</a>.</p>
+<h3 id="identity-mapping-all-three-providers">Identity mapping (all three providers)</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.sso.group.mappings</code></td>
+<td>(empty)</td>
+<td><code>idpGroup:miumGroup</code> pairs, comma-separated. Empty means provider group names are used as they are. <strong>Once set the mapping is exhaustive</strong> — a group not named here is dropped, so creating a group at the provider cannot grant access on this cluster by itself.</td>
+</tr>
+<tr>
+<td><code>mium.sso.allow.unmapped.groups</code></td>
+<td><code>false</code></td>
+<td>Whether an identity whose groups all map to nothing may still sign in. Off deliberately: such a session has no policies and is denied every action, so admitting it produces someone signed in who can do nothing. The directory endpoint reports that case as <code>403</code>, separately from a wrong password's <code>401</code>.</td>
+</tr>
+<tr>
+<td><code>mium.sso.federated.session.seconds</code></td>
+<td><code>3600</code></td>
+<td>Lifetime of a federated session — the record that lets masters and workers resolve a federated caller's groups by name. It bounds how long access outlives a revocation at the provider, which this cluster is not told about. A federated session cannot be refreshed, for the same reason.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="openid-connect">OpenID Connect</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.sso.oidc.enabled</code></td>
+<td><code>false</code></td>
+<td>Enable the OIDC provider.</td>
+</tr>
+<tr>
+<td><code>mium.sso.oidc.issuer</code></td>
+<td>(empty)</td>
+<td>Issuer URL. Endpoints and the signing key set are read from its discovery document, so they are not configured individually.</td>
+</tr>
+<tr>
+<td><code>mium.sso.oidc.client.id</code></td>
+<td>(empty)</td>
+<td>Client id registered at the provider.</td>
+</tr>
+<tr>
+<td><code>mium.sso.oidc.client.secret</code></td>
+<td>(empty)</td>
+<td>Client secret. Credential — never read back by the console.</td>
+</tr>
+<tr>
+<td><code>mium.sso.oidc.redirect.uri</code></td>
+<td><code>http://localhost:8080/auth/sso/oidc/callback</code></td>
+<td>Must match the redirect URI registered at the provider exactly, and must be the address browsers reach — the load balancer's, not one master's.</td>
+</tr>
+<tr>
+<td><code>mium.sso.oidc.scopes</code></td>
+<td><code>openid profile email</code></td>
+<td>Scopes requested. Deliberately excludes <code>groups</code>: it is not a standard scope, and a provider that does not define it rejects the whole authorization request with <code>invalid_scope</code>.</td>
+</tr>
+<tr>
+<td><code>mium.sso.oidc.username.claim</code></td>
+<td><code>preferred_username</code></td>
+<td>Claim holding the login name.</td>
+</tr>
+<tr>
+<td><code>mium.sso.oidc.groups.claim</code></td>
+<td><code>groups</code></td>
+<td>Claim holding group membership. The provider must be configured to include it.</td>
+</tr>
+<tr>
+<td><code>mium.sso.oidc.audience</code></td>
+<td>(empty)</td>
+<td>Expected audience. Empty falls back to the client id. A token issued for another application is refused even though it is genuine and correctly signed.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="saml-20">SAML 2.0</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.sso.saml.enabled</code></td>
+<td><code>false</code></td>
+<td>Enable the SAML provider.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.idp.entity.id</code></td>
+<td>(empty)</td>
+<td>Identity provider entity ID. Read automatically when the provider's metadata is imported from the console.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.idp.sso.url</code></td>
+<td>(empty)</td>
+<td>IdP single sign-on URL.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.idp.certificate</code></td>
+<td>(empty)</td>
+<td>Base64 IdP signing certificate. Every assertion's signature is verified against it.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.sp.entity.id</code></td>
+<td><code>mium</code></td>
+<td>This cluster's entity ID, as it appears in the SP metadata the provider imports.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.sp.acs.url</code></td>
+<td><code>http://localhost:8080/auth/sso/saml/acs</code></td>
+<td>Assertion consumer URL. As with the OIDC redirect, this must be the address browsers reach.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.nameid.format</code></td>
+<td>(empty)</td>
+<td>Requested NameID format. Empty omits the request entirely and lets the provider issue what it is configured for — naming one breaks more integrations than it fixes.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.sign.requests</code></td>
+<td><code>false</code></td>
+<td>Sign authentication requests. Needs an SP keypair, generated from the console; re-import the SP metadata at the provider afterwards so it picks up the certificate.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.username.attribute</code></td>
+<td><code>uid</code></td>
+<td>Assertion attribute holding the login name.</td>
+</tr>
+<tr>
+<td><code>mium.sso.saml.groups.attribute</code></td>
+<td><code>groups</code></td>
+<td>Assertion attribute holding group membership.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ldap-active-directory">LDAP / Active Directory</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.sso.ldap.enabled</code></td>
+<td><code>false</code></td>
+<td>Enable the directory provider. With it on, a directory password works on the ordinary login form as well as at <code>/auth/sso/ldap/login</code>.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.url</code></td>
+<td><code>ldap://ldap.example.com:389</code></td>
+<td>Directory URL. Use <code>ldaps://</code> or enable StartTLS — otherwise the bind password crosses the network in the clear.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.bind.dn</code></td>
+<td>(empty)</td>
+<td>Service account that searches for user entries. Authentication is search then bind: the user's DN cannot be constructed, since Active Directory puts people under <code>CN=John Doe,OU=Staff,…</code> where neither component is the login name.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.bind.password</code></td>
+<td>(empty)</td>
+<td>Service account password. Credential.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.user.base.dn</code></td>
+<td>(empty)</td>
+<td>Subtree searched for user entries.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.user.filter</code></td>
+<td><code>(uid={0})</code></td>
+<td>Filter locating the user; <code>{0}</code> is the login name, escaped per RFC 4515 before substitution. Active Directory usually wants <code>(sAMAccountName={0})</code>.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.group.base.dn</code></td>
+<td>(empty)</td>
+<td>Subtree searched for groups.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.group.filter</code></td>
+<td><code>(member={0})</code></td>
+<td>Filter locating groups containing the user; <code>{0}</code> is the user's DN. Membership is read both from this search <strong>and</strong> from the user's <code>memberOf</code>, because directories disagree about which side records it.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.group.name.attribute</code></td>
+<td><code>cn</code></td>
+<td>Attribute holding the group name.</td>
+</tr>
+<tr>
+<td><code>mium.sso.ldap.starttls</code></td>
+<td><code>false</code></td>
+<td>Upgrade a plain <code>ldap://</code> connection with StartTLS.</td>
 </tr>
 </tbody>
 </table>
