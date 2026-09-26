@@ -79,6 +79,15 @@ next question is written.
 - **Topology** — live registry of active Masters and Workers with health flags.
 - **IAM** — users, groups, policies, companies, organizations; visual policy editor; access-key issuance.
 - **Security & KMS** — list, create, and rotate envelope-encryption keys.
+- **Single Sign-On** — configure OIDC, SAML 2.0 and LDAP / Active Directory on tabs of
+  their own. Every value is a named field; nothing asks for JSON. Secrets (OIDC client
+  secret, LDAP bind password, SAML SP private key) are never read back — each shows only
+  whether it is set, and typing replaces it. The SAML tab is an exchange of documents:
+  download this cluster's SP metadata for the provider, paste the provider's to have the
+  entity ID, sign-on URL and certificate read out of it, and generate an SP keypair when
+  encrypted assertions or signed requests are required. Each provider has a **test**
+  button, so a mistake surfaces before anyone tries to log in with it.
+  See [Single Sign-On](sso.md).
 - **Temp File Storage** — configure the S3-compatible object store used for server-side export ciphertext (endpoint, region, bucket, path-style, ConnectionStore id); "Test connection" probe (`/api/settings/tempfile/test`).
 - **Embedding** — configure the embedding backend/models (`/api/settings/embedding`).
 - **Verified Answers** — the review queue for reported answers and the library of

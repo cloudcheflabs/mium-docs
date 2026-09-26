@@ -61,6 +61,7 @@ nav:
       - "Server-Side Export": features/server-side-export.md
       - "Worker Python Runtime": features/worker-python-runtime.md
       - "IAM": features/iam.md
+      - "Single Sign-On (OIDC/SAML/LDAP)": features/sso.md
       - "Admin Password Recovery": features/admin-password-recovery.md
       - "Encryption & KMS": features/encryption.md
       - "High Availability": features/high-availability.md

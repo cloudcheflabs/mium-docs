@@ -146,6 +146,73 @@ A Unix domain socket the master binds for local administrative recovery — see 
 | `mium.benchmark.history.max` | `50` | Past benchmark runs shown in the history. Runs are retained regardless; this only bounds what the screen asks for. |
 | `mium.benchmark.numeric.tolerance` | `1e-9` | Relative tolerance when comparing a benchmark's numeric answer to its expected value. Two engines summing the same column in a different grouping order disagree in the last bits, and failing on that would make the suite noise. Much larger starts hiding real disagreements — a wrong filter moves a total by orders of magnitude more than this. |
 
+## Authentication — Password Storage
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.auth.password.hash.iterations` | `200000` | PBKDF2-HMAC-SHA256 iterations used when a local password is written. Mium has always hashed passwords with a per-user salt, so this is a cost knob rather than a migration. The count travels with each stored hash, so raising it does **not** invalidate existing passwords. |
+
+## Single Sign-On (OIDC / SAML / LDAP)
+
+Every setting below can also be managed from the console under **Settings → Single
+Sign-On**, which stores it in the `mium_settings` row and applies it on every node
+without a restart. **Stored settings win over the properties file**: the file brings
+a cluster up, and the console is how it is changed afterwards — if the file won, a
+console change would be reverted by the next restart, silently. See
+[Single Sign-On](../features/sso.md).
+
+### Identity mapping (all three providers)
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.sso.group.mappings` | (empty) | `idpGroup:miumGroup` pairs, comma-separated. Empty means provider group names are used as they are. **Once set the mapping is exhaustive** — a group not named here is dropped, so creating a group at the provider cannot grant access on this cluster by itself. |
+| `mium.sso.allow.unmapped.groups` | `false` | Whether an identity whose groups all map to nothing may still sign in. Off deliberately: such a session has no policies and is denied every action, so admitting it produces someone signed in who can do nothing. The directory endpoint reports that case as `403`, separately from a wrong password's `401`. |
+| `mium.sso.federated.session.seconds` | `3600` | Lifetime of a federated session — the record that lets masters and workers resolve a federated caller's groups by name. It bounds how long access outlives a revocation at the provider, which this cluster is not told about. A federated session cannot be refreshed, for the same reason. |
+
+### OpenID Connect
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.sso.oidc.enabled` | `false` | Enable the OIDC provider. |
+| `mium.sso.oidc.issuer` | (empty) | Issuer URL. Endpoints and the signing key set are read from its discovery document, so they are not configured individually. |
+| `mium.sso.oidc.client.id` | (empty) | Client id registered at the provider. |
+| `mium.sso.oidc.client.secret` | (empty) | Client secret. Credential — never read back by the console. |
+| `mium.sso.oidc.redirect.uri` | `http://localhost:8080/auth/sso/oidc/callback` | Must match the redirect URI registered at the provider exactly, and must be the address browsers reach — the load balancer's, not one master's. |
+| `mium.sso.oidc.scopes` | `openid profile email` | Scopes requested. Deliberately excludes `groups`: it is not a standard scope, and a provider that does not define it rejects the whole authorization request with `invalid_scope`. |
+| `mium.sso.oidc.username.claim` | `preferred_username` | Claim holding the login name. |
+| `mium.sso.oidc.groups.claim` | `groups` | Claim holding group membership. The provider must be configured to include it. |
+| `mium.sso.oidc.audience` | (empty) | Expected audience. Empty falls back to the client id. A token issued for another application is refused even though it is genuine and correctly signed. |
+
+### SAML 2.0
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.sso.saml.enabled` | `false` | Enable the SAML provider. |
+| `mium.sso.saml.idp.entity.id` | (empty) | Identity provider entity ID. Read automatically when the provider's metadata is imported from the console. |
+| `mium.sso.saml.idp.sso.url` | (empty) | IdP single sign-on URL. |
+| `mium.sso.saml.idp.certificate` | (empty) | Base64 IdP signing certificate. Every assertion's signature is verified against it. |
+| `mium.sso.saml.sp.entity.id` | `mium` | This cluster's entity ID, as it appears in the SP metadata the provider imports. |
+| `mium.sso.saml.sp.acs.url` | `http://localhost:8080/auth/sso/saml/acs` | Assertion consumer URL. As with the OIDC redirect, this must be the address browsers reach. |
+| `mium.sso.saml.nameid.format` | (empty) | Requested NameID format. Empty omits the request entirely and lets the provider issue what it is configured for — naming one breaks more integrations than it fixes. |
+| `mium.sso.saml.sign.requests` | `false` | Sign authentication requests. Needs an SP keypair, generated from the console; re-import the SP metadata at the provider afterwards so it picks up the certificate. |
+| `mium.sso.saml.username.attribute` | `uid` | Assertion attribute holding the login name. |
+| `mium.sso.saml.groups.attribute` | `groups` | Assertion attribute holding group membership. |
+
+### LDAP / Active Directory
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.sso.ldap.enabled` | `false` | Enable the directory provider. With it on, a directory password works on the ordinary login form as well as at `/auth/sso/ldap/login`. |
+| `mium.sso.ldap.url` | `ldap://ldap.example.com:389` | Directory URL. Use `ldaps://` or enable StartTLS — otherwise the bind password crosses the network in the clear. |
+| `mium.sso.ldap.bind.dn` | (empty) | Service account that searches for user entries. Authentication is search then bind: the user's DN cannot be constructed, since Active Directory puts people under `CN=John Doe,OU=Staff,…` where neither component is the login name. |
+| `mium.sso.ldap.bind.password` | (empty) | Service account password. Credential. |
+| `mium.sso.ldap.user.base.dn` | (empty) | Subtree searched for user entries. |
+| `mium.sso.ldap.user.filter` | `(uid={0})` | Filter locating the user; `{0}` is the login name, escaped per RFC 4515 before substitution. Active Directory usually wants `(sAMAccountName={0})`. |
+| `mium.sso.ldap.group.base.dn` | (empty) | Subtree searched for groups. |
+| `mium.sso.ldap.group.filter` | `(member={0})` | Filter locating groups containing the user; `{0}` is the user's DN. Membership is read both from this search **and** from the user's `memberOf`, because directories disagree about which side records it. |
+| `mium.sso.ldap.group.name.attribute` | `cn` | Attribute holding the group name. |
+| `mium.sso.ldap.starttls` | `false` | Upgrade a plain `ldap://` connection with StartTLS. |
+
 ## Retention
 
 All TTLs default to `0` = sweep disabled. Operators opt in with explicit non-zero values. The sweep cadence is `mium.retention.sweep.interval.seconds`.

@@ -8,8 +8,11 @@ Mium includes a built-in IAM system that provides authentication, authorization,
 - **JWT bearer tokens** — HMAC-SHA256 signed access tokens (`Authorization: Bearer <jwt>`) used on all API requests. TTL configurable via `mium.jwt.ttl.seconds`. Refresh available via `/auth/refresh`.
 - **Access keys** — AWS-style `(accessKeyId, secretAccessKey)` pairs for programmatic / SDK access, with optional expiry. Each key also mints an `MTOK…` shorthand token usable as `Authorization: Token <mtok>`; the raw `AKIA…`/secret can also be presented via HTTP `Basic`.
 - **STS** — short-lived credentials issued via `assume-role`-style endpoints for delegated, time-bounded access.
+- **Federated identity (SSO)** — an account that lives in your identity provider rather than here: OIDC, SAML 2.0, or LDAP / Active Directory. It carries groups from your directory instead of having a user record on this cluster, and the policies attached to the mapped groups authorize it the same way. See [Single Sign-On](sso.md).
 
-All routes except the public probes `/health`, `/ready`, and the login route `/auth/login` require authentication.
+Passwords are stored as PBKDF2-HMAC-SHA256 hashes with a per-user salt.
+
+All routes except the public probes `/health`, `/ready`, the login route `/auth/login`, and the single-sign-on entry points under `/auth/sso/` require authentication. Those last ones exist to obtain a token, so requiring one would be circular.
 
 > Endpoint paths below are shown for the default (empty) `mium.admin.context.path`. If you set a context path (e.g. `/admin`), it is prepended to every route.
 
