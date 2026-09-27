@@ -2167,6 +2167,11 @@
 <td>Bind address for both master servers (admin HTTP and internal NIO control plane). <code>0.0.0.0</code> binds all interfaces; pin to a NIC to restrict exposure.</td>
 </tr>
 <tr>
+<td><code>mium.master.advertised.host</code></td>
+<td><em>(resolved)</em></td>
+<td>The address this master publishes to ZooKeeper for its peers and the workers to connect to. <strong>Not the same as the bind address</strong>: <code>0.0.0.0</code> says "listen on every interface" and is not a place anything can dial. Left unset, resolved to this machine's hostname, falling back to the first non-loopback interface — right for containers and for on-prem DNS. Set it on a host with several NICs where the cluster talks over one of them, or where the other nodes resolve this host's name differently. If no routable address can be found the node advertises <code>127.0.0.1</code> and says so at WARN, which works only when it is the only node.</td>
+</tr>
+<tr>
 <td><code>mium.master.admin.port</code></td>
 <td><code>8090</code></td>
 <td>TCP port for the admin HTTP server — serves the admin UI, REST API (<code>/api/*</code>), and <code>/health</code> + <code>/ready</code> probes. The port users and the UI talk to; also part of this master's node id.</td>
@@ -2196,7 +2201,12 @@
 <tr>
 <td><code>mium.worker.host</code></td>
 <td><code>0.0.0.0</code></td>
-<td>Bind address the worker advertises and listens on for its internal NIO control plane. <code>0.0.0.0</code> binds all interfaces.</td>
+<td>Bind address for the worker's internal NIO control plane. <code>0.0.0.0</code> binds all interfaces. Where it listens, not what it publishes — see below.</td>
+</tr>
+<tr>
+<td><code>mium.worker.advertised.host</code></td>
+<td><em>(resolved)</em></td>
+<td>The address the masters connect to in order to dispatch work to this worker. Same rules, and the same reason, as <code>mium.master.advertised.host</code>.</td>
 </tr>
 <tr>
 <td><code>mium.worker.internal.port</code></td>

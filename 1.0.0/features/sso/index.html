@@ -2178,6 +2178,18 @@ issued it, which is the login-CSRF check.</p>
 <p>Without that, SSO works on a single master and fails on roughly half of all
 attempts behind a load balancer — and it fails looking like a problem at the
 identity provider.</p>
+<p><strong>The session goes to the leader.</strong> A login is completed by whichever master the
+browser reached — that is the node the redirect URI names and the node holding the
+connection — but the session it produces is state, and state is written on the
+leader. The accepting node records it locally so it can answer the request it is in
+the middle of, and sends it to the leader, which persists it and replicates it to
+every node. Without that step a session created on a follower would be erased by
+that follower's own next snapshot pull, and the caller's token would then name an
+identity no node could resolve.</p>
+<p>A node asked about a session it has not received yet asks the leader before
+answering, rather than reporting the caller as unknown. So the first request after a
+login resolves on any master, not only on the one that performed it. The e2e suite
+asserts exactly that, with two masters behind a round-robin load balancer.</p>
 <h2 id="revocation">Revocation</h2>
 <p>Disabling someone at the provider stops new logins immediately. Sessions already
 issued keep working until they expire — this cluster is not told about the change.

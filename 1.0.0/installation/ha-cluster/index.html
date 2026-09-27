@@ -759,6 +759,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Front the Cluster With a Load Balancer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-fast-a-change-reaches-the-other-masters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How fast a change reaches the other Masters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2033,20 +2050,36 @@
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="na">mium.tempfile.s3.bucket</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">mium-tempfile</span>
 </code></pre></div>
 <p>Per-node settings (different on each host):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># bind on the host&#39;s own NIC, advertise its routable hostname</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="na">mium.master.host</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="na">mium.master.admin.port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">8090</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="na">mium.master.internal.port</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">19099</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="na">mium.worker.host</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="na">mium.worker.internal.port</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">19098</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Where this node LISTENS. 0.0.0.0 is every interface.</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="na">mium.master.host</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="na">mium.master.admin.port</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">8090</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="na">mium.master.internal.port</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">19099</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="na">mium.worker.host</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="na">mium.worker.internal.port</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">19098</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># Where the OTHER nodes reach it. Different from the bind address: 0.0.0.0 says</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># &quot;listen on everything&quot; and is not an address anything can dial. Left unset,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># this is resolved to the host&#39;s own hostname, falling back to its first</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># non-loopback interface — correct for most deployments.</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1">#mium.master.advertised.host = master1.internal</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1">#mium.worker.advertised.host = worker1.internal</span>
 </code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Set these when the automatic answer is wrong</p>
+<p>Name them explicitly on a host with several NICs where the cluster talks over
+one of them, or where the other nodes' DNS resolves this host's name to a
+different address than the host itself does. Getting it wrong is visible: each
+node logs the address it advertises at startup (<code>Advertised : …</code>), and a node
+that could find no routable address says so at WARN and advertises
+<code>127.0.0.1</code> — which works only when it is the only node.</p>
+</div>
 <h2 id="bring-up-the-cluster">Bring Up the Cluster</h2>
 <p>Order matters on the first boot — the leader has to seed KMS keys before followers can sync.</p>
 <ol>
 <li>Start ZooKeeper (already running in your environment).</li>
 <li>Start Master #1. Wait for <code>leader-ready</code> in the log.</li>
-<li>Start Master #2 and #3 in any order. Each will pull KMS / IAM / ConnectionStore from the leader and report ready.</li>
-<li>Start every Worker. Each pulls the same three stores and reports ready.</li>
+<li>Start Master #2 and #3 in any order. Each will pull KMS / IAM / ConnectionStore from the leader and report ready — and publish <code>ready=true</code> to ZooKeeper, which is what lets step 5 complete.</li>
+<li>Start every Worker. Each pulls the same three stores <strong>from the leader</strong> — not from any ready Master, because a follower holds a replica and a Worker seeded from one would inherit that lag without being able to detect it. Workers find the leader from the <code>/mium/leader</code> znode the leader publishes.</li>
 <li>The leader polls ZooKeeper and starts accepting traffic only when <strong>every</strong> registered Master and Worker reports <code>ready=true</code>.</li>
 </ol>
 <p><code>curl http://master1:8090/ready</code> returns 200 only after step 5 succeeds.</p>
@@ -2056,7 +2089,10 @@
 <li><strong>Health probe</strong>: <code>GET /ready</code> on every Master. Mark unhealthy on 503.</li>
 <li><strong>Sticky sessions</strong>: not required — JWTs work on any Master.</li>
 <li><strong>Write requests on followers</strong>: Mium's <code>LeaderRouter</code> transparently proxies write traffic to the leader, so the LB does <strong>not</strong> need to know which Master is the leader.</li>
+<li><strong>Single sign-on</strong>: no special handling. A redirect flow is several requests and they land on different Masters; the login state is sealed with a key every node derives from <code>MIUM_MASTER_KEY</code>, and the session a login produces is recorded on the leader and replicated, so any Master resolves it. See <a href="../../features/sso/">Single Sign-On</a>.</li>
 </ul>
+<h3 id="how-fast-a-change-reaches-the-other-masters">How fast a change reaches the other Masters</h3>
+<p>Under a second. The leader sends a change notice on every write and the followers pull the affected snapshot immediately; a 30-second self-heal poll exists underneath as a backstop, not as the normal path. If you observe a change on one Master taking tens of seconds to appear on another, the notices are not arriving — check that each node advertises a routable address, and that nothing is filtering <code>mium.master.internal.port</code> between them.</p>
 <p>Terminate TLS at the load balancer — Mium does not terminate TLS itself.</p>
 <h2 id="failover-behaviour">Failover Behaviour</h2>
 <ul>

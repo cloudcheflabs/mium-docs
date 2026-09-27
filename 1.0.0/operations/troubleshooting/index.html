@@ -1763,6 +1763,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#a-change-made-on-one-master-takes-30s-to-appear-on-another" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Change Made on One Master Takes ~30s to Appear on Another
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#chat-returns-503-no-worker-ready" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1949,7 +1960,7 @@
 
 
 <h1 id="troubleshooting">Troubleshooting</h1>
-<p>The five operational issues that account for most Mium support tickets, with the diagnostic that resolves each one in seconds.</p>
+<p>The operational issues that account for most Mium support tickets, with the diagnostic that resolves each one in seconds.</p>
 <h2 id="ready-returns-503-cluster-not-ready"><code>/ready</code> Returns 503 — "Cluster Not Ready"</h2>
 <p>The single most common operational issue. <code>/health</code> is <code>200</code>, the JVM is up, but the load balancer is still rejecting traffic.</p>
 <p><strong>Cause.</strong> The leader Master accepts requests only when <strong>every</strong> registered Master and Worker has synced KMS / IAM / ConnectionStore from the leader and reported <code>ready=true</code> in ZooKeeper. Any node that registered but never reached ready holds the cluster offline.</p>
@@ -1964,13 +1975,31 @@
 <li><code>MIUM_MASTER_KEY mismatch</code> — the master key on this node does not derive the same KEK as the leader. Fix: align the env var across all nodes.</li>
 <li><code>Failed to pull KMS_SYNC</code> — network blocked between this node and the leader on <code>mium.master.internal.port</code> (default <code>19099</code>). Fix: open the firewall.</li>
 <li><code>Schema migration failed</code> — NeorunBase is reachable but the user lacks DDL privileges. Fix: grant the <code>mium.neorunbase.username</code> permission to create tables in <code>mium.neorunbase.schema</code>.</li>
+<li><code>registered a bind address (0.0.0.0) rather than a routable one</code> — a node in the cluster is running a build from before advertised addresses, so nothing can dial it. Fix: upgrade that node, or set <code>mium.master.advertised.host</code> / <code>mium.worker.advertised.host</code> on it.</li>
+<li><code>No routable address found for this node</code> — this node could resolve neither its hostname nor a non-loopback interface, so it advertised <code>127.0.0.1</code>, which only its own host can reach. Fix: set the advertised host explicitly.</li>
 </ul>
+<p>Each node also logs the address it publishes at startup:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Advertised   : master2.internal (what peers and workers connect to)
+</code></pre></div>
+<p>Comparing that line across nodes settles "who is unreachable from whom" faster than any packet capture. What the nodes actually registered is in ZooKeeper:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>zkCli.sh<span class="w"> </span>-server<span class="w"> </span>zk1:2181<span class="w"> </span>get<span class="w"> </span>/mium/masters/master2.internal:8090
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># → {&quot;nodeId&quot;:&quot;master2.internal:8090&quot;,&quot;host&quot;:&quot;master2.internal&quot;,...,&quot;ready&quot;:true}</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>zkCli.sh<span class="w"> </span>-server<span class="w"> </span>zk1:2181<span class="w"> </span>get<span class="w"> </span>/mium/leader<span class="w">      </span><span class="c1"># → which node is the leader</span>
+</code></pre></div>
 <p><strong>Recover.</strong> Once the underlying cause is fixed, restart the holdout. The leader re-validates cluster readiness automatically; no leader restart is needed.</p>
+<h2 id="a-change-made-on-one-master-takes-30s-to-appear-on-another">A Change Made on One Master Takes ~30s to Appear on Another</h2>
+<p>A password change, a policy edit or a new user is visible immediately on the Master that took the write and only half a minute later on the others. Requests through a load balancer therefore succeed or fail depending on which node they land on.</p>
+<p><strong>Cause.</strong> Replication has two paths: the leader sends a change notice on every write and the followers pull the affected snapshot at once — that path is sub-second — and underneath it a 30-second self-heal poll pulls everything regardless. Thirty-second convergence means the notices are not arriving and only the backstop is working.</p>
+<p><strong>Diagnose.</strong> On the leader, confirm it can see its peers as dialable — a peer whose registered host is a bind wildcard is skipped, and so is one whose <code>mium.master.internal.port</code> is filtered:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>zkCli.sh<span class="w"> </span>-server<span class="w"> </span>zk1:2181<span class="w"> </span>ls<span class="w"> </span>/mium/masters<span class="w">      </span><span class="c1"># every node registered</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>nc<span class="w"> </span>-vz<span class="w"> </span>master2.internal<span class="w"> </span><span class="m">19099</span><span class="w">                   </span><span class="c1"># from the leader&#39;s host</span>
+</code></pre></div>
+<p><strong>Recover.</strong> Give every node a routable advertised address and open the internal port between them. No restart of the leader is required; the next write fans out normally.</p>
 <h2 id="chat-returns-503-no-worker-ready">Chat Returns 503 — "No Worker Ready"</h2>
 <p>The chat endpoint accepts the request but returns <code>503 Service Unavailable</code> immediately.</p>
 <p><strong>Cause.</strong> Every Worker is either unregistered, marked unready in ZooKeeper, or unreachable on its NIO port. The Master will not run LLM calls, tool calls, or exports locally — that work belongs on the Worker tier.</p>
 <p><strong>Diagnose.</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://master:8090/api/nodes/workers
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://master:8090/api/nodes/workers
 </code></pre></div>
 <p>If the list is empty:</p>
 <ul>
@@ -1990,7 +2019,7 @@
 <li><strong>S3 connection in <code>mium.tempfile.s3.connection</code> is missing or unauthorized</strong> — admin needs to register the s3 connection with the right access key.</li>
 </ol>
 <p><strong>Diagnose Python directly on the Worker host:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">$MIUM_HOME</span>/bin/python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import openpyxl, reportlab, pptx; print(&#39;ok&#39;)&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">$MIUM_HOME</span>/bin/python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import openpyxl, reportlab, pptx; print(&#39;ok&#39;)&quot;</span>
 </code></pre></div>
 <h2 id="login-fails-invalid-credentials">Login Fails — "Invalid Credentials"</h2>
 <p>The bootstrap admin works on a fresh install but fails after a config change.</p>
@@ -2005,17 +2034,17 @@
 <p>Chat works but features that need embeddings (memory recall, prompt search, code-generation few-shot) stall or the Worker process gets killed.</p>
 <p><strong>Cause.</strong> Embedding inference loads <code>bge-m3</code> (~2 GB) and / or <code>clip-ViT-B-32</code> (~600 MB) into the Worker's Python heap. With Worker <code>-Xmx</code> plus model weights, total RSS approaches 8 GB. Hosts under-provisioned for that get killed by the OOM killer.</p>
 <p><strong>Diagnose.</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Are the daemons alive?</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://master:8090/api/logs/tail?nodeId<span class="o">=</span>worker-19098
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Look for: &quot;embedding daemon ready: model=BAAI/bge-m3 dim=1024&quot;</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Or:       &quot;Killed&quot; — that&#39;s the OOM killer.</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Check Worker memory headroom</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>ps<span class="w"> </span>-eo<span class="w"> </span>pid,rss,vsz,comm<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>python3
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Are the daemons alive?</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://master:8090/api/logs/tail?nodeId<span class="o">=</span>worker-19098
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># Look for: &quot;embedding daemon ready: model=BAAI/bge-m3 dim=1024&quot;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Or:       &quot;Killed&quot; — that&#39;s the OOM killer.</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1"># Check Worker memory headroom</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>ps<span class="w"> </span>-eo<span class="w"> </span>pid,rss,vsz,comm<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>python3
 </code></pre></div>
 <p><strong>Fix.</strong> Either size up the Worker host, or use the lighter model:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Settings → Embedding → switch to all-MiniLM-L6-v2 (~90 MB)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="na">mium.embedding.dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">384</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Settings → Embedding → switch to all-MiniLM-L6-v2 (~90 MB)</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="na">mium.embedding.dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">384</span>
 </code></pre></div>
 <p>The model swap is a hot swap — no restart needed. The first call after the swap pays the model-load cost (~5 s).</p>
 <p>For the full embedding architecture, see <a href="../../features/worker-python-runtime/">Worker Python Runtime</a>.</p>

@@ -2243,6 +2243,11 @@
 <td>Bind address for the Master HTTP and NIO listeners.</td>
 </tr>
 <tr>
+<td><code>mium.master.advertised.host</code></td>
+<td><em>(resolved)</em></td>
+<td>The address peers and Workers connect to — <strong>not</strong> the bind address above, since <code>0.0.0.0</code> is a wildcard and not somewhere anything can dial. Left unset, resolved to this machine's hostname, then to its first non-loopback interface. Set it on a multi-NIC host, or where the other nodes' DNS resolves this host differently. Each node logs what it advertises at startup.</td>
+</tr>
+<tr>
 <td><code>mium.master.admin.port</code></td>
 <td><code>8090</code></td>
 <td>Admin HTTP port (Admin UI + REST API).</td>
@@ -2278,6 +2283,11 @@
 <td><code>mium.worker.host</code></td>
 <td><code>0.0.0.0</code></td>
 <td>Bind address for the Worker NIO listener.</td>
+</tr>
+<tr>
+<td><code>mium.worker.advertised.host</code></td>
+<td><em>(resolved)</em></td>
+<td>The address the Masters connect to in order to dispatch work. Same rules as <code>mium.master.advertised.host</code>.</td>
 </tr>
 <tr>
 <td><code>mium.worker.internal.port</code></td>

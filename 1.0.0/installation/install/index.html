@@ -1967,28 +1967,30 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># ZooKeeper ensemble</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="na">mium.zk.connect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">zk1.internal:2181,zk2.internal:2181,zk3.internal:2181</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Master &amp; Worker bind addresses (use 0.0.0.0 to listen on all interfaces)</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="na">mium.master.host</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="na">mium.master.admin.port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">8090</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="na">mium.master.internal.port</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">19099</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="na">mium.worker.host</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="na">mium.worker.internal.port</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">19098</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># NeorunBase (Memory / Prompt / Embedding)</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="na">mium.neorunbase.jdbc.url</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">jdbc:postgresql://nb.internal:5432/neorunbase?preferQueryMode=simple</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="na">mium.neorunbase.username</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="na">mium.neorunbase.password</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;secret&gt;</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="na">mium.neorunbase.schema</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1"># Default S3-compatible store for export ciphertext</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="na">mium.tempfile.s3.endpoint</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">https://s3.internal</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="na">mium.tempfile.s3.region</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">us-east-1</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="na">mium.tempfile.s3.bucket</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">mium-tempfile</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="na">mium.tempfile.s3.path.style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="c1"># Bootstrap admin (rotate after first login)</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="na">mium.iam.admin.user</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">admin</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="na">mium.iam.admin.password</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">admin</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Master &amp; Worker bind addresses (use 0.0.0.0 to listen on all interfaces).</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># For a multi-host cluster, also see mium.*.advertised.host in HA Cluster —</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># the bind address is where a node listens, not the address its peers dial.</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="na">mium.master.host</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="na">mium.master.admin.port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">8090</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="na">mium.master.internal.port</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">19099</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="na">mium.worker.host</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="na">mium.worker.internal.port</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">19098</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1"># NeorunBase (Memory / Prompt / Embedding)</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="na">mium.neorunbase.jdbc.url</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">jdbc:postgresql://nb.internal:5432/neorunbase?preferQueryMode=simple</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="na">mium.neorunbase.username</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="na">mium.neorunbase.password</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;secret&gt;</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="na">mium.neorunbase.schema</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s">mium</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="c1"># Default S3-compatible store for export ciphertext</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="na">mium.tempfile.s3.endpoint</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">https://s3.internal</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="na">mium.tempfile.s3.region</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">us-east-1</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="na">mium.tempfile.s3.bucket</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">mium-tempfile</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="na">mium.tempfile.s3.path.style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="c1"># Bootstrap admin (rotate after first login)</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="na">mium.iam.admin.user</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s">admin</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="na">mium.iam.admin.password</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">admin</span>
 </code></pre></div>
 <p>The full property reference lives under <a href="../../configuration/reference/">Configuration</a>.</p>
 <h2 id="tune-the-jvm-optional">Tune the JVM (Optional)</h2>
