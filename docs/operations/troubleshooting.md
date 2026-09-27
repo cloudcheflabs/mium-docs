@@ -1,6 +1,6 @@
 # Troubleshooting
 
-The five operational issues that account for most Mium support tickets, with the diagnostic that resolves each one in seconds.
+The operational issues that account for most Mium support tickets, with the diagnostic that resolves each one in seconds.
 
 ## `/ready` Returns 503 — "Cluster Not Ready"
 
@@ -23,8 +23,39 @@ For the holdout node, check its log for one of:
 - `MIUM_MASTER_KEY mismatch` — the master key on this node does not derive the same KEK as the leader. Fix: align the env var across all nodes.
 - `Failed to pull KMS_SYNC` — network blocked between this node and the leader on `mium.master.internal.port` (default `19099`). Fix: open the firewall.
 - `Schema migration failed` — NeorunBase is reachable but the user lacks DDL privileges. Fix: grant the `mium.neorunbase.username` permission to create tables in `mium.neorunbase.schema`.
+- `registered a bind address (0.0.0.0) rather than a routable one` — a node in the cluster is running a build from before advertised addresses, so nothing can dial it. Fix: upgrade that node, or set `mium.master.advertised.host` / `mium.worker.advertised.host` on it.
+- `No routable address found for this node` — this node could resolve neither its hostname nor a non-loopback interface, so it advertised `127.0.0.1`, which only its own host can reach. Fix: set the advertised host explicitly.
+
+Each node also logs the address it publishes at startup:
+
+```
+Advertised   : master2.internal (what peers and workers connect to)
+```
+
+Comparing that line across nodes settles "who is unreachable from whom" faster than any packet capture. What the nodes actually registered is in ZooKeeper:
+
+```bash
+zkCli.sh -server zk1:2181 get /mium/masters/master2.internal:8090
+# → {"nodeId":"master2.internal:8090","host":"master2.internal",...,"ready":true}
+zkCli.sh -server zk1:2181 get /mium/leader      # → which node is the leader
+```
 
 **Recover.** Once the underlying cause is fixed, restart the holdout. The leader re-validates cluster readiness automatically; no leader restart is needed.
+
+## A Change Made on One Master Takes ~30s to Appear on Another
+
+A password change, a policy edit or a new user is visible immediately on the Master that took the write and only half a minute later on the others. Requests through a load balancer therefore succeed or fail depending on which node they land on.
+
+**Cause.** Replication has two paths: the leader sends a change notice on every write and the followers pull the affected snapshot at once — that path is sub-second — and underneath it a 30-second self-heal poll pulls everything regardless. Thirty-second convergence means the notices are not arriving and only the backstop is working.
+
+**Diagnose.** On the leader, confirm it can see its peers as dialable — a peer whose registered host is a bind wildcard is skipped, and so is one whose `mium.master.internal.port` is filtered:
+
+```bash
+zkCli.sh -server zk1:2181 ls /mium/masters      # every node registered
+nc -vz master2.internal 19099                   # from the leader's host
+```
+
+**Recover.** Give every node a routable advertised address and open the internal port between them. No restart of the leader is required; the next write fans out normally.
 
 ## Chat Returns 503 — "No Worker Ready"
 

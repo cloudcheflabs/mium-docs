@@ -63,13 +63,29 @@ mium.tempfile.s3.bucket   = mium-tempfile
 Per-node settings (different on each host):
 
 ```properties
-# bind on the host's own NIC, advertise its routable hostname
-mium.master.host           = 0.0.0.0
-mium.master.admin.port     = 8090
-mium.master.internal.port  = 19099
-mium.worker.host           = 0.0.0.0
-mium.worker.internal.port  = 19098
+# Where this node LISTENS. 0.0.0.0 is every interface.
+mium.master.host             = 0.0.0.0
+mium.master.admin.port       = 8090
+mium.master.internal.port    = 19099
+mium.worker.host             = 0.0.0.0
+mium.worker.internal.port    = 19098
+
+# Where the OTHER nodes reach it. Different from the bind address: 0.0.0.0 says
+# "listen on everything" and is not an address anything can dial. Left unset,
+# this is resolved to the host's own hostname, falling back to its first
+# non-loopback interface — correct for most deployments.
+#mium.master.advertised.host = master1.internal
+#mium.worker.advertised.host = worker1.internal
 ```
+
+!!! warning "Set these when the automatic answer is wrong"
+    Name them explicitly on a host with several NICs where the cluster talks over
+    one of them, or where the other nodes' DNS resolves this host's name to a
+    different address than the host itself does. Getting it wrong is visible: each
+    node logs the address it advertises at startup (`Advertised : …`), and a node
+    that could find no routable address says so at WARN and advertises
+    `127.0.0.1` — which works only when it is the only node.
+
 
 ## Bring Up the Cluster
 
@@ -77,8 +93,8 @@ Order matters on the first boot — the leader has to seed KMS keys before follo
 
 1. Start ZooKeeper (already running in your environment).
 2. Start Master #1. Wait for `leader-ready` in the log.
-3. Start Master #2 and #3 in any order. Each will pull KMS / IAM / ConnectionStore from the leader and report ready.
-4. Start every Worker. Each pulls the same three stores and reports ready.
+3. Start Master #2 and #3 in any order. Each will pull KMS / IAM / ConnectionStore from the leader and report ready — and publish `ready=true` to ZooKeeper, which is what lets step 5 complete.
+4. Start every Worker. Each pulls the same three stores **from the leader** — not from any ready Master, because a follower holds a replica and a Worker seeded from one would inherit that lag without being able to detect it. Workers find the leader from the `/mium/leader` znode the leader publishes.
 5. The leader polls ZooKeeper and starts accepting traffic only when **every** registered Master and Worker reports `ready=true`.
 
 `curl http://master1:8090/ready` returns 200 only after step 5 succeeds.
@@ -90,6 +106,11 @@ The Admin UI and REST API on port 8090 are stateless once the JWT is issued. Ope
 - **Health probe**: `GET /ready` on every Master. Mark unhealthy on 503.
 - **Sticky sessions**: not required — JWTs work on any Master.
 - **Write requests on followers**: Mium's `LeaderRouter` transparently proxies write traffic to the leader, so the LB does **not** need to know which Master is the leader.
+- **Single sign-on**: no special handling. A redirect flow is several requests and they land on different Masters; the login state is sealed with a key every node derives from `MIUM_MASTER_KEY`, and the session a login produces is recorded on the leader and replicated, so any Master resolves it. See [Single Sign-On](../features/sso.md).
+
+### How fast a change reaches the other Masters
+
+Under a second. The leader sends a change notice on every write and the followers pull the affected snapshot immediately; a 30-second self-heal poll exists underneath as a backstop, not as the normal path. If you observe a change on one Master taking tens of seconds to appear on another, the notices are not arriving — check that each node advertises a routable address, and that nothing is filtering `mium.master.internal.port` between them.
 
 Terminate TLS at the load balancer — Mium does not terminate TLS itself.
 

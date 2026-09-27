@@ -33,6 +33,7 @@ mium.kms.rocksdb.path = ${mium.base.data.dir}/kms
 | Key | Default | Description |
 |---|---|---|
 | `mium.master.host` | `0.0.0.0` | Bind address for the Master HTTP and NIO listeners. |
+| `mium.master.advertised.host` | _(resolved)_ | The address peers and Workers connect to — **not** the bind address above, since `0.0.0.0` is a wildcard and not somewhere anything can dial. Left unset, resolved to this machine's hostname, then to its first non-loopback interface. Set it on a multi-NIC host, or where the other nodes' DNS resolves this host differently. Each node logs what it advertises at startup. |
 | `mium.master.admin.port` | `8090` | Admin HTTP port (Admin UI + REST API). |
 | `mium.master.internal.port` | `19099` | Master internal NIO port (Master ↔ Master sync, Worker → Master heartbeat). |
 | `mium.admin.context.path` | (empty) | URL prefix the entire HTTP surface is mounted under. Default empty = root: UI at `http://host:port/`, REST at `/api/*`. Set to e.g. `/admin` or `/mium` when fronting Mium with a path-based reverse proxy. The Admin UI bundle must be rebuilt with a matching `VITE_BASE_PATH`. |
@@ -43,6 +44,7 @@ mium.kms.rocksdb.path = ${mium.base.data.dir}/kms
 | Key | Default | Description |
 |---|---|---|
 | `mium.worker.host` | `0.0.0.0` | Bind address for the Worker NIO listener. |
+| `mium.worker.advertised.host` | _(resolved)_ | The address the Masters connect to in order to dispatch work. Same rules as `mium.master.advertised.host`. |
 | `mium.worker.internal.port` | `19098` | Worker NIO port (receives `EXECUTE_AGENT` / `EXECUTE_TOOL` / `EXECUTE_EXPORT` from Masters). |
 
 ## KMS

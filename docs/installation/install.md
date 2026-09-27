@@ -45,7 +45,9 @@ The defaults assume a single-node, single-host development install. Edit the val
 # ZooKeeper ensemble
 mium.zk.connect = zk1.internal:2181,zk2.internal:2181,zk3.internal:2181
 
-# Master & Worker bind addresses (use 0.0.0.0 to listen on all interfaces)
+# Master & Worker bind addresses (use 0.0.0.0 to listen on all interfaces).
+# For a multi-host cluster, also see mium.*.advertised.host in HA Cluster —
+# the bind address is where a node listens, not the address its peers dial.
 mium.master.host           = 0.0.0.0
 mium.master.admin.port     = 8090
 mium.master.internal.port  = 19099

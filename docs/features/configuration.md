@@ -46,6 +46,7 @@ ZooKeeper is the coordination backbone — leader election (Curator `LeaderLatch
 | Property | Default | Description |
 |---|---|---|
 | `mium.master.host` | `0.0.0.0` | Bind address for both master servers (admin HTTP and internal NIO control plane). `0.0.0.0` binds all interfaces; pin to a NIC to restrict exposure. |
+| `mium.master.advertised.host` | _(resolved)_ | The address this master publishes to ZooKeeper for its peers and the workers to connect to. **Not the same as the bind address**: `0.0.0.0` says "listen on every interface" and is not a place anything can dial. Left unset, resolved to this machine's hostname, falling back to the first non-loopback interface — right for containers and for on-prem DNS. Set it on a host with several NICs where the cluster talks over one of them, or where the other nodes resolve this host's name differently. If no routable address can be found the node advertises `127.0.0.1` and says so at WARN, which works only when it is the only node. |
 | `mium.master.admin.port` | `8090` | TCP port for the admin HTTP server — serves the admin UI, REST API (`/api/*`), and `/health` + `/ready` probes. The port users and the UI talk to; also part of this master's node id. |
 | `mium.master.internal.port` | `19099` | TCP port for the master's internal NIO control plane. Carries master-to-master peer RPC (metrics polling, KMS key-seed broadcast, follower→leader coordination). Keep on a trusted network. |
 | `mium.admin.context.path` | _(empty)_ | URL prefix the entire HTTP surface is mounted under. Default `""` = root. When changed (e.g. `/admin`), the UI bundle must be rebuilt with `VITE_BASE_PATH` set to the same prefix. |
@@ -54,7 +55,8 @@ ZooKeeper is the coordination backbone — leader election (Curator `LeaderLatch
 
 | Property | Default | Description |
 |---|---|---|
-| `mium.worker.host` | `0.0.0.0` | Bind address the worker advertises and listens on for its internal NIO control plane. `0.0.0.0` binds all interfaces. |
+| `mium.worker.host` | `0.0.0.0` | Bind address for the worker's internal NIO control plane. `0.0.0.0` binds all interfaces. Where it listens, not what it publishes — see below. |
+| `mium.worker.advertised.host` | _(resolved)_ | The address the masters connect to in order to dispatch work to this worker. Same rules, and the same reason, as `mium.master.advertised.host`. |
 | `mium.worker.internal.port` | `19098` | TCP port for the worker's internal NIO server. The master dispatches work (Python-subprocess export jobs, embedding daemons) over this port. Also forms the worker's node id. Not HTTP, not user-facing — keep on a trusted network. |
 
 ## KMS
