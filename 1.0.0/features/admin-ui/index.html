@@ -2042,7 +2042,11 @@ next question is written.</p>
 <h3 id="settings-administration-admin-only">Settings — Administration (admin-only)</h3>
 <ul>
 <li><strong>Dashboard</strong> — cluster metrics and health (CPU, heap, thread count per node) plus worker status, charted with Recharts.</li>
-<li><strong>Topology</strong> — live registry of active Masters and Workers with health flags.</li>
+<li><strong>Topology</strong> — live view of the cluster: the Masters (leader / follower, ready state), the Workers, and
+  the <strong>ZooKeeper</strong> ensemble — every server in <code>mium.zk.connect</code> with its role (leader, follower,
+  observer, standalone), Online / Offline status, version, connections, latency, znode count and zxid,
+  plus the answering Master's own ZooKeeper session. Per-node log viewer and the maintenance-mode
+  switch live here too. See <a href="../../operations/monitoring/#zookeeper">Monitoring → ZooKeeper</a>.</li>
 <li><strong>IAM</strong> — users, groups, policies, companies, organizations; visual policy editor; access-key issuance.</li>
 <li><strong>Security &amp; KMS</strong> — list, create, and rotate envelope-encryption keys.</li>
 <li><strong>Single Sign-On</strong> — configure OIDC, SAML 2.0 and LDAP / Active Directory on tabs of
@@ -2072,6 +2076,7 @@ next question is written.</p>
 <li><strong>IAM</strong> — <code>/api/iam/users</code>, <code>/api/iam/users/me</code>, <code>/api/iam/groups</code>, <code>/api/iam/policies</code>, <code>/api/iam/add-user-to-group</code>, <code>/api/iam/remove-user-from-group</code>, <code>/api/iam/attach-group-policy</code>, <code>/api/iam/detach-group-policy</code>, <code>/api/iam/keys</code>, <code>/api/iam/download-key</code>, <code>/api/iam/companies</code> (read-only), <code>/api/iam/orgs</code> (read-only)</li>
 <li><strong>STS</strong> — <code>/api/sts/sessions</code>, <code>/api/sts/assume-role</code>, <code>/api/sts/sessions/clear</code>, <code>/api/sts/sessions/download</code></li>
 <li><strong>Connections</strong> — <code>/api/connections</code></li>
+<li><strong>Topology &amp; monitoring</strong> — <code>/api/nodes/masters</code>, <code>/api/nodes/workers</code>, <code>/api/nodes/zookeeper</code>, <code>/api/leader</code>, <code>/api/monitoring/metrics</code>, <code>/api/logs/tail</code></li>
 <li><strong>KMS</strong> — <code>/api/kms/list</code>, <code>/api/kms/status/{keyId}</code>, <code>/api/kms/create</code>, <code>/api/kms/rotate/{keyId}</code></li>
 <li><strong>Chat</strong> — <code>/api/chat</code>, <code>/api/chat/sessions</code>, <code>/api/chat/sessions/all</code>, <code>/api/chat/sessions/messages</code>, <code>/api/chat/sessions/rename</code></li>
 <li><strong>Catalog</strong> — <code>/api/catalog/connections</code>, <code>/api/catalog/tables</code>, <code>/api/catalog/columns</code></li>

@@ -925,6 +925,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metrics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#master" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2148,6 +2159,33 @@
 <td><code>mium.zk.connect.timeout.ms</code></td>
 <td><code>10000</code></td>
 <td>Max milliseconds to wait when first establishing the ZK connection at startup. Should stay well below the session timeout.</td>
+</tr>
+<tr>
+<td><code>mium.zk.topology.probe.timeout.ms</code></td>
+<td><code>2000</code></td>
+<td>Timeout in milliseconds (socket connect and read) for the admin Cluster Topology view, which asks every server in <code>mium.zk.connect</code> for its status with ZooKeeper's <code>srvr</code> four-letter word (allowed by default in ZooKeeper 3.5+; keep it in <code>4lw.commands.whitelist</code> if you set that list). Servers are probed in parallel, so one dead server costs at most this long.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="metrics">Metrics</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mium.metrics.collect.interval.seconds</code></td>
+<td><code>10</code></td>
+<td>How often each Master snapshots CPU, heap and thread count of itself and of every other node (over the internal NIO plane) for the Dashboard and <code>GET /api/monitoring/metrics</code>.</td>
+</tr>
+<tr>
+<td><code>mium.metrics.retention.seconds</code></td>
+<td><code>3600</code></td>
+<td>How long snapshots are kept in Master memory — the Dashboard's history window. Memory grows with nodes × (retention / interval).</td>
 </tr>
 </tbody>
 </table>

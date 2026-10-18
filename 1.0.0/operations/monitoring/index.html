@@ -1690,6 +1690,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#zookeeper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ZooKeeper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#health-and-readiness-probes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1951,38 +1962,50 @@
 <h1 id="monitoring-observability">Monitoring &amp; Observability</h1>
 <p>Mium reports cluster health through a single Master endpoint and surfaces it on the Admin UI Dashboard. There is no Prometheus exporter, no separate metrics agent — the Master collects metrics from every node over the internal NIO protocol and serves them on the same HTTP port the UI uses.</p>
 <h2 id="what-is-collected">What Is Collected</h2>
-<p>Every node (Master and Worker) reports a small set of JVM and process metrics on a fixed cadence:</p>
+<p>Every Master runs a collector that, every <code>mium.metrics.collect.interval.seconds</code> (default 10 s),
+takes a snapshot of itself and asks every other Master and every Worker for theirs over the
+internal NIO plane (<code>METRICS_REQ</code>). Snapshots are kept in memory for
+<code>mium.metrics.retention.seconds</code> (default 3600 s) and served on <code>GET /api/monitoring/metrics</code>
+(<code>?startTs=&amp;endTs=</code>, epoch milliseconds; default the last hour) for the Dashboard's Recharts charts.
+Each entry is <code>{timestamp, nodeId, role, data}</code>:</p>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Source</th>
+<th><code>data</code> key</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Process CPU %</td>
-<td><code>OperatingSystemMXBean.getProcessCpuLoad()</code></td>
+<td><code>system_cpu_usage</code></td>
+<td>Process CPU %, from <code>OperatingSystemMXBean.getProcessCpuLoad()</code></td>
 </tr>
 <tr>
-<td>Heap used / committed / max</td>
-<td><code>MemoryMXBean.getHeapMemoryUsage()</code></td>
+<td><code>system_mem_used</code>, <code>system_mem_max</code></td>
+<td>JVM heap used / max, bytes</td>
 </tr>
 <tr>
-<td>Non-heap used</td>
-<td><code>MemoryMXBean.getNonHeapMemoryUsage()</code></td>
+<td><code>mium_threads</code></td>
+<td>Live thread count</td>
 </tr>
 <tr>
-<td>Thread count</td>
-<td><code>ThreadMXBean.getThreadCount()</code></td>
+<td><code>mium_masters_total</code>, <code>mium_workers_total</code>, <code>mium_workers_ready</code></td>
+<td>Cluster membership as seen in ZooKeeper</td>
 </tr>
 <tr>
-<td>Uptime</td>
-<td><code>RuntimeMXBean.getUptime()</code></td>
+<td><code>mium_chat_sessions_total</code>, <code>mium_chat_sessions_active</code></td>
+<td>Chat sessions</td>
+</tr>
+<tr>
+<td><code>mium_llm_calls_total</code>, <code>mium_llm_calls_failed</code>, <code>mium_llm_tokens_total</code></td>
+<td>LLM usage</td>
+</tr>
+<tr>
+<td><code>mium_tool_calls_total</code>, <code>mium_tool_calls_failed</code></td>
+<td>Tool (Ontul, S3, ...) calls</td>
 </tr>
 </tbody>
 </table>
-<p>Workers push their snapshots to the leader Master via the <code>METRICS_REQ</code> opcode. The leader keeps a rolling time-series in memory and serves it on <code>GET /api/monitoring/metrics</code> for the Dashboard's Recharts surface.</p>
 <p>The metric format mirrors Ontul's so that operators familiar with the broader CCL stack see a consistent shape across products.</p>
 <h2 id="topology-probes">Topology Probes</h2>
 <table>
@@ -2002,12 +2025,91 @@
 <td>Live list of Worker nodes with ready state.</td>
 </tr>
 <tr>
+<td><code>GET /api/nodes/zookeeper</code></td>
+<td>The ZooKeeper ensemble — every server in <code>mium.zk.connect</code> with its status, role and load — and the answering Master's own ZooKeeper session. See <a href="#zookeeper">ZooKeeper</a>.</td>
+</tr>
+<tr>
 <td><code>GET /api/leader</code></td>
-<td>Current leader's node id and address.</td>
+<td>Whether the answering Master is the leader (<code>isLeader</code>), and the leader's admin <code>leaderHost</code> / <code>leaderPort</code>.</td>
 </tr>
 </tbody>
 </table>
-<p>The Topology page in the Admin UI is built directly on these — anything you see there can be scripted.</p>
+<p>The <strong>Cluster Topology</strong> page in the Admin UI (Settings → Administration → Topology) is built
+directly on these — Masters, Workers and ZooKeeper — so anything you see there can be scripted.</p>
+<h2 id="zookeeper">ZooKeeper</h2>
+<p>ZooKeeper holds Mium's leader election and node registry, so a ZooKeeper problem is a Mium
+problem: a lost quorum stops leader election and readiness. The Topology page shows the ensemble
+next to the Masters and Workers.</p>
+<p>For every server in <code>mium.zk.connect</code>, the Master that answers opens a short socket of its own and
+sends ZooKeeper's <code>srvr</code> four-letter word. That is the one command ZooKeeper 3.5+ allows without
+configuration. If you set <code>4lw.commands.whitelist</code> on your ensemble, keep <code>srvr</code> in it. Servers are
+probed in parallel, each with a <code>mium.zk.topology.probe.timeout.ms</code> (default 2000 ms) connect and
+read timeout, so one dead server delays the page by at most that much. The probe does not go
+through the Master's own ZooKeeper session, so a server the session is not attached to is still
+reported.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://mium:8090/api/nodes/zookeeper
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;connectString&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zk1:2181,zk2:2181,zk3:2181&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;root&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/mium&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zk1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2181</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UP&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;follower&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3.9.2&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">     </span><span class="nt">&quot;latencyMin&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;latencyAvg&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.42</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;latencyMax&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">12.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;received&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1240</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">     </span><span class="nt">&quot;connections&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;outstanding&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;zxid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0x200000005&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;nodeCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;responseMs&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">},</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zk2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2181</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UP&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;leader&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">},</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zk3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2181</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DOWN&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">     </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UnknownHostException: zk3&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nt">&quot;client&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;connected&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONNECTED&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sessionId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0x10000a1b2c30001&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">             </span><span class="nt">&quot;sessionTimeoutMs&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30000</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;connectedServer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zk1/172.18.0.3:2181&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td><code>UP</code> — the server answered <code>srvr</code>. <code>DOWN</code> — no answer within the timeout, connection refused, unknown host, or the server answered that it is <strong>not currently serving requests</strong> (it is running but has no quorum, so clients cannot use it). <code>error</code> says which.</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td><code>leader</code>, <code>follower</code>, <code>observer</code> or <code>standalone</code>. <code>unknown</code> when the server is reachable but <code>srvr</code> is disabled by <code>4lw.commands.whitelist</code>.</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>ZooKeeper version.</td>
+</tr>
+<tr>
+<td><code>connections</code>, <code>outstanding</code></td>
+<td>Client connections, and requests queued on the server.</td>
+</tr>
+<tr>
+<td><code>latencyMin</code> / <code>latencyAvg</code> / <code>latencyMax</code></td>
+<td>Request latency in milliseconds since the server's stats were last reset.</td>
+</tr>
+<tr>
+<td><code>zxid</code></td>
+<td>Last committed transaction id. In a healthy ensemble the servers are within a few transactions of one another.</td>
+</tr>
+<tr>
+<td><code>nodeCount</code></td>
+<td>Number of znodes.</td>
+</tr>
+<tr>
+<td><code>client</code></td>
+<td>The answering Master's own Curator session: <code>state</code> (<code>CONNECTED</code>, <code>CONNECTING</code>, ...), session id, negotiated session timeout and the server it is attached to. Different Masters are usually attached to different servers.</td>
+</tr>
+</tbody>
+</table>
+<p>In the UI each server is a row with a role badge (the leader is marked with a crown), an
+Online / Offline status, version, connections, latency, znode count and zxid. A DOWN server shows
+its error under the address. The header shows how many servers are up, and a line under it
+shows the answering Master's session.</p>
 <h2 id="health-and-readiness-probes">Health and Readiness Probes</h2>
 <table>
 <thead>
@@ -2029,9 +2131,36 @@
 </table>
 <p>A common mistake is to point the load balancer at <code>/health</code> — that traps traffic on a Master that is up but cannot serve writes (e.g. the leader is down). Always use <code>/ready</code> for LB health, <code>/health</code> for process supervisors.</p>
 <h2 id="real-time-log-tailing">Real-Time Log Tailing</h2>
-<p><code>GET /api/logs/tail?nodeId=&lt;id&gt;&amp;lines=200</code> streams the tail of any node's <code>.out</code> file back to the caller. The Admin UI uses this for the per-node log viewer; operators can hit it from a terminal:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-sN<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="s2">&quot;http://mium:8090/api/logs/tail?nodeId=worker-19098&amp;lines=500&quot;</span>
+<p><code>GET /api/logs/tail</code> returns the tail of a node's log. The Admin UI's per-node log viewer polls it every
+two seconds, passing back the returned <code>offset</code> to read only what was appended since:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nodeType</code></td>
+<td><code>master</code> (default) — the answering Master's own <code>.out</code> file — or <code>worker</code>.</td>
+</tr>
+<tr>
+<td><code>targetHost</code>, <code>targetPort</code></td>
+<td>For <code>nodeType=worker</code>: the Worker's advertised host and internal port, as <code>GET /api/nodes/workers</code> lists them. The Master fetches the log from the Worker over the internal NIO plane.</td>
+</tr>
+<tr>
+<td><code>lines</code></td>
+<td>Lines to return (default 200).</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td>Byte offset to continue from (default 0).</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="s2">&quot;http://mium:8090/api/logs/tail?nodeType=worker&amp;targetHost=worker-1.internal&amp;targetPort=19098&amp;lines=500&quot;</span>
 </code></pre></div>
 <p>This means an SRE chasing an LLM error does <strong>not</strong> need SSH on the Worker host — every log surface is reachable through the Admin API.</p>
 <h2 id="logging-configuration">Logging Configuration</h2>
@@ -2068,6 +2197,16 @@
 <td>ZK or network instability — investigate before it becomes a quorum problem.</td>
 </tr>
 <tr>
+<td>Any ZooKeeper server <code>DOWN</code></td>
+<td><code>/api/nodes/zookeeper</code></td>
+<td>The ensemble has lost redundancy. With two of three down the survivor stops serving and Mium can no longer elect a leader.</td>
+</tr>
+<tr>
+<td>ZooKeeper <code>latencyAvg</code> rising, or <code>outstanding</code> above 0 for long</td>
+<td><code>/api/nodes/zookeeper</code></td>
+<td>The ensemble is overloaded or its disk is slow — leader election and readiness will lag.</td>
+</tr>
+<tr>
 <td>Many <code>EXECUTE_EXPORT</code> errors in <code>worker.out</code></td>
 <td><code>logs/worker.out</code></td>
 <td>Python wheel ABI mismatch, missing <code>python3</code>, or S3 credentials wrong.</td>
@@ -2075,7 +2214,7 @@
 </tbody>
 </table>
 <h2 id="browser-footprint">Browser Footprint</h2>
-<p>The Dashboard polls <code>/api/monitoring/metrics</code> once every few seconds while the page is open. The query is cheap — the in-memory time series is bounded, no database round-trip — but operators leaving the page open in many tabs see a real (small) load on the leader. Close tabs you are not using.</p>
+<p>The Dashboard polls <code>/api/monitoring/metrics</code> once every few seconds while the page is open. The query is cheap — the in-memory time series is bounded, no database round-trip — but operators leaving the page open in many tabs see a real (small) load on the Master serving it. Close tabs you are not using.</p>
 
 
 

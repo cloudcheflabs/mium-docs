@@ -1957,17 +1957,20 @@
 </ul>
 <h2 id="service-discovery">Service Discovery</h2>
 <p>Masters and Workers register as ephemeral nodes in ZooKeeper. When a node joins or leaves the cluster, all other nodes are notified automatically. No manual configuration of cluster membership is required.</p>
+<p>The Admin UI's <strong>Topology</strong> page shows the ZooKeeper ensemble itself — each server's role, status
+and load — next to the Masters and Workers; see <a href="../../operations/monitoring/#zookeeper">Monitoring → ZooKeeper</a>.</p>
 <p>ZooKeeper node layout:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>/mium/
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  election/                (Curator LeaderLatch)
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  leader-ready             (flag set by the leader after seeding KMS)
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  cluster-ready            (flag set when every node is ready)
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  masters/
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    &lt;nodeId-1&gt;  (ephemeral)
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    &lt;nodeId-2&gt;  (ephemeral)
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  workers/
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    &lt;nodeId-3&gt;  (ephemeral)
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    &lt;nodeId-4&gt;  (ephemeral)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  leader                   (the current leader&#39;s node id)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  leader-ready             (flag set by the leader after seeding KMS)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  cluster-ready            (flag set when every node is ready)
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  masters/
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    &lt;nodeId-1&gt;  (ephemeral)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    &lt;nodeId-2&gt;  (ephemeral)
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  workers/
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    &lt;nodeId-3&gt;  (ephemeral)
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    &lt;nodeId-4&gt;  (ephemeral)
 </code></pre></div>
 <h2 id="state-stores">State Stores</h2>
 <p>IAM, KMS, and ConnectionStore are stored in embedded RocksDB on every Master — these bootstrap the cluster and cannot depend on an external database. Memory, Prompt, and Embedding stores live in NeorunBase; TempFile stores live in S3-compatible storage. See <a href="../storage-backends/">Storage Backends</a>.</p>
