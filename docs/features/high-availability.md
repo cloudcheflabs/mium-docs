@@ -24,11 +24,15 @@ Workers register as ephemeral nodes in ZooKeeper under `/mium/workers/<nodeId>`:
 
 Masters and Workers register as ephemeral nodes in ZooKeeper. When a node joins or leaves the cluster, all other nodes are notified automatically. No manual configuration of cluster membership is required.
 
+The Admin UI's **Topology** page shows the ZooKeeper ensemble itself — each server's role, status
+and load — next to the Masters and Workers; see [Monitoring → ZooKeeper](../operations/monitoring.md#zookeeper).
+
 ZooKeeper node layout:
 
 ```
 /mium/
   election/                (Curator LeaderLatch)
+  leader                   (the current leader's node id)
   leader-ready             (flag set by the leader after seeding KMS)
   cluster-ready            (flag set when every node is ready)
   masters/

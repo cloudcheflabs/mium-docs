@@ -76,7 +76,11 @@ next question is written.
 ### Settings — Administration (admin-only)
 
 - **Dashboard** — cluster metrics and health (CPU, heap, thread count per node) plus worker status, charted with Recharts.
-- **Topology** — live registry of active Masters and Workers with health flags.
+- **Topology** — live view of the cluster: the Masters (leader / follower, ready state), the Workers, and
+  the **ZooKeeper** ensemble — every server in `mium.zk.connect` with its role (leader, follower,
+  observer, standalone), Online / Offline status, version, connections, latency, znode count and zxid,
+  plus the answering Master's own ZooKeeper session. Per-node log viewer and the maintenance-mode
+  switch live here too. See [Monitoring → ZooKeeper](../operations/monitoring.md#zookeeper).
 - **IAM** — users, groups, policies, companies, organizations; visual policy editor; access-key issuance.
 - **Security & KMS** — list, create, and rotate envelope-encryption keys.
 - **Single Sign-On** — configure OIDC, SAML 2.0 and LDAP / Active Directory on tabs of
@@ -107,6 +111,7 @@ Every operation in the UI is also reachable on the Admin HTTP server (default po
 - **IAM** — `/api/iam/users`, `/api/iam/users/me`, `/api/iam/groups`, `/api/iam/policies`, `/api/iam/add-user-to-group`, `/api/iam/remove-user-from-group`, `/api/iam/attach-group-policy`, `/api/iam/detach-group-policy`, `/api/iam/keys`, `/api/iam/download-key`, `/api/iam/companies` (read-only), `/api/iam/orgs` (read-only)
 - **STS** — `/api/sts/sessions`, `/api/sts/assume-role`, `/api/sts/sessions/clear`, `/api/sts/sessions/download`
 - **Connections** — `/api/connections`
+- **Topology & monitoring** — `/api/nodes/masters`, `/api/nodes/workers`, `/api/nodes/zookeeper`, `/api/leader`, `/api/monitoring/metrics`, `/api/logs/tail`
 - **KMS** — `/api/kms/list`, `/api/kms/status/{keyId}`, `/api/kms/create`, `/api/kms/rotate/{keyId}`
 - **Chat** — `/api/chat`, `/api/chat/sessions`, `/api/chat/sessions/all`, `/api/chat/sessions/messages`, `/api/chat/sessions/rename`
 - **Catalog** — `/api/catalog/connections`, `/api/catalog/tables`, `/api/catalog/columns`

@@ -40,6 +40,14 @@ ZooKeeper is the coordination backbone — leader election (Curator `LeaderLatch
 | `mium.zk.root` | `/mium` | Base znode namespace for all Mium coordination state (e.g. `/mium/leader`, `/mium/nodes`). Give each cluster sharing one ensemble a distinct root. |
 | `mium.zk.session.timeout.ms` | `30000` | ZK session timeout in milliseconds. If a node fails to heartbeat within this window the session expires and it loses leadership / registry entries. Higher tolerates GC pauses but slows failover detection. |
 | `mium.zk.connect.timeout.ms` | `10000` | Max milliseconds to wait when first establishing the ZK connection at startup. Should stay well below the session timeout. |
+| `mium.zk.topology.probe.timeout.ms` | `2000` | Timeout in milliseconds (socket connect and read) for the admin Cluster Topology view, which asks every server in `mium.zk.connect` for its status with ZooKeeper's `srvr` four-letter word (allowed by default in ZooKeeper 3.5+; keep it in `4lw.commands.whitelist` if you set that list). Servers are probed in parallel, so one dead server costs at most this long. |
+
+## Metrics
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.metrics.collect.interval.seconds` | `10` | How often each Master snapshots CPU, heap and thread count of itself and of every other node (over the internal NIO plane) for the Dashboard and `GET /api/monitoring/metrics`. |
+| `mium.metrics.retention.seconds` | `3600` | How long snapshots are kept in Master memory — the Dashboard's history window. Memory grows with nodes × (retention / interval). |
 
 ## Master
 

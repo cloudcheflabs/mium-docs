@@ -27,6 +27,14 @@ mium.kms.rocksdb.path = ${mium.base.data.dir}/kms
 | `mium.zk.root` | `/mium` | Root ZK path under which Mium creates its `masters/`, `workers/`, and readiness znodes. |
 | `mium.zk.session.timeout.ms` | `30000` | ZK session timeout. Determines failover bound. |
 | `mium.zk.connect.timeout.ms` | `10000` | Initial ZK connect timeout. |
+| `mium.zk.topology.probe.timeout.ms` | `2000` | Socket connect + read timeout of the Topology page's `srvr` probe of each ZooKeeper server. A server that does not answer in time is shown DOWN. |
+
+## Metrics
+
+| Key | Default | Description |
+|---|---|---|
+| `mium.metrics.collect.interval.seconds` | `10` | How often each Master snapshots CPU, heap and thread count of itself and of every other node (over the internal NIO plane) for the Dashboard and `GET /api/monitoring/metrics`. |
+| `mium.metrics.retention.seconds` | `3600` | How long snapshots are kept in Master memory — the Dashboard's history window. Memory grows with nodes × (retention / interval). |
 
 ## Master
 
