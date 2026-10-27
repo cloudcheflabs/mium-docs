@@ -2016,6 +2016,8 @@
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>bin/stop-master.sh
 </code></pre></div>
 <p>Both scripts SIGTERM the process, wait up to 30 seconds for graceful shutdown, then SIGKILL if needed. The PID file is removed on success.</p>
+<p>With no argument, <code>bin/stop-master.sh</code> stops the Master running from this installation. The start script names the PID file after the instance's port (<code>bin/master-&lt;port&gt;.pid</code>, the admin port), and the stop script looks there. When several Masters run from the same installation it does not guess: it lists their ports and exits 1, and you pass the port of the one to stop, e.g. <code>bin/stop-master.sh 8090</code>. It reports "not running" only when no Master from this installation is running.
+<code>bin/stop-worker.sh</code> works the same way with the Worker's internal port.</p>
 <h2 id="run-in-the-foreground">Run in the Foreground</h2>
 <p>For systemd / Docker / Kubernetes the launchers can run inline instead of forking:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">MIUM_FOREGROUND</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>bin/start-master.sh
