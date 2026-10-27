@@ -1947,6 +1947,7 @@
 <li><strong>Retention (days)</strong> — how long the visible history is kept.</li>
 </ul>
 <p>The same page has a <strong>Backup Now</strong> button and a <strong>Restore</strong> button on each row of the available-backups list.</p>
+<p>The configuration, including the secret key, is stored KMS-encrypted in ZooKeeper, so every master can read it. After a fail-over the new leader keeps taking backups with the same settings. Older releases kept it in a plaintext <code>backup/backup-config.json</code> on the leader's disk. On upgrade, the first master that finds that file moves it into the encrypted store and deletes it, and any other master deletes its stale copy. If you used that file, rotate the destination's secret key.</p>
 <h3 id="cron-vs-interval">Cron vs. Interval</h3>
 <p>The two automatic rules are independent and share the same tick loop on the leader master:</p>
 <ul>
@@ -1978,10 +1979,11 @@
 </tr>
 </tbody>
 </table>
-<p>Each store is content-hashed (SHA-256). If a store's bytes are unchanged since the last backup, it is <strong>not re-uploaded</strong> — the new backup's manifest simply points at the backup id that already holds it. A backup taken with no Mium activity uploads only a tiny manifest.</p>
+<p>Each store is content-hashed (SHA-256) over its plaintext, so the dedup works even though every encrypted copy differs. If a store's bytes are unchanged since the last backup, it is <strong>not re-uploaded</strong> — the new backup's manifest simply points at the backup id that already holds it. A backup taken with no Mium activity uploads only a tiny manifest.</p>
 <h2 id="restore">Restore</h2>
 <p>The available-backups list shows every backup id present at the configured prefix, newest first. <strong>Restore</strong> is destructive — it overwrites the live KMS, IAM, and Connection stores with whichever snapshot the chosen backup id points to (possibly an older backup id, per the incremental layout). The admin UI confirms before proceeding.</p>
 <p>Restore is leader-only and gated by the <code>SYSTEM:MANAGE_BACKUP</code> IAM action; followers receive the broadcast state through the existing sync protocols.</p>
+<p>A restore always applies <code>kms</code> first, then <code>iam</code>, then <code>connections</code>. The IAM snapshot carries companies, organizations and STS credentials along with users, groups, policies and access keys. Followers receive the same complete state. Backups made by older releases left those three out. Restoring one of them keeps your current companies, organizations and STS credentials instead of clearing them.</p>
 <div class="admonition tip">
 <p class="admonition-title">Open a maintenance window around a restore</p>
 <p>A restore overwrites the live stores, but nothing stops traffic while it runs: an agent turn can
