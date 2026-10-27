@@ -1664,6 +1664,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#opening-the-console-over-plain-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opening the console over plain http
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#rest-api" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2069,6 +2080,24 @@ next question is written.</p>
 <li><strong>Backup &amp; Restore</strong> — configure and run backups, browse and restore snapshots
   (<code>/api/backup/*</code>). See <a href="../backup-restore/">Backup &amp; Restore</a>.</li>
 </ul>
+<h2 id="opening-the-console-over-plain-http">Opening the console over plain http</h2>
+<p>Most installations open the console as <code>http://&lt;host&gt;:&lt;port&gt;</code> — plain http on a
+host name. Browsers treat that as a <em>non-secure context</em> and withhold some APIs
+there (<code>navigator.clipboard</code>, <code>crypto.randomUUID</code>). The console does not depend
+on them:</p>
+<ul>
+<li><strong>Every Copy button works</strong> — chat messages, code blocks, result SQL,
+  Copy CSV / Copy MD, the Analyze SQL editor, the Dev cell's question,
+  <code>submit.sh</code>, job logs and errors, and the STS credentials. It uses the
+  Clipboard API where the browser offers it and a fallback otherwise.</li>
+<li><strong>"Copied" means copied.</strong> If the browser refuses the copy, the button says
+  <em>Copy failed - select the text and press Ctrl+C</em> instead of pretending.</li>
+<li><strong>Errors are shown, not swallowed.</strong> If a click runs into an unexpected
+  error, a red bar at the top of the page shows the message (dismiss with ×),
+  rather than the button appearing to do nothing.</li>
+</ul>
+<p>Serving the console over https is still recommended for production; it is not
+required for any console feature.</p>
 <h2 id="rest-api">REST API</h2>
 <p>Every operation in the UI is also reachable on the Admin HTTP server (default port 8090). By default endpoints are mounted under <code>/api/*</code> with auth under <code>/auth/*</code> (a <code>/admin</code> prefix applies only when <code>mium.admin.context.path</code> is set):</p>
 <ul>
