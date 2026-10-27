@@ -6,7 +6,7 @@ Before installing Mium you need a small set of external services that the platfo
 
 | Component | Version | Notes |
 |---|---|---|
-| Java | 17 or later | Required by Master and Worker. Detected via `JAVA_HOME` or `PATH`. |
+| Java | 17 or later | Required by Master and Worker. `$JAVA_HOME/bin/java` when `JAVA_HOME` is set, otherwise `java` on `PATH`. |
 | Python | 3.9 or later | Required on every **Worker** for server-side export rendering. The Python wheels (`openpyxl`, `reportlab`, `python-pptx`) are pre-bundled under `lib/python/` in the distribution — no `pip install` step at install time. |
 
 ## Required External Services
@@ -25,7 +25,7 @@ Mium will refuse to come up if any of these are missing.
 | Variable | Required on | Purpose |
 |---|---|---|
 | `MIUM_MASTER_KEY` | Every Master and Worker | 32+ character secret used to derive the KMS root key (PBKDF2-SHA256 / 200K iterations). Must be **identical** on every node in the cluster — followers cannot decrypt the leader's KMS bundle without it. |
-| `JAVA_HOME` | Every Master and Worker | Optional if `java` is on `PATH`; required otherwise. |
+| `JAVA_HOME` | Every Master and Worker | Optional if `java` is on `PATH`; required otherwise. When set it takes precedence over `PATH`, for the start scripts and `bin/mium-cli.sh`; an invalid value stops them with exit 1. |
 | `MIUM_HOME` | Every Master and Worker | Set automatically by the launcher scripts to the package root. Override only if you run Mium from a non-standard layout. |
 
 Generate a master key once and store it in your secret manager:

@@ -57,6 +57,36 @@ admin's next login (the `requirePasswordChange` flag is set automatically).
 bin/mium-cli.sh iam:reset-password
 ```
 
+stdout carries only the generated password, so a script can capture it. On
+stderr the CLI says what the account must do before the API answers it:
+
+```text
+note: 'admin' must change this password once before using the API: log in with it
+(POST /auth/login {"username":"admin","password":"<this password>"}), then POST /auth/change-password
+with header 'Authorization: Bearer <accessToken>' and {"oldPassword":"<this password>","newPassword":"<new>"}
+(paths are under mium.admin.context.path when one is set). Until then every other endpoint answers
+403 "password change required". The console asks for it at the first login.
+```
+
+For a script:
+
+```bash
+PW=$(bin/mium-cli.sh iam:reset-password 2>/dev/null)
+TOKEN=$(curl -s -X POST http://<master>:8090/auth/login -H 'Content-Type: application/json' \
+  -d "{\"username\":\"admin\",\"password\":\"$PW\"}" | jq -r .accessToken)
+curl -s -X POST http://<master>:8090/auth/change-password -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' -d "{\"oldPassword\":\"$PW\",\"newPassword\":\"<new>\"}"
+```
+
+### Which java the CLI and the start scripts run
+
+`bin/mium-cli.sh`, `bin/start-master.sh`, `bin/start-worker.sh` and
+`bin/start-zk.sh` run `$JAVA_HOME/bin/java` when `JAVA_HOME` is set, and the
+`java` on `PATH` otherwise — a host with the JDK only in `JAVA_HOME` works.
+`JAVA_HOME` pointing at a directory without `bin/java` stops them with exit 1
+naming the value; no `JAVA_HOME` and no `java` on `PATH` stops them with
+*Java not found. Install Java 17 or later, or set JAVA_HOME to its directory.*
+
 ## Input modes
 
 | Mode | Command | When to use |
