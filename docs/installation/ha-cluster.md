@@ -119,6 +119,8 @@ Terminate TLS at the load balancer — Mium does not terminate TLS itself.
 - **Leader Master fails**: ZooKeeper expires its session; Curator elects a new leader; the new leader reloads its embedded RocksDB stores and resumes accepting writes. The bounded interruption is `mium.zk.session.timeout.ms` (default 30s).
 - **Follower Master fails**: traffic shifts to the remaining Masters via the load balancer. The leader marks the cluster unready until the follower returns or is removed from ZK.
 - **Worker fails**: its ephemeral ZK node disappears. The leader will not dispatch new work to it. The cluster becomes unready and rejects new requests until the remaining Workers report `ready=true` again — operators add Worker capacity ahead of failure to keep this transparent.
+- **A Master or Worker stalls longer than the session timeout** (a long GC pause, a frozen VM, a network partition): ZooKeeper expires its session, which removes its registration. When it reconnects, it registers again within seconds, logs `Re-registered … the previous session expired`, and catches up. A Master pulls KMS, IAM and connections from the leader, and a Worker pulls what it needs. A leader that stalls this long hands leadership to another Master and comes back as a follower, with its leader-only background work stopped.
+- **Password change on a follower**: it is applied on the leader. The follower answers success only once it accepts the new password itself; otherwise it answers `502`.
 
 ## Adding a Worker Online
 
