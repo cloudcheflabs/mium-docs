@@ -77,6 +77,9 @@ bin/stop-master.sh
 
 Both scripts SIGTERM the process, wait up to 30 seconds for graceful shutdown, then SIGKILL if needed. The PID file is removed on success.
 
+With no argument, `bin/stop-master.sh` stops the Master running from this installation. The start script names the PID file after the instance's port (`bin/master-<port>.pid`, the admin port), and the stop script looks there. When several Masters run from the same installation it does not guess: it lists their ports and exits 1, and you pass the port of the one to stop, e.g. `bin/stop-master.sh 8090`. It reports "not running" only when no Master from this installation is running.
+`bin/stop-worker.sh` works the same way with the Worker's internal port.
+
 ## Run in the Foreground
 
 For systemd / Docker / Kubernetes the launchers can run inline instead of forking:
