@@ -1952,7 +1952,7 @@
 <tr>
 <td>Java</td>
 <td>17 or later</td>
-<td>Required by Master and Worker. Detected via <code>JAVA_HOME</code> or <code>PATH</code>.</td>
+<td>Required by Master and Worker. <code>$JAVA_HOME/bin/java</code> when <code>JAVA_HOME</code> is set, otherwise <code>java</code> on <code>PATH</code>.</td>
 </tr>
 <tr>
 <td>Python</td>
@@ -2012,7 +2012,7 @@
 <tr>
 <td><code>JAVA_HOME</code></td>
 <td>Every Master and Worker</td>
-<td>Optional if <code>java</code> is on <code>PATH</code>; required otherwise.</td>
+<td>Optional if <code>java</code> is on <code>PATH</code>; required otherwise. When set it takes precedence over <code>PATH</code>, for the start scripts and <code>bin/mium-cli.sh</code>; an invalid value stops them with exit 1.</td>
 </tr>
 <tr>
 <td><code>MIUM_HOME</code></td>

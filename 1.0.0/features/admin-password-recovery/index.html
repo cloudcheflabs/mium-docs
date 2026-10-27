@@ -1443,6 +1443,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Quick start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-java-the-cli-and-the-start-scripts-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which java the CLI and the start scripts run
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2088,6 +2105,28 @@ admin's next login (the <code>requirePasswordChange</code> flag is set automatic
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Inside the master host or container:</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>bin/mium-cli.sh<span class="w"> </span>iam:reset-password
 </code></pre></div>
+<p>stdout carries only the generated password, so a script can capture it. On
+stderr the CLI says what the account must do before the API answers it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>note: &#39;admin&#39; must change this password once before using the API: log in with it
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>(POST /auth/login {&quot;username&quot;:&quot;admin&quot;,&quot;password&quot;:&quot;&lt;this password&gt;&quot;}), then POST /auth/change-password
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>with header &#39;Authorization: Bearer &lt;accessToken&gt;&#39; and {&quot;oldPassword&quot;:&quot;&lt;this password&gt;&quot;,&quot;newPassword&quot;:&quot;&lt;new&gt;&quot;}
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>(paths are under mium.admin.context.path when one is set). Until then every other endpoint answers
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>403 &quot;password change required&quot;. The console asks for it at the first login.
+</code></pre></div>
+<p>For a script:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">PW</span><span class="o">=</span><span class="k">$(</span>bin/mium-cli.sh<span class="w"> </span>iam:reset-password<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="k">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://&lt;master&gt;:8090/auth/login<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;username\&quot;:\&quot;admin\&quot;,\&quot;password\&quot;:\&quot;</span><span class="nv">$PW</span><span class="s2">\&quot;}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.accessToken<span class="k">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://&lt;master&gt;:8090/auth/change-password<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;oldPassword\&quot;:\&quot;</span><span class="nv">$PW</span><span class="s2">\&quot;,\&quot;newPassword\&quot;:\&quot;&lt;new&gt;\&quot;}&quot;</span>
+</code></pre></div>
+<h3 id="which-java-the-cli-and-the-start-scripts-run">Which java the CLI and the start scripts run</h3>
+<p><code>bin/mium-cli.sh</code>, <code>bin/start-master.sh</code>, <code>bin/start-worker.sh</code> and
+<code>bin/start-zk.sh</code> run <code>$JAVA_HOME/bin/java</code> when <code>JAVA_HOME</code> is set, and the
+<code>java</code> on <code>PATH</code> otherwise — a host with the JDK only in <code>JAVA_HOME</code> works.
+<code>JAVA_HOME</code> pointing at a directory without <code>bin/java</code> stops them with exit 1
+naming the value; no <code>JAVA_HOME</code> and no <code>java</code> on <code>PATH</code> stops them with
+<em>Java not found. Install Java 17 or later, or set JAVA_HOME to its directory.</em></p>
 <h2 id="input-modes">Input modes</h2>
 <table>
 <thead>
@@ -2121,23 +2160,23 @@ admin's next login (the <code>requirePasswordChange</code> flag is set automatic
 </tbody>
 </table>
 <p>Resetting a different user is also supported:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/mium-cli.sh<span class="w"> </span>iam:reset-password<span class="w"> </span>--user<span class="w"> </span>some-user<span class="w"> </span>--new-password<span class="w"> </span><span class="s1">&#39;NewPass123&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/mium-cli.sh<span class="w"> </span>iam:reset-password<span class="w"> </span>--user<span class="w"> </span>some-user<span class="w"> </span>--new-password<span class="w"> </span><span class="s1">&#39;NewPass123&#39;</span>
 </code></pre></div>
 <h2 id="configuration">Configuration</h2>
 <p>The recovery socket is enabled by default. Every key below lives in
 <code>conf/mium.properties</code> and is read at master startup:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># conf/mium.properties</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># Set false to remove the local recovery path entirely.</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="na">mium.admin.socket.enabled</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="na">mium.admin.socket.path</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s">${mium.base.data.dir}/admin.sock</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Name of the file under &lt;mium.home&gt;/bin that receives the socket path the</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># master actually bound to (see &quot;How the CLI finds the socket&quot; below).</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="na">mium.admin.socket.marker.file</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">master.socket</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># How long a follower waits for the leader to apply a forwarded reset</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># (see &quot;Running it on a follower master&quot; below).</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="na">mium.admin.socket.forward.timeout.ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">30000</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># Append-only audit trail of socket operations.</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="na">mium.iam.audit.dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">${mium.base.data.dir}/iam-audit</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># conf/mium.properties</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Set false to remove the local recovery path entirely.</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="na">mium.admin.socket.enabled</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="na">mium.admin.socket.path</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s">${mium.base.data.dir}/admin.sock</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Name of the file under &lt;mium.home&gt;/bin that receives the socket path the</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># master actually bound to (see &quot;How the CLI finds the socket&quot; below).</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="na">mium.admin.socket.marker.file</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">master.socket</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># How long a follower waits for the leader to apply a forwarded reset</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="c1"># (see &quot;Running it on a follower master&quot; below).</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="na">mium.admin.socket.forward.timeout.ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">30000</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1"># Append-only audit trail of socket operations.</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="na">mium.iam.audit.dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">${mium.base.data.dir}/iam-audit</span>
 </code></pre></div>
 <p>The socket follows <code>mium.base.data.dir</code>. If you launch the master with
 <code>-Dmium.base.data.dir=/var/lib/mium</code> the socket moves to
@@ -2148,18 +2187,18 @@ admin's next login (the <code>requirePasswordChange</code> flag is set automatic
 leader applies it and pushes it to every master, and the follower checks that
 its own copy now holds the new password before answering. The CLI says where
 it was applied:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>$ bin/mium-cli.sh iam:reset-password --new-password &#39;FromFollower1!&#39;
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>note: this master is a follower; the reset was applied on the leader mium-master-1:8090 (mium-master-1:19099) and replicated to the cluster.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>$ bin/mium-cli.sh iam:reset-password --new-password &#39;FromFollower1!&#39;
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>note: this master is a follower; the reset was applied on the leader mium-master-1:8090 (mium-master-1:19099) and replicated to the cluster.
 </code></pre></div>
 <p><code>bin/mium-cli.sh ping</code> tells you which role the local master has:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pong (follower mium-master-2:8090; leader: mium-master-1:8090 (mium-master-1:19099))
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>pong (leader mium-master-1:8090)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>pong (follower mium-master-2:8090; leader: mium-master-1:8090 (mium-master-1:19099))
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>pong (leader mium-master-1:8090)
 </code></pre></div>
 <p>When no leader is elected, or the leader does not answer within
 <code>mium.admin.socket.forward.timeout.ms</code> (default 30 s), the CLI <strong>exits 1</strong>,
 names the leader and states that the password was <strong>NOT</strong> changed:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>error: this master (mium-master-2:8090) is a follower and the leader mium-master-1:8090 (mium-master-1:19099)
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>did not apply the reset (no answer within 30000 ms); the password was NOT changed. ...
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>error: this master (mium-master-2:8090) is a follower and the leader mium-master-1:8090 (mium-master-1:19099)
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>did not apply the reset (no answer within 30000 ms); the password was NOT changed. ...
 </code></pre></div>
 <p>A forwarded reset carries a deadline of one third of that wait. A leader that
 receives it later — it was paused, overloaded or partitioned — discards it, so a
@@ -2194,8 +2233,8 @@ shutdown. <code>bin/mium-cli.sh</code> prefers it.</p>
 <code>/data/admin.sock</code> and the properties file still saying <code>./data</code>, only the marker
 knows where to connect.</p>
 <p>To rename the marker, change one key — both ends read it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># conf/mium.properties</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>mium.admin.socket.marker.file<span class="w"> </span><span class="o">=</span><span class="w"> </span>mium-recovery.socket
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># conf/mium.properties</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>mium.admin.socket.marker.file<span class="w"> </span><span class="o">=</span><span class="w"> </span>mium-recovery.socket
 </code></pre></div>
 <p>Restart the master; it publishes <code>bin/mium-recovery.socket</code>, and the CLI
 picks the new name up from the same properties file.</p>
@@ -2203,42 +2242,42 @@ picks the new name up from the same properties file.</p>
 <p><code>MIUM_MASTER_KEY</code> must be exported for the master process. The start script does not pre-check it, but KMS is enabled by default and the master cannot unseal its keystore without the key, so startup fails during KMS initialisation.
 The variable name itself is configurable — <code>mium.kms.master.key.env</code> in
 <code>conf/mium.properties</code> names the variable the master reads:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MIUM_MASTER_KEY</span><span class="o">=</span><span class="s1">&#39;replace-with-a-32-char-or-longer-secret&#39;</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>bin/start-master.sh
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MIUM_MASTER_KEY</span><span class="o">=</span><span class="s1">&#39;replace-with-a-32-char-or-longer-secret&#39;</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>bin/start-master.sh
 </code></pre></div>
 <p><code>bin/mium-cli.sh</code> does <strong>not</strong> need it. The CLI only opens the Unix socket and
 hands the request to the running master, which already holds the unsealed key,
 so this works with the variable unset:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">unset</span><span class="w"> </span>MIUM_MASTER_KEY
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>bin/mium-cli.sh<span class="w"> </span>ping
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># pong</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">unset</span><span class="w"> </span>MIUM_MASTER_KEY
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>bin/mium-cli.sh<span class="w"> </span>ping
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># pong</span>
 </code></pre></div>
 <p>If a CLI invocation complains about the key rather than the socket, you are
 running a start script, not the CLI.</p>
 <h3 id="worked-examples">Worked examples</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># 1. On the host, as the same OS user that runs the master:</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">cd</span><span class="w"> </span>/opt/mium
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>bin/mium-cli.sh<span class="w"> </span>ping
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>bin/mium-cli.sh<span class="w"> </span>iam:reset-password
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1"># 2. The master runs as a service account and you are root:</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>sudo<span class="w"> </span>-u<span class="w"> </span>mium<span class="w"> </span>/opt/mium/bin/mium-cli.sh<span class="w"> </span>iam:reset-password
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1"># 3. Inside a container:</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>mium-master-1<span class="w"> </span>/app/bin/mium-cli.sh<span class="w"> </span>iam:reset-password
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="c1"># 4. Data dir was relocated at launch — no extra flags needed, the CLI</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="c1">#    reads the published marker:</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>cat<span class="w"> </span>/opt/mium/bin/master.socket
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="c1"># /var/lib/mium/admin.sock</span>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>bin/mium-cli.sh<span class="w"> </span>ping
-<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>
-<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="c1"># 5. Socket in a non-standard place and no marker (the master is stopped,</span>
-<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="c1">#    or you are on a host where the marker was cleaned up):</span>
-<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>bin/mium-cli.sh<span class="w"> </span>--socket<span class="w"> </span>/var/lib/mium/admin.sock<span class="w"> </span>iam:reset-password
-<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
-<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="c1"># 6. Non-interactive automation, password from stdin so it never reaches argv:</span>
-<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;S0me!Strong!Pass&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bin/mium-cli.sh<span class="w"> </span>iam:reset-password<span class="w"> </span>--new-password<span class="w"> </span>-
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 1. On the host, as the same OS user that runs the master:</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">cd</span><span class="w"> </span>/opt/mium
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>bin/mium-cli.sh<span class="w"> </span>ping
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>bin/mium-cli.sh<span class="w"> </span>iam:reset-password
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># 2. The master runs as a service account and you are root:</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>sudo<span class="w"> </span>-u<span class="w"> </span>mium<span class="w"> </span>/opt/mium/bin/mium-cli.sh<span class="w"> </span>iam:reset-password
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1"># 3. Inside a container:</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>mium-master-1<span class="w"> </span>/app/bin/mium-cli.sh<span class="w"> </span>iam:reset-password
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="c1"># 4. Data dir was relocated at launch — no extra flags needed, the CLI</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="c1">#    reads the published marker:</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>cat<span class="w"> </span>/opt/mium/bin/master.socket
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="c1"># /var/lib/mium/admin.sock</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>bin/mium-cli.sh<span class="w"> </span>ping
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="c1"># 5. Socket in a non-standard place and no marker (the master is stopped,</span>
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="c1">#    or you are on a host where the marker was cleaned up):</span>
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>bin/mium-cli.sh<span class="w"> </span>--socket<span class="w"> </span>/var/lib/mium/admin.sock<span class="w"> </span>iam:reset-password
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>
+<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="c1"># 6. Non-interactive automation, password from stdin so it never reaches argv:</span>
+<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;S0me!Strong!Pass&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bin/mium-cli.sh<span class="w"> </span>iam:reset-password<span class="w"> </span>--new-password<span class="w"> </span>-
 </code></pre></div>
 <h2 id="security-model">Security model</h2>
 <p><strong>1. The socket is OS-gated.</strong>
@@ -2252,7 +2291,7 @@ the stored hash — only a fingerprint (the first 12 hex characters of the
 SHA-256 of the stored hash), the user, whether it was master-generated, the
 OS user that invoked the CLI, and, in a cluster, the route: <code>forwardedTo=</code> on
 the master where the CLI ran, <code>forwardedFrom=</code> on the leader that applied it.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">{</span><span class="nt">&quot;ts&quot;</span><span class="p">:</span><span class="s2">&quot;2026-10-27T10:57:02.114Z&quot;</span><span class="p">,</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="s2">&quot;iam.reset-password&quot;</span><span class="p">,</span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="s2">&quot;admin&quot;</span><span class="p">,</span><span class="nt">&quot;generated&quot;</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">&quot;hashFp&quot;</span><span class="p">:</span><span class="s2">&quot;3f9c0a1b7d22&quot;</span><span class="p">,</span><span class="nt">&quot;invokedAs&quot;</span><span class="p">:</span><span class="s2">&quot;root&quot;</span><span class="p">,</span><span class="nt">&quot;route&quot;</span><span class="p">:</span><span class="s2">&quot;forwardedFrom=mium-master-2:8090&quot;</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span><span class="nt">&quot;ts&quot;</span><span class="p">:</span><span class="s2">&quot;2026-10-27T10:57:02.114Z&quot;</span><span class="p">,</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="s2">&quot;iam.reset-password&quot;</span><span class="p">,</span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="s2">&quot;admin&quot;</span><span class="p">,</span><span class="nt">&quot;generated&quot;</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">&quot;hashFp&quot;</span><span class="p">:</span><span class="s2">&quot;3f9c0a1b7d22&quot;</span><span class="p">,</span><span class="nt">&quot;invokedAs&quot;</span><span class="p">:</span><span class="s2">&quot;root&quot;</span><span class="p">,</span><span class="nt">&quot;route&quot;</span><span class="p">:</span><span class="s2">&quot;forwardedFrom=mium-master-2:8090&quot;</span><span class="p">}</span>
 </code></pre></div>
 <p>Two audit lines with the same <code>hashFp</code> refer to the same password version.</p>
 <p><strong>3. The new password is exposed exactly once.</strong>
