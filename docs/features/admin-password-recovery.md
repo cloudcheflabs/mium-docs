@@ -42,7 +42,7 @@ rotation.
 | **Socket path marker** | `bin/master.socket` — written when the socket binds, removed on shutdown |
 | **Network surface** | none — Unix domain socket only |
 | **Downtime** | none — applied in-process on the live master |
-| **Cluster sync** | automatic — leader fans the new IAM state out to followers and workers |
+| **Cluster sync** | IAM is leader-owned: on a follower the reset is forwarded to the leader, which applies it and fans it out to every master and worker; with no reachable leader the CLI fails (exit 1) and nothing changes |
 | **Audit log** | `data/iam-audit/reset.log` (mode `600`, append-only) |
 | **Post-reset state** | `requirePasswordChange = true` (forced rotation on next login) |
 
@@ -85,6 +85,9 @@ mium.admin.socket.path         = ${mium.base.data.dir}/admin.sock
 # Name of the file under <mium.home>/bin that receives the socket path the
 # master actually bound to (see "How the CLI finds the socket" below).
 mium.admin.socket.marker.file  = master.socket
+# How long a follower waits for the leader to apply a forwarded reset
+# (see "Running it on a follower master" below).
+mium.admin.socket.forward.timeout.ms = 30000
 # Append-only audit trail of socket operations.
 mium.iam.audit.dir = ${mium.base.data.dir}/iam-audit
 ```
@@ -92,6 +95,46 @@ mium.iam.audit.dir = ${mium.base.data.dir}/iam-audit
 The socket follows `mium.base.data.dir`. If you launch the master with
 `-Dmium.base.data.dir=/var/lib/mium` the socket moves to
 `/var/lib/mium/admin.sock` — you do not have to restate it.
+
+### Running it on a follower master
+
+You can run the CLI on any master. IAM state is owned by the leader, so a
+**follower forwards the reset to the leader** over the internal protocol; the
+leader applies it and pushes it to every master, and the follower checks that
+its own copy now holds the new password before answering. The CLI says where
+it was applied:
+
+```text
+$ bin/mium-cli.sh iam:reset-password --new-password 'FromFollower1!'
+note: this master is a follower; the reset was applied on the leader mium-master-1:8090 (mium-master-1:19099) and replicated to the cluster.
+```
+
+`bin/mium-cli.sh ping` tells you which role the local master has:
+
+```text
+pong (follower mium-master-2:8090; leader: mium-master-1:8090 (mium-master-1:19099))
+pong (leader mium-master-1:8090)
+```
+
+When no leader is elected, or the leader does not answer within
+`mium.admin.socket.forward.timeout.ms` (default 30 s), the CLI **exits 1**,
+names the leader and states that the password was **NOT** changed:
+
+```text
+error: this master (mium-master-2:8090) is a follower and the leader mium-master-1:8090 (mium-master-1:19099)
+did not apply the reset (no answer within 30000 ms); the password was NOT changed. ...
+```
+
+A forwarded reset carries a deadline of one third of that wait. A leader that
+receives it later — it was paused, overloaded or partitioned — discards it, so a
+reset the CLI already reported as failed never lands afterwards. Keep the
+masters' clocks in sync (NTP). Run the CLI again once a leader is up, or run it
+on the leader host.
+
+!!! note "Before this change"
+    A reset run on a follower changed only that follower's copy and exited 0; the
+    follower's next snapshot pull from the leader (within about 30 seconds) put the
+    old password back.
 
 ### How the CLI finds the socket
 
@@ -188,13 +231,17 @@ connect. There is no token, no shared secret, no network listener.
 
 **2. The audit log records every reset.**
 Every successful reset appends a JSON line to `data/iam-audit/reset.log`
-(mode `600`). The plaintext password is **never** logged — only the first
-8 characters of its hash, the user, whether it was master-generated, and
-the OS user that invoked the CLI.
+(mode `600`). The plaintext password is **never** logged, nor any part of
+the stored hash — only a fingerprint (the first 12 hex characters of the
+SHA-256 of the stored hash), the user, whether it was master-generated, the
+OS user that invoked the CLI, and, in a cluster, the route: `forwardedTo=` on
+the master where the CLI ran, `forwardedFrom=` on the leader that applied it.
 
 ```json
-{"ts":"2026-05-23T16:00:46.922Z","event":"iam.reset-password","user":"admin","generated":true,"hashFp":"OYV/Ojf/","invokedAs":"root"}
+{"ts":"2026-10-27T10:57:02.114Z","event":"iam.reset-password","user":"admin","generated":false,"hashFp":"3f9c0a1b7d22","invokedAs":"root","route":"forwardedFrom=mium-master-2:8090"}
 ```
+
+Two audit lines with the same `hashFp` refer to the same password version.
 
 **3. The new password is exposed exactly once.**
 For master-generated passwords, the plaintext is returned only on the

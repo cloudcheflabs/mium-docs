@@ -103,6 +103,26 @@ next question is written.
 - **Backup & Restore** — configure and run backups, browse and restore snapshots
   (`/api/backup/*`). See [Backup & Restore](backup-restore.md).
 
+## Opening the console over plain http
+
+Most installations open the console as `http://<host>:<port>` — plain http on a
+host name. Browsers treat that as a *non-secure context* and withhold some APIs
+there (`navigator.clipboard`, `crypto.randomUUID`). The console does not depend
+on them:
+
+- **Every Copy button works** — chat messages, code blocks, result SQL,
+  Copy CSV / Copy MD, the Analyze SQL editor, the Dev cell's question,
+  `submit.sh`, job logs and errors, and the STS credentials. It uses the
+  Clipboard API where the browser offers it and a fallback otherwise.
+- **"Copied" means copied.** If the browser refuses the copy, the button says
+  *Copy failed - select the text and press Ctrl+C* instead of pretending.
+- **Errors are shown, not swallowed.** If a click runs into an unexpected
+  error, a red bar at the top of the page shows the message (dismiss with ×),
+  rather than the button appearing to do nothing.
+
+Serving the console over https is still recommended for production; it is not
+required for any console feature.
+
 ## REST API
 
 Every operation in the UI is also reachable on the Admin HTTP server (default port 8090). By default endpoints are mounted under `/api/*` with auth under `/auth/*` (a `/admin` prefix applies only when `mium.admin.context.path` is set):
