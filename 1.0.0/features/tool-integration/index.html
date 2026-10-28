@@ -1981,7 +1981,7 @@
   else's name. <code>tests/seed-ontology.sh</code> registers and then certifies for exactly
   this reason</li>
 <li>Schema browsing (<code>SHOW CATALOGS</code>, <code>SHOW SCHEMAS</code>, <code>SHOW TABLES</code>, <code>DESCRIBE</code>)</li>
-<li>Catalog management — <code>list_catalogs</code>, <code>register_catalog</code>, <code>unregister_catalog</code>, plus a generic <code>ontul_admin</code> passthrough to the Ontul Admin REST API</li>
+<li>Catalog management — <code>list_catalogs</code>, <code>register_catalog</code> (create only), <code>update_catalog</code> (replace the config; a secret sent as <code>***</code> keeps its stored value), <code>unregister_catalog</code>, plus a generic <code>ontul_admin</code> passthrough to the Ontul Admin REST API. Credentials in these configs and responses are shown and stored as <code>***</code> (see <a href="../chat-memory/#secrets-in-chat">Secrets in Chat</a>)</li>
 <li>Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see <a href="../job-lifecycle/">Job Lifecycle</a>). Job types are the <code>OntulJobType</code> enum values <code>BATCH</code>, <code>STREAMING</code>, <code>CLASS</code>, <code>PYTHON</code></li>
 <li>Dependency upload for <code>CLASS</code> / <code>PYTHON</code> jobs (<code>uploadDep</code>, <code>listServerDeps</code>, auto-deps)</li>
 <li>Retrieval-grounded code generation (see below)</li>

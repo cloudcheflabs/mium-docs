@@ -1244,6 +1244,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#secrets-in-chat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secrets in Chat
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#retention-and-compaction" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1969,6 +1980,37 @@
 <li><code>POST /api/chat/sessions/rename</code> — rename a session; delete via the sessions endpoint</li>
 </ul>
 <p>Writes are leader-only; followers transparently proxy via <code>LeaderRouter</code>.</p>
+<h2 id="secrets-in-chat">Secrets in Chat</h2>
+<p>Registering a catalog or a connection through chat hands a password, an S3 secret key or a token to a
+tool. Mium keeps that secret out of everything it shows or stores afterwards:</p>
+<ul>
+<li><strong>Replies and payloads</strong> — a catalog config is shown with every credential value as <code>***</code>
+  (<code>"password" : "***"</code>), and so are <code>list_catalogs</code>, the <code>ontul_admin</code> / <code>mium_admin</code> responses
+  (for example a new Ontul access key's <code>secretAccessKey</code> and <code>token</code>) and connection endpoints
+  (<code>...?password=***</code>). The keys that count as credentials are Ontul's: anything containing
+  <code>password</code>, <code>secret</code>, <code>token</code>, <code>credential</code>, <code>apikey</code>, <code>accesskey</code>, <code>private</code> or <code>jaas</code>.
+  If the model repeats a secret in its own explanation, that is replaced with <code>***</code> too.</li>
+<li><strong>Sending <code>***</code> back</strong> — <code>update_catalog</code> can send a secret as <code>***</code>, and Ontul keeps the stored
+  value. Changing a catalog's URL therefore never requires typing its password again.</li>
+<li><strong>The model</strong> — after a secret has been sent to a tool, the rest of the turn's model calls and every
+  later turn are sent without it. Only the turn that collects it (and the confirmation before
+  registering) carries it.</li>
+<li><strong>Chat history</strong> — the conversation is rewritten with <code>***</code> in place of the secret, including the
+  user's own message that typed it ("the password is ***"), and the semantic-recall copy of a
+  rewritten message is dropped. Exports, which render query results, never contain a tool config.</li>
+<li><strong>Logs</strong> — Mium does not log tool configs; a model reply quoted in a warning is masked first.</li>
+</ul>
+<p>History written by a release older than this is swept <strong>once</strong>, the first time a leader starts on the
+new release: credential values in stored catalog/admin replies are masked, and every message of the
+same conversation that repeats one of those values — the user's own turn included — is rewritten.
+<code>dev</code> workspace notebooks are left untouched (a cell is the user's code). The sweep is recorded in
+<code>mium_settings</code> (<code>chat-secret-scrub-v1</code>); deleting that row and restarting the leader runs it again.</p>
+<div class="admonition note">
+<p class="admonition-title">What the masking cannot cover</p>
+<p>A secret typed into chat reaches the LLM provider in that turn: the model has to read it to build
+the catalog config. To keep a secret away from the model entirely, register the catalog in Ontul's
+console or create a Mium connection under <strong>Settings → Tool Connections</strong> and refer to it by name.</p>
+</div>
 <h2 id="retention-and-compaction">Retention and Compaction</h2>
 <p>Long-running chats are kept manageable by the leader's retention sweep. The sweep is <strong>paused while
 the cluster is in <a href="../cluster-maintenance/">maintenance mode</a></strong> — it is the one background loop that
