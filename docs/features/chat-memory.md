@@ -41,6 +41,38 @@ The Chat endpoints on the Admin HTTP server (mounted under `/api/chat` by defaul
 
 Writes are leader-only; followers transparently proxy via `LeaderRouter`.
 
+## Secrets in Chat
+
+Registering a catalog or a connection through chat hands a password, an S3 secret key or a token to a
+tool. Mium keeps that secret out of everything it shows or stores afterwards:
+
+- **Replies and payloads** — a catalog config is shown with every credential value as `***`
+  (`"password" : "***"`), and so are `list_catalogs`, the `ontul_admin` / `mium_admin` responses
+  (for example a new Ontul access key's `secretAccessKey` and `token`) and connection endpoints
+  (`...?password=***`). The keys that count as credentials are Ontul's: anything containing
+  `password`, `secret`, `token`, `credential`, `apikey`, `accesskey`, `private` or `jaas`.
+  If the model repeats a secret in its own explanation, that is replaced with `***` too.
+- **Sending `***` back** — `update_catalog` can send a secret as `***`, and Ontul keeps the stored
+  value. Changing a catalog's URL therefore never requires typing its password again.
+- **The model** — after a secret has been sent to a tool, the rest of the turn's model calls and every
+  later turn are sent without it. Only the turn that collects it (and the confirmation before
+  registering) carries it.
+- **Chat history** — the conversation is rewritten with `***` in place of the secret, including the
+  user's own message that typed it ("the password is ***"), and the semantic-recall copy of a
+  rewritten message is dropped. Exports, which render query results, never contain a tool config.
+- **Logs** — Mium does not log tool configs; a model reply quoted in a warning is masked first.
+
+History written by a release older than this is swept **once**, the first time a leader starts on the
+new release: credential values in stored catalog/admin replies are masked, and every message of the
+same conversation that repeats one of those values — the user's own turn included — is rewritten.
+`dev` workspace notebooks are left untouched (a cell is the user's code). The sweep is recorded in
+`mium_settings` (`chat-secret-scrub-v1`); deleting that row and restarting the leader runs it again.
+
+!!! note "What the masking cannot cover"
+    A secret typed into chat reaches the LLM provider in that turn: the model has to read it to build
+    the catalog config. To keep a secret away from the model entirely, register the catalog in Ontul's
+    console or create a Mium connection under **Settings → Tool Connections** and refer to it by name.
+
 ## Retention and Compaction
 
 Long-running chats are kept manageable by the leader's retention sweep. The sweep is **paused while

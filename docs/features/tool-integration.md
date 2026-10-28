@@ -30,7 +30,7 @@ Mium ships with one built-in tool: **Ontul**, the Cloud Chef Labs SQL engine. Th
   else's name. `tests/seed-ontology.sh` registers and then certifies for exactly
   this reason
 - Schema browsing (`SHOW CATALOGS`, `SHOW SCHEMAS`, `SHOW TABLES`, `DESCRIBE`)
-- Catalog management — `list_catalogs`, `register_catalog`, `unregister_catalog`, plus a generic `ontul_admin` passthrough to the Ontul Admin REST API
+- Catalog management — `list_catalogs`, `register_catalog` (create only), `update_catalog` (replace the config; a secret sent as `***` keeps its stored value), `unregister_catalog`, plus a generic `ontul_admin` passthrough to the Ontul Admin REST API. Credentials in these configs and responses are shown and stored as `***` (see [Secrets in Chat](chat-memory.md#secrets-in-chat))
 - Full job lifecycle — submit batch / streaming jobs, poll status, stream logs, kill, list active and historical jobs (see [Job Lifecycle](job-lifecycle.md)). Job types are the `OntulJobType` enum values `BATCH`, `STREAMING`, `CLASS`, `PYTHON`
 - Dependency upload for `CLASS` / `PYTHON` jobs (`uploadDep`, `listServerDeps`, auto-deps)
 - Retrieval-grounded code generation (see below)

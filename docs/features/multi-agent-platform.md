@@ -25,7 +25,7 @@ Mium's agent loop turns each user message into one or more LLM calls plus the to
 | `job_status` / `job_logs` / `kill_job` | Operate on a running or finished job by id |
 | `list_jobs` / `list_history` | Active and historical job lists |
 | `generate_code` | Produce Ontul SDK source (`jobType` = `BATCH` / `STREAMING` / `CLASS` / `PYTHON`) the user can copy |
-| `list_catalogs` / `register_catalog` / `unregister_catalog` | Manage Ontul catalogs |
+| `list_catalogs` / `register_catalog` / `update_catalog` / `unregister_catalog` | Manage Ontul catalogs (credentials shown as `***`) |
 | `ontul_admin` | Generic passthrough to the Ontul Admin REST API |
 | `mium_admin` | Manage the user's own connections (`list_connections` / `create_connection` / `delete_connection`) |
 
