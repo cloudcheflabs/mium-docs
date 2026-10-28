@@ -49,6 +49,12 @@ read timeout, so one dead server delays the page by at most that much. The probe
 through the Master's own ZooKeeper session, so a server the session is not attached to is still
 reported.
 
+Each server that answers `srvr` is then asked with `conf` for its server id (`myid`) and the ensemble
+membership it was configured with (its `server.N` list). `conf` is **not** on ZooKeeper's default
+whitelist: add it (`4lw.commands.whitelist=srvr,conf`) and restart that ZooKeeper server (ZooKeeper
+reads the list only at startup), or its server id is shown as unknown. The ZooKeeper bundled with Mium
+(`conf/zk/zoo.cfg`) ships with `4lw.commands.whitelist=srvr,conf,ruok,stat,mntr`.
+
 ```bash
 curl -s -H "Authorization: Bearer $TOKEN" http://mium:8090/api/nodes/zookeeper
 ```
@@ -60,10 +66,18 @@ curl -s -H "Authorization: Bearer $TOKEN" http://mium:8090/api/nodes/zookeeper
   "servers": [
     {"host": "zk1", "port": 2181, "status": "UP", "mode": "follower", "version": "3.9.2",
      "latencyMin": 0.0, "latencyAvg": 0.42, "latencyMax": 12.0, "received": 1234, "sent": 1240,
-     "connections": 3, "outstanding": 0, "zxid": "0x200000005", "nodeCount": 45, "responseMs": 3},
-    {"host": "zk2", "port": 2181, "status": "UP", "mode": "leader", "...": "..."},
+     "connections": 3, "outstanding": 0, "zxid": "0x200000005", "nodeCount": 45, "responseMs": 3,
+     "serverId": 1, "serverIdNote": null,
+     "membership": {"1": "zk1:2888:3888:participant;0.0.0.0:2181",
+                    "2": "zk2:2888:3888:participant;0.0.0.0:2181",
+                    "3": "zk3:2888:3888:participant;0.0.0.0:2181"}},
+    {"host": "zk2", "port": 2181, "status": "UP", "mode": "leader", "serverId": 2, "...": "..."},
     {"host": "zk3", "port": 2181, "status": "DOWN",
-     "error": "UnknownHostException: zk3"}
+     "error": "UnknownHostException: zk3",
+     "serverId": null, "serverIdNote": "server id unknown (server is down)", "membership": {}}
+  ],
+  "warnings": [
+    "ZooKeeper server id unknown on zk3:2181 (server is down) — a duplicate myid cannot be ruled out"
   ],
   "client": {"connected": true, "state": "CONNECTED", "sessionId": "0x10000a1b2c30001",
              "sessionTimeoutMs": 30000, "connectedServer": "zk1/172.18.0.3:2181"}
@@ -79,12 +93,31 @@ curl -s -H "Authorization: Bearer $TOKEN" http://mium:8090/api/nodes/zookeeper
 | `latencyMin` / `latencyAvg` / `latencyMax` | Request latency in milliseconds since the server's stats were last reset. |
 | `zxid` | Last committed transaction id. In a healthy ensemble the servers are within a few transactions of one another. |
 | `nodeCount` | Number of znodes. |
+| `serverId` | The server's own id (`myid`) from `conf`; `null` when it could not be read. |
+| `serverIdNote` | Why `serverId` is `null`: `server id unknown (conf not in 4lw.commands.whitelist; add conf there and restart that ZooKeeper server)`, `(server is down)`, `(server is not serving requests)`, `(conf failed: ...)`. `null` when the id is known. |
+| `membership` | Server id → address of the ensemble the server was configured with. Empty when it runs standalone or the id is unknown. |
+| `warnings` | Server-id problems ZooKeeper itself never reports (see below). Empty when every server reported a unique id and all agree on the membership. |
 | `client` | The answering Master's own Curator session: `state` (`CONNECTED`, `CONNECTING`, ...), session id, negotiated session timeout and the server it is attached to. Different Masters are usually attached to different servers. |
 
-In the UI each server is a row with a role badge (the leader is marked with a crown), an
-Online / Offline status, version, connections, latency, znode count and zxid. A DOWN server shows
-its error under the address. The header shows how many servers are up, and a line under it
-shows the answering Master's session.
+In the UI each server is a row with its server id, a role badge (the leader is marked with a crown),
+an Online / Offline status, version, connections, latency, znode count and zxid. A server whose id
+is unknown shows the reason in amber in the Server id column. A DOWN server shows its error under
+the address. The header shows how many servers are up, and a line under it shows the answering
+Master's session.
+
+### Server id (myid) warnings
+
+Two servers with the same `myid`, or servers that disagree about who is in the ensemble, break an
+ensemble silently: ZooKeeper raises no error and clients just see an unstable or split service. Each
+warning is a red line above the server table, and the same text is in `warnings`:
+
+| Warning | Cause |
+|---|---|
+| `Duplicate ZooKeeper server id 2 on zk2:2181, zk3:2181 — the ensemble is misconfigured; give every server a unique myid` | Two or more servers report the same id — for example a new server that reused another one's instance number. |
+| `ZooKeeper server zk4:2181 reports server id 4, which is not in its own ensemble membership (1, 2, 3) — check its myid` | The server's `myid` does not match any `server.N` line of its own configuration. |
+| `ZooKeeper servers disagree about the ensemble membership: zk1:2181, zk2:2181 list server ids 1, 2, 3; zk3:2181 lists server ids 2 — every server must be configured with the same server.N list` | The servers were configured with different `server.N` lists (a server that is really a separate ensemble shows up here). |
+| `ZooKeeper server id unknown on zk1:2181, zk2:2181, zk3:2181 (conf not in 4lw.commands.whitelist; add conf there and restart that ZooKeeper server) — a duplicate myid cannot be ruled out` | The id of these servers could not be read (also `(server is down)`, `(server is not serving requests)`). The check is incomplete, so it is never shown as fine. |
+| `ZooKeeper servers a:2181, b:2181 run standalone — a standalone server is a separate single-server ZooKeeper, not part of one ensemble with the other configured servers` | `mium.zk.connect` names several servers, and some of them run standalone. A single standalone server is a valid setup and gets no warning. |
 
 ## Health and Readiness Probes
 

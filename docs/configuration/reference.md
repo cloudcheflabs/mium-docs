@@ -27,7 +27,7 @@ mium.kms.rocksdb.path = ${mium.base.data.dir}/kms
 | `mium.zk.root` | `/mium` | Root ZK path under which Mium creates its `masters/`, `workers/`, and readiness znodes. |
 | `mium.zk.session.timeout.ms` | `30000` | ZK session timeout. Determines failover bound. |
 | `mium.zk.connect.timeout.ms` | `10000` | Initial ZK connect timeout. |
-| `mium.zk.topology.probe.timeout.ms` | `2000` | Socket connect + read timeout of the Topology page's `srvr` probe of each ZooKeeper server. A server that does not answer in time is shown DOWN. |
+| `mium.zk.topology.probe.timeout.ms` | `2000` | Socket connect + read timeout of the Topology page's `srvr` / `conf` probe of each ZooKeeper server (`conf` reads the server id, see [Monitoring → ZooKeeper](../operations/monitoring.md#zookeeper)). A server that does not answer in time is shown DOWN. |
 
 ## Metrics
 

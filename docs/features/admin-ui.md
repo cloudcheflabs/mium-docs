@@ -77,9 +77,10 @@ next question is written.
 
 - **Dashboard** — cluster metrics and health (CPU, heap, thread count per node) plus worker status, charted with Recharts.
 - **Topology** — live view of the cluster: the Masters (leader / follower, ready state), the Workers, and
-  the **ZooKeeper** ensemble — every server in `mium.zk.connect` with its role (leader, follower,
+  the **ZooKeeper** ensemble — every server in `mium.zk.connect` with its server id (`myid`), role (leader, follower,
   observer, standalone), Online / Offline status, version, connections, latency, znode count and zxid,
-  plus the answering Master's own ZooKeeper session. Per-node log viewer and the maintenance-mode
+  plus the answering Master's own ZooKeeper session. Duplicate, mismatched or unknown server ids are
+  shown as red warning lines above the server table. Per-node log viewer and the maintenance-mode
   switch live here too. See [Monitoring → ZooKeeper](../operations/monitoring.md#zookeeper).
 - **IAM** — users, groups, policies, companies, organizations; visual policy editor; access-key issuance.
 - **Security & KMS** — list, create, and rotate envelope-encryption keys.
