@@ -2163,7 +2163,7 @@
 <tr>
 <td><code>mium.zk.topology.probe.timeout.ms</code></td>
 <td><code>2000</code></td>
-<td>Timeout in milliseconds (socket connect and read) for the admin Cluster Topology view, which asks every server in <code>mium.zk.connect</code> for its status with ZooKeeper's <code>srvr</code> four-letter word (allowed by default in ZooKeeper 3.5+; keep it in <code>4lw.commands.whitelist</code> if you set that list). Servers are probed in parallel, so one dead server costs at most this long.</td>
+<td>Timeout in milliseconds (socket connect and read) for the admin Cluster Topology view, which asks every server in <code>mium.zk.connect</code> for its status with ZooKeeper's <code>srvr</code> four-letter word (allowed by default in ZooKeeper 3.5+; keep it in <code>4lw.commands.whitelist</code> if you set that list), and for its server id (<code>myid</code>) with <code>conf</code>, so a duplicate or mismatched <code>myid</code> is shown as a warning — <code>conf</code> is not on ZooKeeper's default whitelist, add it (<code>4lw.commands.whitelist=srvr,conf</code>) and restart that ZooKeeper server, or the server id is shown as unknown. Servers are probed in parallel, so one dead server costs at most this long.</td>
 </tr>
 </tbody>
 </table>

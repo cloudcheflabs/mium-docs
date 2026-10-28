@@ -2054,9 +2054,10 @@ next question is written.</p>
 <ul>
 <li><strong>Dashboard</strong> — cluster metrics and health (CPU, heap, thread count per node) plus worker status, charted with Recharts.</li>
 <li><strong>Topology</strong> — live view of the cluster: the Masters (leader / follower, ready state), the Workers, and
-  the <strong>ZooKeeper</strong> ensemble — every server in <code>mium.zk.connect</code> with its role (leader, follower,
+  the <strong>ZooKeeper</strong> ensemble — every server in <code>mium.zk.connect</code> with its server id (<code>myid</code>), role (leader, follower,
   observer, standalone), Online / Offline status, version, connections, latency, znode count and zxid,
-  plus the answering Master's own ZooKeeper session. Per-node log viewer and the maintenance-mode
+  plus the answering Master's own ZooKeeper session. Duplicate, mismatched or unknown server ids are
+  shown as red warning lines above the server table. Per-node log viewer and the maintenance-mode
   switch live here too. See <a href="../../operations/monitoring/#zookeeper">Monitoring → ZooKeeper</a>.</li>
 <li><strong>IAM</strong> — users, groups, policies, companies, organizations; visual policy editor; access-key issuance.</li>
 <li><strong>Security &amp; KMS</strong> — list, create, and rotate envelope-encryption keys.</li>

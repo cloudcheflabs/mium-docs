@@ -2239,7 +2239,7 @@
 <tr>
 <td><code>mium.zk.topology.probe.timeout.ms</code></td>
 <td><code>2000</code></td>
-<td>Socket connect + read timeout of the Topology page's <code>srvr</code> probe of each ZooKeeper server. A server that does not answer in time is shown DOWN.</td>
+<td>Socket connect + read timeout of the Topology page's <code>srvr</code> / <code>conf</code> probe of each ZooKeeper server (<code>conf</code> reads the server id, see <a href="../../operations/monitoring/#zookeeper">Monitoring → ZooKeeper</a>). A server that does not answer in time is shown DOWN.</td>
 </tr>
 </tbody>
 </table>
