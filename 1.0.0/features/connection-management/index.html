@@ -1963,14 +1963,15 @@
 <p>Connections are managed through the Admin UI (Settings → Tool Connections, Settings → LLM Backends) or the REST API at <code>/api/connections</code> (the <code>/admin</code> prefix applies only when <code>mium.admin.context.path</code> is set):</p>
 <ul>
 <li><strong>Create</strong> — register a new connection with tool type, endpoint, and auth payload.</li>
-<li><strong>List</strong> — view connections owned by the current user; admins with the right policy can view other users' connections. Auth payloads are never returned.</li>
+<li><strong>List</strong> — view connections owned by the current user; admins with the right policy can view other users' connections. Auth payloads are never returned: <code>authFields</code> names the auth fields that are set, without their values. Credentials elsewhere in the connection are shown as <code>***</code> — a <code>password=</code> (or <code>user:***@</code>) in the endpoint, and any metadata value under a credential key (<code>password</code>, <code>secret</code>, <code>token</code>, <code>credential</code>, <code>apikey</code>, <code>accesskey</code>, <code>private</code>, <code>jaas</code> — Ontul's rule).</li>
+<li><strong>Edit</strong> — the Edit button on Settings → Tool Connections (or <code>PUT /api/connections</code> with <code>{connectionId, endpoint?, auth?, metadata?}</code>). The form shows set secrets as <code>***</code>; a value left as <code>***</code> (or an auth field left out or empty) keeps its stored value, a typed value replaces it. So changing a host or a region never needs the secret again, and the browser never receives it.</li>
 <li><strong>Delete</strong> — remove a connection; the <code>connectionId</code> is passed in the request body (<code>DELETE /api/connections</code> with <code>{connectionId}</code>), not as a path segment.</li>
 </ul>
 <p>Updates are leader-only; followers transparently proxy.</p>
 <h2 id="security">Security</h2>
 <ul>
 <li>Auth payloads are encrypted under per-connection DEKs wrapped by the cluster's KMS key (<code>mium-connection</code>); the outer RocksDB snapshot and NIO sync blob are encrypted under a separate <code>mium-connection-snapshot</code> key, so the two layers rotate independently — see <a href="../encryption/">Encryption &amp; KMS</a>.</li>
-<li>Connection IDs are referenced everywhere downstream (e.g. <code>mium.tempfile.s3.connection</code>) — raw credentials never appear in <code>mium.properties</code>, REST responses, or logs.</li>
+<li>Connection IDs are referenced everywhere downstream (e.g. <code>mium.tempfile.s3.connection</code>) — raw credentials never appear in <code>mium.properties</code>, REST responses (<code>GET /api/connections</code>, <code>GET /api/catalog/connections</code>), chat, or logs.</li>
 <li>Replication of the encrypted store between Masters runs over the internal NIO protocol, which is itself envelope-encrypted once the cluster has a KMS key.</li>
 </ul>
 

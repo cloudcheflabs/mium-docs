@@ -1940,7 +1940,7 @@
 <ul>
 <li><strong>Enabled</strong> — master switch (default: off).</li>
 <li><strong>S3 Endpoint, Region, Bucket, Prefix</strong> — destination object store.</li>
-<li><strong>Access Key / Secret Key</strong> — long-lived static credentials for the destination.</li>
+<li><strong>Access Key / Secret Key</strong> — long-lived static credentials for the destination. Neither is shown again: the access key reads <code>***</code> and the secret key field is empty. Saving with <code>***</code> (or an empty secret) keeps the stored keys.</li>
 <li><strong>Path-style addressing</strong> — required for ShannonStore / MinIO destinations.</li>
 <li><strong>Interval (minutes)</strong> — how often the scheduled backup runs.</li>
 <li><strong>Cron</strong> — optional 5-field UNIX cron expression (e.g. <code>0 2 * * *</code> daily at 02:00). Coexists with the interval rule — both can be set, whichever comes due first fires the backup.</li>
@@ -2006,12 +2006,12 @@ while leaving reads and settings available, so you can inspect the result before
 <tr>
 <td><code>GET</code></td>
 <td><code>/api/backup/config</code></td>
-<td>Read current config (secret never echoed)</td>
+<td>Read current config: <code>accessKey</code> is <code>***</code> when set (<code>accessKeySet</code>), the secret is never echoed (<code>secretKeySet</code>)</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
 <td><code>/api/backup/config</code></td>
-<td>Update; sticky secret (only overwrites on non-empty); <code>MANAGE_BACKUP</code></td>
+<td>Update; sticky keys (<code>***</code> or an empty secret keeps the stored value); <code>MANAGE_BACKUP</code></td>
 </tr>
 <tr>
 <td><code>POST</code></td>
