@@ -30,7 +30,8 @@ Each connection also carries an `authType` string describing its auth payload. T
 Connections are managed through the Admin UI (Settings → Tool Connections, Settings → LLM Backends) or the REST API at `/api/connections` (the `/admin` prefix applies only when `mium.admin.context.path` is set):
 
 - **Create** — register a new connection with tool type, endpoint, and auth payload.
-- **List** — view connections owned by the current user; admins with the right policy can view other users' connections. Auth payloads are never returned.
+- **List** — view connections owned by the current user; admins with the right policy can view other users' connections. Auth payloads are never returned: `authFields` names the auth fields that are set, without their values. Credentials elsewhere in the connection are shown as `***` — a `password=` (or `user:***@`) in the endpoint, and any metadata value under a credential key (`password`, `secret`, `token`, `credential`, `apikey`, `accesskey`, `private`, `jaas` — Ontul's rule).
+- **Edit** — the Edit button on Settings → Tool Connections (or `PUT /api/connections` with `{connectionId, endpoint?, auth?, metadata?}`). The form shows set secrets as `***`; a value left as `***` (or an auth field left out or empty) keeps its stored value, a typed value replaces it. So changing a host or a region never needs the secret again, and the browser never receives it.
 - **Delete** — remove a connection; the `connectionId` is passed in the request body (`DELETE /api/connections` with `{connectionId}`), not as a path segment.
 
 Updates are leader-only; followers transparently proxy.
@@ -38,5 +39,5 @@ Updates are leader-only; followers transparently proxy.
 ## Security
 
 - Auth payloads are encrypted under per-connection DEKs wrapped by the cluster's KMS key (`mium-connection`); the outer RocksDB snapshot and NIO sync blob are encrypted under a separate `mium-connection-snapshot` key, so the two layers rotate independently — see [Encryption & KMS](encryption.md).
-- Connection IDs are referenced everywhere downstream (e.g. `mium.tempfile.s3.connection`) — raw credentials never appear in `mium.properties`, REST responses, or logs.
+- Connection IDs are referenced everywhere downstream (e.g. `mium.tempfile.s3.connection`) — raw credentials never appear in `mium.properties`, REST responses (`GET /api/connections`, `GET /api/catalog/connections`), chat, or logs.
 - Replication of the encrypted store between Masters runs over the internal NIO protocol, which is itself envelope-encrypted once the cluster has a KMS key.

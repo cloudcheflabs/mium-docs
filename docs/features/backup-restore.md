@@ -10,7 +10,7 @@ The `Backup & Restore` page in the admin UI exposes the full configuration:
 
 - **Enabled** — master switch (default: off).
 - **S3 Endpoint, Region, Bucket, Prefix** — destination object store.
-- **Access Key / Secret Key** — long-lived static credentials for the destination.
+- **Access Key / Secret Key** — long-lived static credentials for the destination. Neither is shown again: the access key reads `***` and the secret key field is empty. Saving with `***` (or an empty secret) keeps the stored keys.
 - **Path-style addressing** — required for ShannonStore / MinIO destinations.
 - **Interval (minutes)** — how often the scheduled backup runs.
 - **Cron** — optional 5-field UNIX cron expression (e.g. `0 2 * * *` daily at 02:00). Coexists with the interval rule — both can be set, whichever comes due first fires the backup.
@@ -62,8 +62,8 @@ A restore always applies `kms` first, then `iam`, then `connections`. The IAM sn
 
 | Method | Path | Purpose |
 |---|---|---|
-| `GET`  | `/api/backup/config`  | Read current config (secret never echoed) |
-| `POST` | `/api/backup/config`  | Update; sticky secret (only overwrites on non-empty); `MANAGE_BACKUP` |
+| `GET`  | `/api/backup/config`  | Read current config: `accessKey` is `***` when set (`accessKeySet`), the secret is never echoed (`secretKeySet`) |
+| `POST` | `/api/backup/config`  | Update; sticky keys (`***` or an empty secret keeps the stored value); `MANAGE_BACKUP` |
 | `POST` | `/api/backup/run`     | Trigger an immediate backup; `MANAGE_BACKUP` |
 | `GET`  | `/api/backup/history` | Last 100 history entries |
 | `GET`  | `/api/backup/list`    | Backup ids in S3, newest first |
